@@ -2,6 +2,9 @@
 question: "What is a Channel, how does it differ from a Flow, and what are the channel types?"
 topic: coroutines
 difficulty: senior
+order: 50
+starred: false
+section: "Channels and callback interop"
 tags: ["coroutines", "channels", "flow"]
 ---
 

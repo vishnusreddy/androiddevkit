@@ -2,6 +2,9 @@
 question: "How does destructuring work, and what is the componentN convention?"
 topic: kotlin
 difficulty: mid
+order: 100
+starred: false
+section: "Classes and modeling"
 tags: ["kotlin", "destructuring"]
 ---
 

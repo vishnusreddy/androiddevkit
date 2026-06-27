@@ -2,6 +2,9 @@
 question: "How do default and named arguments work, and how do they replace the builder pattern?"
 topic: kotlin
 difficulty: junior
+order: 70
+starred: false
+section: "Functions and idioms"
 tags: ["kotlin", "functions", "default-args"]
 ---
 

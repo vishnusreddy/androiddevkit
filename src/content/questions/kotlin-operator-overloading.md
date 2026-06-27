@@ -2,6 +2,9 @@
 question: "How does operator overloading work in Kotlin?"
 topic: kotlin
 difficulty: mid
+order: 150
+starred: false
+section: "Functions and idioms"
 tags: ["kotlin", "operators"]
 ---
 

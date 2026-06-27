@@ -2,6 +2,9 @@
 question: "What can the when expression do beyond a switch statement?"
 topic: kotlin
 difficulty: junior
+order: 50
+starred: false
+section: "Language essentials"
 tags: ["kotlin", "when", "control-flow"]
 ---
 

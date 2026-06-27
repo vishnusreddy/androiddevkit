@@ -2,6 +2,9 @@
 question: "Implement search-as-you-type with Flow. Which operators do you use and why?"
 topic: coroutines
 difficulty: mid
+order: 190
+starred: false
+section: "Practical Flow pipelines"
 tags: ["flow", "practical", "debounce", "flatMapLatest"]
 ---
 

@@ -2,6 +2,9 @@
 question: "lateinit vs lazy - what's the difference and when do you use each?"
 topic: kotlin
 difficulty: mid
+order: 40
+starred: true
+section: "Classes and modeling"
 tags: ["kotlin", "lateinit", "lazy", "initialization"]
 ---
 

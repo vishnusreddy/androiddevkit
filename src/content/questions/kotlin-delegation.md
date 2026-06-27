@@ -2,6 +2,9 @@
 question: "How does delegation with the by keyword work in Kotlin?"
 topic: kotlin
 difficulty: mid
+order: 110
+starred: false
+section: "Classes and modeling"
 tags: ["kotlin", "delegation", "by"]
 ---
 

@@ -2,6 +2,9 @@
 question: "What are viewModelScope and lifecycleScope? When is each cancelled?"
 topic: coroutines
 difficulty: junior
+order: 60
+starred: true
+section: "Scope ownership"
 tags: ["coroutines", "scopes", "lifecycle", "android"]
 ---
 

@@ -2,6 +2,9 @@
 question: "Show some practical uses of the Elvis operator beyond a simple default."
 topic: kotlin
 difficulty: junior
+order: 30
+starred: false
+section: "Language essentials"
 tags: ["kotlin", "null-safety", "elvis"]
 ---
 

@@ -11,7 +11,9 @@ const questions = (await getCollection('questions')).sort((a, b) => {
   const d =
     DIFFICULTY_ORDER.indexOf(a.data.difficulty) -
     DIFFICULTY_ORDER.indexOf(b.data.difficulty);
-  return d !== 0 ? d : a.data.question.localeCompare(b.data.question);
+  if (d !== 0) return d;
+  if (a.data.starred !== b.data.starred) return a.data.starred ? -1 : 1;
+  return a.data.question.localeCompare(b.data.question);
 });
 
 const rendered = await Promise.all(
@@ -92,6 +94,7 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
                 question={q.data.question}
                 difficulty={q.data.difficulty}
                 tags={q.data.tags}
+                starred={q.data.starred}
                 topicTitle={topic?.data.title}
                 topicHref={topic ? `/topics/${topic.id}/` : undefined}
               >

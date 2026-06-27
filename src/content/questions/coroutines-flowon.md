@@ -2,6 +2,9 @@
 question: "What does flowOn do, and why is Flow context preservation important?"
 topic: coroutines
 difficulty: senior
+order: 120
+starred: true
+section: "Flow operators"
 tags: ["flow", "flowOn", "context", "threading"]
 ---
 

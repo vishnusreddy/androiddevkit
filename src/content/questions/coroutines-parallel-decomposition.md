@@ -2,6 +2,9 @@
 question: "How do you run multiple independent suspend calls in parallel and combine the results?"
 topic: coroutines
 difficulty: mid
+order: 40
+starred: false
+section: "Scope ownership"
 tags: ["coroutines", "async", "practical", "parallel"]
 ---
 

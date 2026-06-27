@@ -2,6 +2,9 @@
 question: "What is CoroutineStart.LAZY, and how does a lazy async behave?"
 topic: coroutines
 difficulty: mid
+order: 220
+starred: false
+section: "Concurrency code reasoning"
 tags: ["coroutines", "async", "lazy"]
 ---
 

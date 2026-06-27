@@ -2,6 +2,9 @@
 question: "Explain generics variance: in, out, and star projection."
 topic: kotlin
 difficulty: mid
+order: 180
+starred: true
+section: "Type system and generics"
 tags: ["kotlin", "generics", "variance"]
 ---
 

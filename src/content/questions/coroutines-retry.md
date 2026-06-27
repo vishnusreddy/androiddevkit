@@ -2,6 +2,9 @@
 question: "How do you retry a failing Flow with exponential backoff?"
 topic: coroutines
 difficulty: mid
+order: 30
+starred: false
+section: "Flow sharing and reliability"
 tags: ["flow", "retry", "practical", "error-handling"]
 ---
 

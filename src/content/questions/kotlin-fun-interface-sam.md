@@ -2,6 +2,9 @@
 question: "What is a functional interface in Kotlin?"
 topic: kotlin
 difficulty: mid
+order: 120
+starred: false
+section: "Functions and idioms"
 tags: ["kotlin", "fun-interface", "sam", "interop"]
 ---
 

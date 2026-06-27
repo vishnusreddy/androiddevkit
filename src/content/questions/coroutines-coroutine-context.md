@@ -2,6 +2,9 @@
 question: "What is CoroutineContext, and what are its elements?"
 topic: coroutines
 difficulty: mid
+order: 20
+starred: false
+section: "Coroutine foundations"
 tags: ["coroutines", "context"]
 ---
 

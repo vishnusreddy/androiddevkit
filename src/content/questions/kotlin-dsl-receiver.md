@@ -2,6 +2,9 @@
 question: "What is a lambda with receiver, and how does it enable Kotlin DSLs?"
 topic: kotlin
 difficulty: senior
+order: 30
+starred: false
+section: "Advanced language features"
 tags: ["kotlin", "dsl", "lambdas", "receiver"]
 ---
 

@@ -2,6 +2,9 @@
 question: "What are Kotlin's visibility modifiers? What does internal mean?"
 topic: kotlin
 difficulty: junior
+order: 60
+starred: false
+section: "Language essentials"
 tags: ["kotlin", "visibility", "modules"]
 ---
 

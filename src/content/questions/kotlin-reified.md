@@ -2,6 +2,9 @@
 question: "What is a reified type parameter and why do you need inline for it?"
 topic: kotlin
 difficulty: mid
+order: 170
+starred: true
+section: "Functions and idioms"
 tags: ["kotlin", "generics", "reified", "inline"]
 ---
 

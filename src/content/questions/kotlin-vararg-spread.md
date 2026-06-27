@@ -2,6 +2,9 @@
 question: "How do vararg and the spread operator work?"
 topic: kotlin
 difficulty: junior
+order: 130
+starred: false
+section: "Functions and idioms"
 tags: ["kotlin", "functions", "vararg"]
 ---
 

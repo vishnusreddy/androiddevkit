@@ -2,6 +2,9 @@
 question: "What are terminal operators on a Flow, and why does nothing happen without one?"
 topic: coroutines
 difficulty: junior
+order: 80
+starred: false
+section: "Flow foundations"
 tags: ["flow", "terminal-operators", "cold"]
 ---
 

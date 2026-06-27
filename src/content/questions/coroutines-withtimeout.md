@@ -2,6 +2,9 @@
 question: "How do you add a timeout to a coroutine? withTimeout vs withTimeoutOrNull."
 topic: coroutines
 difficulty: mid
+order: 60
+starred: false
+section: "Scope ownership"
 tags: ["coroutines", "timeout", "cancellation"]
 ---
 

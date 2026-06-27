@@ -2,6 +2,9 @@
 question: "What changes when a coroutine uses delay instead of Thread.sleep?"
 topic: coroutines
 difficulty: mid
+order: 200
+starred: false
+section: "Concurrency code reasoning"
 tags: ["coroutines", "output-based", "delay", "blocking"]
 ---
 

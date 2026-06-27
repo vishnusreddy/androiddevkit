@@ -2,6 +2,9 @@
 question: "Explain the scope functions: let, run, with, apply, also. How do you choose?"
 topic: kotlin
 difficulty: junior
+order: 90
+starred: true
+section: "Functions and idioms"
 tags: ["kotlin", "scope-functions", "stdlib"]
 ---
 

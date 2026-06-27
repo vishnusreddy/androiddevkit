@@ -2,6 +2,9 @@
 question: "In what order are Kotlin properties and init blocks initialized?"
 topic: kotlin
 difficulty: senior
+order: 40
+starred: false
+section: "Code reasoning"
 tags: ["kotlin", "output-based", "initialization"]
 ---
 

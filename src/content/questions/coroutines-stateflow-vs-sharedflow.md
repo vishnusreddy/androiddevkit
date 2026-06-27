@@ -2,6 +2,9 @@
 question: "StateFlow vs SharedFlow - how do you choose, and how do you model one-time events?"
 topic: coroutines
 difficulty: mid
+order: 160
+starred: true
+section: "State and lifecycle"
 tags: ["flow", "stateflow", "sharedflow", "events"]
 ---
 
@@ -29,9 +32,9 @@ suspend fun navigate() = _events.emit(Event.GoToDetail)
 
 **Choosing:**
 - **State that the screen renders** (loading/content/error) → `StateFlow`.
-- **One-off events** (navigate, show snackbar, toast) → `SharedFlow` with `replay = 0`.
+- **Transient broadcasts for active collectors** (analytics ticks, refresh signals, a snackbar that may be dropped while the UI is absent) → `SharedFlow` with `replay = 0`.
 
-**Why not put events in `StateFlow`?** Because it retains the last value and replays it on rotation - your snackbar would fire again, or navigation would re-trigger. `SharedFlow(replay = 0)` delivers each event once to active collectors and doesn't replay.
+**Why not put consumable events directly in `StateFlow`?** It retains the last value and replays it, so a naïve snackbar or navigation value may run again after recreation. `SharedFlow(replay = 0)` avoids replay, but it can drop an event when there is no collector. If delivery must survive the UI stopping, model the outcome as durable UI state (often the best option) or use an explicit queued-event design. State vs event is a delivery-semantics decision, not just a type choice.
 
 **Optional details:**
 - `MutableStateFlow.value` updates are conflated - fast intermediate values can be skipped; a rapidly emitting `StateFlow` won't deliver every value, only the latest.

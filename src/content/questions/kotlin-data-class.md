@@ -2,6 +2,9 @@
 question: "What does a data class generate for you, and what are its limitations?"
 topic: kotlin
 difficulty: junior
+order: 60
+starred: true
+section: "Classes and modeling"
 tags: ["kotlin", "data-class"]
 ---
 
@@ -26,5 +29,13 @@ val (id, name) = b               // destructuring
 - A data class **can't be `abstract`, `open`, `sealed`, or `inner`**.
 - The primary constructor needs at least one parameter, and they must all be `val`/`var`.
 - `copy()` does a **shallow** copy - nested mutable objects are shared.
+
+```kotlin
+data class Team(val members: MutableList<String>)
+val first = Team(mutableListOf("Ada"))
+val second = first.copy()
+second.members += "Grace"
+println(first.members) // [Ada, Grace]; both copies share the list
+```
 
 **Common follow-up:** "Two data classes with the same fields - are they equal?" No. `equals` also checks the runtime type, so different classes are never equal even with identical fields.

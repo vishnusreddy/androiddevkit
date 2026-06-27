@@ -2,6 +2,9 @@
 question: "combine vs zip for Flows - what's the difference?"
 topic: coroutines
 difficulty: mid
+order: 140
+starred: false
+section: "Flow operators"
 tags: ["flow", "combine", "zip", "operators"]
 ---
 

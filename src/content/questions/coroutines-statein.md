@@ -2,6 +2,9 @@
 question: "What do stateIn and shareIn do, and why use SharingStarted.WhileSubscribed?"
 topic: coroutines
 difficulty: senior
+order: 10
+starred: true
+section: "Flow sharing and reliability"
 tags: ["flow", "stateIn", "shareIn", "sharing"]
 ---
 

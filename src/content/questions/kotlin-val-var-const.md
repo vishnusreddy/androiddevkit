@@ -2,6 +2,9 @@
 question: "val vs var vs const val - what's the difference?"
 topic: kotlin
 difficulty: junior
+order: 10
+starred: true
+section: "Language essentials"
 tags: ["kotlin", "basics", "immutability"]
 ---
 

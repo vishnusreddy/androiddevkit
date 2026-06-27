@@ -2,6 +2,9 @@
 question: "Sealed class vs enum vs abstract class - when do you use each?"
 topic: kotlin
 difficulty: mid
+order: 20
+starred: true
+section: "Classes and modeling"
 tags: ["kotlin", "sealed-class", "enum", "state"]
 ---
 

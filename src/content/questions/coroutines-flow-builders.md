@@ -2,6 +2,9 @@
 question: "What are the main ways to create a Flow?"
 topic: coroutines
 difficulty: junior
+order: 70
+starred: false
+section: "Flow foundations"
 tags: ["flow", "builders"]
 ---
 

@@ -2,6 +2,9 @@
 question: "What is a typealias, and how does it differ from a value class?"
 topic: kotlin
 difficulty: mid
+order: 200
+starred: false
+section: "Classes and modeling"
 tags: ["kotlin", "typealias", "value-class"]
 ---
 

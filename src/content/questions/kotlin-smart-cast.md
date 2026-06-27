@@ -2,6 +2,9 @@
 question: "What are smart casts, and when do they fail to apply?"
 topic: kotlin
 difficulty: mid
+order: 40
+starred: false
+section: "Language essentials"
 tags: ["kotlin", "smart-cast", "null-safety"]
 ---
 

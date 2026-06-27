@@ -2,6 +2,9 @@
 question: "What are extension functions, and how are they resolved?"
 topic: kotlin
 difficulty: junior
+order: 110
+starred: true
+section: "Functions and idioms"
 tags: ["kotlin", "extensions", "dispatch"]
 ---
 

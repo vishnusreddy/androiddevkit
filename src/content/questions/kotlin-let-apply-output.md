@@ -2,6 +2,9 @@
 question: "What do apply and let return?"
 topic: kotlin
 difficulty: junior
+order: 100
+starred: false
+section: "Functions and idioms"
 tags: ["kotlin", "output-based", "scope-functions"]
 ---
 

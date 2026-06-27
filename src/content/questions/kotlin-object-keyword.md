@@ -2,6 +2,9 @@
 question: "What are the uses of the object keyword in Kotlin?"
 topic: kotlin
 difficulty: mid
+order: 50
+starred: true
+section: "Classes and modeling"
 tags: ["kotlin", "object", "singleton"]
 ---
 

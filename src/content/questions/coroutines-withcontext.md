@@ -2,6 +2,9 @@
 question: "withContext vs launch vs async - when do you use each?"
 topic: coroutines
 difficulty: mid
+order: 30
+starred: true
+section: "Coroutine foundations"
 tags: ["coroutines", "builders", "withContext"]
 ---
 

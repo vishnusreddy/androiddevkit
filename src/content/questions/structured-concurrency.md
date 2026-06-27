@@ -2,6 +2,9 @@
 question: "Explain structured concurrency. Why does it matter on Android?"
 topic: coroutines
 difficulty: mid
+order: 10
+starred: true
+section: "Scope ownership"
 tags: ["coroutines", "scopes", "cancellation"]
 ---
 

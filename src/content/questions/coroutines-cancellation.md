@@ -2,6 +2,9 @@
 question: "How does coroutine cancellation work? Why is it 'cooperative'?"
 topic: coroutines
 difficulty: mid
+order: 50
+starred: true
+section: "Scope ownership"
 tags: ["coroutines", "cancellation"]
 ---
 

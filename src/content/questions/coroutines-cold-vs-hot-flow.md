@@ -2,6 +2,9 @@
 question: "What is the difference between a cold Flow and a hot Flow?"
 topic: coroutines
 difficulty: mid
+order: 100
+starred: true
+section: "Flow foundations"
 tags: ["flow", "cold-hot", "stateflow", "sharedflow"]
 ---
 

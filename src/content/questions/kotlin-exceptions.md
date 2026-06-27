@@ -2,6 +2,9 @@
 question: "How does Kotlin handle exceptions differently from Java?"
 topic: kotlin
 difficulty: junior
+order: 140
+starred: false
+section: "Error handling"
 tags: ["kotlin", "exceptions", "error-handling"]
 ---
 

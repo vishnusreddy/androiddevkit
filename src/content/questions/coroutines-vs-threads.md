@@ -2,6 +2,9 @@
 question: "How are coroutines different from threads? Why are they called 'lightweight'?"
 topic: coroutines
 difficulty: junior
+order: 10
+starred: true
+section: "Coroutine foundations"
 tags: ["coroutines", "threads", "fundamentals"]
 ---
 

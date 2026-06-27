@@ -2,6 +2,9 @@
 question: "How do generic type constraints work in Kotlin?"
 topic: kotlin
 difficulty: senior
+order: 10
+starred: false
+section: "Type system and generics"
 tags: ["kotlin", "generics", "bounds"]
 ---
 

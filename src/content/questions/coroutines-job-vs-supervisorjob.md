@@ -2,6 +2,9 @@
 question: "Job vs SupervisorJob, and coroutineScope vs supervisorScope?"
 topic: coroutines
 difficulty: mid
+order: 80
+starred: true
+section: "Scope ownership"
 tags: ["coroutines", "job", "supervision", "error-handling"]
 ---
 

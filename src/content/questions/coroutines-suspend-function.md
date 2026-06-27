@@ -2,6 +2,9 @@
 question: "What is a suspend function, and how does suspension actually work under the hood?"
 topic: coroutines
 difficulty: junior
+order: 20
+starred: true
+section: "Coroutine foundations"
 tags: ["coroutines", "suspend", "internals"]
 ---
 

@@ -2,6 +2,9 @@
 question: "How do you handle errors in a Flow?"
 topic: coroutines
 difficulty: senior
+order: 20
+starred: false
+section: "Flow sharing and reliability"
 tags: ["flow", "error-handling", "catch"]
 ---
 

@@ -2,6 +2,9 @@
 question: "When should you use == or === in Kotlin?"
 topic: kotlin
 difficulty: mid
+order: 30
+starred: true
+section: "Language essentials"
 tags: ["kotlin", "output-based", "equality"]
 ---
 

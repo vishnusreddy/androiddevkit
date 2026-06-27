@@ -2,6 +2,9 @@
 question: "How does Flow handle backpressure? Explain buffer, conflate, and collectLatest."
 topic: coroutines
 difficulty: mid
+order: 150
+starred: false
+section: "Flow operators"
 tags: ["flow", "backpressure", "buffer", "conflate"]
 ---
 

@@ -2,6 +2,9 @@
 question: "What happens when async fails and its result is never awaited?"
 topic: coroutines
 difficulty: senior
+order: 90
+starred: false
+section: "Concurrency code reasoning"
 tags: ["coroutines", "output-based", "exceptions", "async"]
 ---
 

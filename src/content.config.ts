@@ -32,6 +32,12 @@ const questions = defineCollection({
     question: z.string(),
     topic: reference('topics'),
     difficulty: difficulty.default('mid'),
+    // Curated study order within a difficulty band. Lower numbers come first.
+    order: z.number().default(100),
+    // High-frequency interview question: shown as a priority star in the UI.
+    starred: z.boolean().default(false),
+    // Concept cluster used to give long topic pages a visible learning path.
+    section: z.string().default('Core concepts'),
     tags: z.array(z.string()).default([]),
     // Credit the contributor. Optional.
     author: z.string().optional(),

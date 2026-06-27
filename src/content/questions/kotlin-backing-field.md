@@ -2,6 +2,9 @@
 question: "What is a backing field, and when is one generated? (the `field` keyword)"
 topic: kotlin
 difficulty: mid
+order: 90
+starred: false
+section: "Classes and modeling"
 tags: ["kotlin", "properties", "backing-field"]
 ---
 

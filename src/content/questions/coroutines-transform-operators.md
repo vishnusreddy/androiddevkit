@@ -2,6 +2,9 @@
 question: "What does the transform operator do, and how do flatMapConcat, flatMapMerge, and flatMapLatest differ?"
 topic: coroutines
 difficulty: senior
+order: 40
+starred: false
+section: "Flow sharing and reliability"
 tags: ["flow", "operators", "flatMap", "transform"]
 ---
 

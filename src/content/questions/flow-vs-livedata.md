@@ -2,6 +2,9 @@
 question: "When would you use StateFlow over LiveData?"
 topic: coroutines
 difficulty: junior
+order: 90
+starred: true
+section: "Flow foundations"
 tags: ["flow", "state", "lifecycle"]
 ---
 
@@ -9,13 +12,13 @@ tags: ["flow", "state", "lifecycle"]
 
 | | `LiveData` | `StateFlow` |
 |---|---|---|
-| Always has a value | No (nullable) | Yes (requires initial value) |
+| Always has a value | No; it may be unset | Yes (requires initial value) |
 | Lifecycle-aware | Built in | Via `repeatOnLifecycle` / `collectAsStateWithLifecycle` |
 | Operators | Few (`map`, `switchMap`) | Full Flow operator set |
 | Threading | Main-thread bound | Any dispatcher |
 | Pure Kotlin (testable, multiplatform) | No (Android dep) | Yes |
 
-**Choose `StateFlow` when** you want a single source of truth that's always set, you need Flow operators (`combine`, `debounce`, `flatMapLatest`), or you're in a shared/KMP module with no Android dependency.
+**Choose `StateFlow` when** you want a single source of truth that's always set, you need Flow operators (`combine`, `debounce`, `flatMapLatest`), or you're in a shared/KMP module with no Android dependency. Collect it with lifecycle awareness (`repeatOnLifecycle` in Views or `collectAsStateWithLifecycle` in Compose).
 
 ```kotlin
 private val _state = MutableStateFlow(UiState.Loading)

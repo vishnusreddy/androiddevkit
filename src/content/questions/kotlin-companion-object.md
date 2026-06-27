@@ -2,6 +2,9 @@
 question: "What is a companion object? Is it the same as Java's static?"
 topic: kotlin
 difficulty: junior
+order: 120
+starred: true
+section: "Classes and modeling"
 tags: ["kotlin", "companion-object", "static"]
 ---
 

@@ -2,6 +2,9 @@
 question: "What are infix functions and tailrec functions?"
 topic: kotlin
 difficulty: mid
+order: 140
+starred: false
+section: "Functions and idioms"
 tags: ["kotlin", "infix", "tailrec"]
 ---
 

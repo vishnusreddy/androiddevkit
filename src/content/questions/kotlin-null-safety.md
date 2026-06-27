@@ -2,6 +2,9 @@
 question: "How does Kotlin's null safety work, and what does !! actually do?"
 topic: kotlin
 difficulty: junior
+order: 20
+starred: true
+section: "Language essentials"
 tags: ["kotlin", "null-safety"]
 ---
 
@@ -16,7 +19,7 @@ The main tools:
 
 ```kotlin
 val length = name?.length ?: 0   // safe
-val length = name!!.length       // throws if name is null
+val forcedLength = name!!.length // throws if name is null
 ```
 
 **Practical guidance:** `!!` is a code smell - reserve it for genuine impossibilities, and prefer `?.`, `?:`, `requireNotNull()` (which throws a *meaningful* message), or restructuring so the value can't be null. Also mention **platform types** (`String!`) from Java interop: the compiler can't verify them, so annotate Java APIs or null-check at the boundary.

@@ -2,6 +2,9 @@
 question: "Why is GlobalScope considered an anti-pattern?"
 topic: coroutines
 difficulty: mid
+order: 90
+starred: true
+section: "Scope ownership"
 tags: ["coroutines", "globalscope", "structured-concurrency"]
 ---
 

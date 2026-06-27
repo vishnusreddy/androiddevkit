@@ -2,6 +2,9 @@
 question: "What is suspendCancellableCoroutine and when do you use it?"
 topic: coroutines
 difficulty: senior
+order: 70
+starred: false
+section: "Channels and callback interop"
 tags: ["coroutines", "interop", "suspendCancellableCoroutine"]
 ---
 

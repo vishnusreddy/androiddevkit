@@ -2,6 +2,9 @@
 question: "What does return do inside an inline lambda?"
 topic: kotlin
 difficulty: senior
+order: 20
+starred: false
+section: "Advanced language features"
 tags: ["kotlin", "output-based", "lambdas", "inline"]
 ---
 

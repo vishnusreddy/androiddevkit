@@ -2,6 +2,9 @@
 question: "What do onStart, onEach, onCompletion, and onEmpty do on a Flow?"
 topic: coroutines
 difficulty: mid
+order: 110
+starred: false
+section: "Flow operators"
 tags: ["flow", "operators", "lifecycle"]
 ---
 

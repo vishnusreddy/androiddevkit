@@ -2,6 +2,9 @@
 question: "Which Kotlin collection operations do you use most often?"
 topic: kotlin
 difficulty: mid
+order: 70
+starred: true
+section: "Collections"
 tags: ["kotlin", "collections", "functional"]
 ---
 

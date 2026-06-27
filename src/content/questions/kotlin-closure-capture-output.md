@@ -2,6 +2,9 @@
 question: "What value does a lambda capture from a for or while loop?"
 topic: kotlin
 difficulty: mid
+order: 210
+starred: false
+section: "Code reasoning"
 tags: ["kotlin", "output-based", "closures", "lambdas"]
 ---
 

@@ -2,6 +2,9 @@
 question: "What are higher-order functions and function types in Kotlin?"
 topic: kotlin
 difficulty: junior
+order: 80
+starred: true
+section: "Functions and idioms"
 tags: ["kotlin", "lambdas", "functional"]
 ---
 

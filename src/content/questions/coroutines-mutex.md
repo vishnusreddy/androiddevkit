@@ -2,6 +2,9 @@
 question: "How do you protect shared mutable state in coroutines? Mutex vs synchronized."
 topic: coroutines
 difficulty: senior
+order: 80
+starred: false
+section: "Shared-state safety"
 tags: ["coroutines", "concurrency", "mutex"]
 ---
 

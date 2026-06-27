@@ -2,6 +2,9 @@
 question: "Is Kotlin's List truly immutable? Read-only vs immutable collections."
 topic: kotlin
 difficulty: mid
+order: 80
+starred: false
+section: "Collections"
 tags: ["kotlin", "collections", "immutability"]
 ---
 

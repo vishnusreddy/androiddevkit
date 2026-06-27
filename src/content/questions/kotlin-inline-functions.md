@@ -2,6 +2,9 @@
 question: "What are inline functions, and what do noinline and crossinline do?"
 topic: kotlin
 difficulty: mid
+order: 160
+starred: true
+section: "Functions and idioms"
 tags: ["kotlin", "inline", "performance", "lambdas"]
 ---
 

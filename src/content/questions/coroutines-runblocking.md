@@ -2,6 +2,9 @@
 question: "What does runBlocking do, and when should (and shouldn't) you use it?"
 topic: coroutines
 difficulty: junior
+order: 50
+starred: false
+section: "Coroutine foundations"
 tags: ["coroutines", "runBlocking", "testing"]
 ---
 

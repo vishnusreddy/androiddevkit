@@ -5,6 +5,8 @@ interface Props {
   question: string;
   difficulty: string;
   tags?: string[];
+  /** Frequently asked / high-priority interview question. */
+  starred?: boolean;
   topicTitle?: string;
   topicHref?: string;
   /** When true the answer starts expanded. */
@@ -15,6 +17,7 @@ const {
   question,
   difficulty,
   tags = [],
+  starred = false,
   topicTitle,
   topicHref,
   open = false,
@@ -23,7 +26,20 @@ const {
 <details class="qitem" id={id} open={open}>
   <summary>
     <div class="q-head">
-      <span class="q-text">{question}</span>
+      <span class="q-title">
+        {starred && (
+          <span
+            class="priority-star"
+            title="Frequently asked: study this first"
+            aria-label="Frequently asked question"
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m12 2.8 2.8 5.67 6.26.91-4.53 4.42 1.07 6.24L12 17.1l-5.6 2.94 1.07-6.24-4.53-4.42 6.26-.91L12 2.8Z" />
+            </svg>
+          </span>
+        )}
+        <span class="q-text">{question}</span>
+      </span>
       <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
     </div>
     <div class="q-meta">
@@ -84,6 +100,25 @@ const {
     font-size: 1.02rem;
     color: var(--ink);
     line-height: 1.45;
+  }
+  .q-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    min-width: 0;
+  }
+  .priority-star {
+    display: inline-flex;
+    flex: 0 0 auto;
+    margin-top: 0.2rem;
+    color: #b7791f;
+  }
+  .priority-star svg {
+    display: block;
+    fill: currentColor;
+  }
+  :global(:root[data-theme='dark']) .priority-star {
+    color: #f4bf58;
   }
   .chev {
     flex-shrink: 0;

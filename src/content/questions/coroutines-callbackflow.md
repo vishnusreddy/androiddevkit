@@ -2,6 +2,9 @@
 question: "How do you convert a callback-based API into a Flow? (callbackFlow / channelFlow)"
 topic: coroutines
 difficulty: senior
+order: 60
+starred: true
+section: "Channels and callback interop"
 tags: ["flow", "callbackflow", "interop"]
 ---
 

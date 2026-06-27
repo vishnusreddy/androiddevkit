@@ -2,6 +2,9 @@
 question: "What is a value class (inline class) and when would you use it?"
 topic: kotlin
 difficulty: mid
+order: 190
+starred: false
+section: "Classes and modeling"
 tags: ["kotlin", "value-class", "performance"]
 ---
 

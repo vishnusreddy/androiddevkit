@@ -2,6 +2,9 @@
 question: "Why collect a Flow with repeatOnLifecycle? What problem does it solve?"
 topic: coroutines
 difficulty: mid
+order: 170
+starred: true
+section: "State and lifecycle"
 tags: ["flow", "lifecycle", "repeatOnLifecycle", "android"]
 ---
 

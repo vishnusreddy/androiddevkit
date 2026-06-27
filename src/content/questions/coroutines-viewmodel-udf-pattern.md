@@ -2,6 +2,9 @@
 question: "Show the idiomatic way to expose state and handle events from a ViewModel with Flow."
 topic: coroutines
 difficulty: mid
+order: 180
+starred: false
+section: "State and lifecycle"
 tags: ["coroutines", "flow", "practical", "viewmodel", "udf"]
 ---
 

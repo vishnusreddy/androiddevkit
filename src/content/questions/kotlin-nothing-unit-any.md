@@ -2,6 +2,9 @@
 question: "Explain Unit, Nothing, and Any. How do they differ?"
 topic: kotlin
 difficulty: mid
+order: 10
+starred: false
+section: "Language essentials"
 tags: ["kotlin", "type-system"]
 ---
 

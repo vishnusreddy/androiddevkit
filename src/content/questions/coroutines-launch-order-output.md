@@ -2,6 +2,9 @@
 question: "In what order do launched coroutines run when they call delay?"
 topic: coroutines
 difficulty: mid
+order: 210
+starred: false
+section: "Concurrency code reasoning"
 tags: ["coroutines", "output-based", "concurrency"]
 ---
 

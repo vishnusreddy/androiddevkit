@@ -22,7 +22,9 @@ const questions = allQuestions
   .sort(
     (a, b) =>
       DIFFICULTY_ORDER.indexOf(a.data.difficulty) -
-      DIFFICULTY_ORDER.indexOf(b.data.difficulty)
+        DIFFICULTY_ORDER.indexOf(b.data.difficulty) ||
+      a.data.order - b.data.order ||
+      a.data.question.localeCompare(b.data.question)
   );
 
 // Pre-render each answer body.
@@ -35,6 +37,7 @@ const counts = DIFFICULTY_ORDER.map((d) => ({
   label: DIFFICULTY_LABEL[d],
   n: questions.filter((q) => q.data.difficulty === d).length,
 })).filter((c) => c.n > 0);
+const starredCount = questions.filter((q) => q.data.starred).length;
 
 const levelIntro: Record<string, { title: string; description: string }> = {
   junior: {
@@ -51,11 +54,47 @@ const levelIntro: Record<string, { title: string; description: string }> = {
   },
 };
 
-const questionGroups = DIFFICULTY_ORDER.map((level) => ({
-  level,
-  ...levelIntro[level],
-  items: rendered.filter(({ q }) => q.data.difficulty === level),
-})).filter((group) => group.items.length > 0);
+const sectionOrder: Record<string, string[]> = {
+  kotlin: [
+    'Language essentials',
+    'Classes and modeling',
+    'Functions and idioms',
+    'Collections',
+    'Error handling',
+    'Type system and generics',
+    'Java interoperability',
+    'Advanced language features',
+    'Code reasoning',
+  ],
+  coroutines: [
+    'Coroutine foundations',
+    'Scope ownership',
+    'Flow foundations',
+    'Flow operators',
+    'State and lifecycle',
+    'Practical Flow pipelines',
+    'Flow sharing and reliability',
+    'Channels and callback interop',
+    'Shared-state safety',
+    'Concurrency code reasoning',
+  ],
+};
+const topicSectionOrder = sectionOrder[topic.id] ?? [];
+
+const questionGroups = DIFFICULTY_ORDER.map((level) => {
+  const items = rendered.filter(({ q }) => q.data.difficulty === level);
+  const sections = [...new Set(items.map(({ q }) => q.data.section))]
+    .sort((a, b) => {
+      const ai = topicSectionOrder.indexOf(a);
+      const bi = topicSectionOrder.indexOf(b);
+      return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi) || a.localeCompare(b);
+    })
+    .map((section) => ({
+      title: section,
+      items: items.filter(({ q }) => q.data.section === section),
+    }));
+  return { level, ...levelIntro[level], items, sections };
+}).filter((group) => group.items.length > 0);
 
 const { Content: Overview } = await render(topic);
 const hasOverview = topic.body && topic.body.trim().length > 0;
@@ -74,6 +113,7 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
       <p class="lede text-soft">{topic.data.description}</p>
       <div class="t-counts">
         <span class="count-pill">{questions.length} questions</span>
+        {starredCount > 0 && <span class="count-pill priority-count">★ {starredCount} high priority</span>}
         {counts.map((c) => (
           <span class="count-pill">{c.n} {c.label.toLowerCase()}</span>
         ))}
@@ -88,6 +128,10 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
       </div>
     )}
 
+    {starredCount > 0 && (
+      <p class="star-legend"><span aria-hidden="true">★</span> Frequently asked. Prioritize these in your first pass.</p>
+    )}
+
     {topic.id === 'coroutines' && <CoroutinesPrimer />}
 
     {questions.length > 0 ? (
@@ -98,15 +142,21 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
               <h2 id={`${group.level}-heading`}>{group.title}</h2>
               <p>{group.description}</p>
             </div>
-            {group.items.map(({ q, Content }) => (
-              <QuestionItem
-                id={q.id}
-                question={q.data.question}
-                difficulty={q.data.difficulty}
-                tags={q.data.tags}
-              >
-                <Content />
-              </QuestionItem>
+            {group.sections.map((section) => (
+              <div class="concept-section">
+                <h3>{section.title}</h3>
+                {section.items.map(({ q, Content }) => (
+                  <QuestionItem
+                    id={q.id}
+                    question={q.data.question}
+                    difficulty={q.data.difficulty}
+                    tags={q.data.tags}
+                    starred={q.data.starred}
+                  >
+                    <Content />
+                  </QuestionItem>
+                ))}
+              </div>
             ))}
           </section>
         ))}
@@ -177,6 +227,22 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
     border-radius: 999px;
     padding: 0.25rem 0.7rem;
   }
+  .priority-count,
+  .star-legend span {
+    color: #9a6700;
+  }
+  .star-legend {
+    margin: 0 0 1.2rem;
+    color: var(--ink-soft);
+    font-size: 0.86rem;
+  }
+  .star-legend span {
+    margin-right: 0.3rem;
+  }
+  :global(:root[data-theme='dark']) .priority-count,
+  :global(:root[data-theme='dark']) .star-legend span {
+    color: #f4bf58;
+  }
 
   .topic-body {
     padding-block: 2.2rem 1rem;
@@ -204,6 +270,17 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
     color: var(--ink-soft);
     margin: 0.3rem 0 0;
     font-size: 0.93rem;
+  }
+  .concept-section + .concept-section {
+    margin-top: 1.6rem;
+  }
+  .concept-section > h3 {
+    margin: 0 0 0.65rem;
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
   .empty {
     padding: 2.5rem 2rem;

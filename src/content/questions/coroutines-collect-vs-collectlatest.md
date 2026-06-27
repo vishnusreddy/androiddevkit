@@ -2,6 +2,9 @@
 question: "collect vs collectLatest, and what do flatMapLatest / mapLatest do?"
 topic: coroutines
 difficulty: mid
+order: 130
+starred: true
+section: "Flow operators"
 tags: ["flow", "collectLatest", "flatMapLatest"]
 ---
 
