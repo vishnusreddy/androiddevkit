@@ -176,6 +176,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } catch (err) {
     const status = err instanceof GitHubError ? 502 : 500;
     console.error('Experience submission failed:', err);
-    return json({ error: 'Could not open the pull request. Please try again later.' }, status);
+    // TEMP: surface the underlying error to help debug production config.
+    // Remove `detail` once submissions are confirmed working.
+    return json(
+      {
+        error: 'Could not open the pull request. Please try again later.',
+        detail: err instanceof Error ? err.message : String(err),
+      },
+      status,
+    );
   }
 };
