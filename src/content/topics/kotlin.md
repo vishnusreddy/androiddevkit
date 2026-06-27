@@ -7,17 +7,24 @@ icon: "K"
 ---
 
 Kotlin is the foundation everything else is built on, and it shows up in **every**
-Android loop — sometimes as a warm-up, often as a trap. Interviewers use it to
+Android interview, sometimes as a warm-up and sometimes as a deeper discussion. Interviewers use it to
 tell apart people who *write* Kotlin from people who *understand* it.
+
+### A simple study path
+
+Begin with null safety, `val` and `var`, data and sealed classes, collections,
+scope functions, and extension functions. Move to generics, inline functions,
+delegation, and DSL features later. You do not need to memorize every corner of
+the type system before writing good Kotlin.
 
 ### What gets tested
 
-- **Null safety** — `?.`, `?:`, `!!`, platform types from Java, and *why* `lateinit` exists.
-- **Type system** — `val`/`var`, `data`/`sealed`/`enum` classes, `Any`/`Unit`/`Nothing`, smart casts.
-- **Functions & lambdas** — higher-order functions, `inline`/`noinline`/`crossinline`, `reified`, scope functions.
-- **Generics** — declaration- vs use-site variance (`in`/`out`), star projection, type bounds.
-- **Idioms** — delegation (`by`), `value class`, DSLs with receiver lambdas, collection operators.
-- **Output-based puzzles** — boxing & the integer cache, init order, closures over loop variables, non-local returns.
+- **Null safety** - `?.`, `?:`, `!!`, platform types from Java, and *why* `lateinit` exists.
+- **Type system** - `val`/`var`, `data`/`sealed`/`enum` classes, `Any`/`Unit`/`Nothing`, smart casts.
+- **Functions & lambdas** - higher-order functions, `inline`/`noinline`/`crossinline`, `reified`, scope functions.
+- **Generics** - declaration- vs use-site variance (`in`/`out`), star projection, type bounds.
+- **Idioms** - delegation (`by`), `value class`, DSLs with receiver lambdas, collection operators.
+- **Output-based puzzles** - boxing & the integer cache, init order, closures over loop variables, non-local returns.
 
 ### How interviewers ask
 

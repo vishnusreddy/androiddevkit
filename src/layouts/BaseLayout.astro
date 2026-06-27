@@ -7,7 +7,7 @@ import { SITE } from '../consts';
 interface Props {
   title?: string;
   description?: string;
-  /** Hide the global footer/header chrome — rarely needed. */
+  /** Hide the global footer/header chrome - rarely needed. */
   bare?: boolean;
 }
 
@@ -17,7 +17,7 @@ const {
   bare = false,
 } = Astro.props;
 
-const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
+const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} - ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
 ---
 <!doctype html>

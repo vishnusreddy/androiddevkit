@@ -16,9 +16,9 @@ flow.transform { value ->
 
 The **`flatMap*`** family handles the case where each value maps to **another flow**, and they differ in how they handle concurrency of those inner flows:
 
-- **`flatMapConcat`** — process inner flows **sequentially**: fully collect one before starting the next. Order preserved, no overlap.
-- **`flatMapMerge`** — collect inner flows **concurrently** (up to a concurrency limit), interleaving their emissions. Fastest, order not guaranteed.
-- **`flatMapLatest`** — when a new upstream value arrives, **cancel** the current inner flow and switch to the new one.
+- **`flatMapConcat`** - process inner flows **sequentially**: fully collect one before starting the next. Order preserved, no overlap.
+- **`flatMapMerge`** - collect inner flows **concurrently** (up to a concurrency limit), interleaving their emissions. Fastest, order not guaranteed.
+- **`flatMapLatest`** - when a new upstream value arrives, **cancel** the current inner flow and switch to the new one.
 
 ```kotlin
 queries.flatMapLatest { q -> repo.search(q) }   // search-as-you-type (cancel stale)
@@ -30,5 +30,3 @@ events.flatMapConcat { e -> process(e) }         // strict ordering, one at a ti
 - Need **ordering**, one-at-a-time → `flatMapConcat`.
 - Need **throughput**, order doesn't matter → `flatMapMerge`.
 - Only the **latest** input matters, cancel the rest → `flatMapLatest`.
-
-**Soundbite:** "`transform` emits any number per value; `flatMapConcat` = sequential, `flatMapMerge` = concurrent, `flatMapLatest` = cancel-and-switch."

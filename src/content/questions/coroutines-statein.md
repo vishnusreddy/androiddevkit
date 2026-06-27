@@ -21,10 +21,8 @@ val uiState: StateFlow<UiState> = repository.observeData()  // cold, restarts pe
 ```
 
 **The `started` strategy controls when the upstream is active:**
-- **`Eagerly`** — starts immediately, never stops. Wastes work if no one's listening.
-- **`Lazily`** — starts on the first collector, then stays forever.
-- **`WhileSubscribed(stopTimeoutMillis)`** — active only while there's a subscriber, and stops `stopTimeout` ms after the last one leaves.
+- **`Eagerly`** - starts immediately, never stops. Wastes work if no one's listening.
+- **`Lazily`** - starts on the first collector, then stays forever.
+- **`WhileSubscribed(stopTimeoutMillis)`** - active only while there's a subscriber, and stops `stopTimeout` ms after the last one leaves.
 
-**Why `WhileSubscribed(5000)` is the standard choice:** on a configuration change the UI briefly unsubscribes and resubscribes. The 5-second grace period keeps the upstream alive across rotation (so you don't re-query the DB or re-hit the network), but still stops it when the user actually navigates away and backgrounds the app — preventing leaks and wasted work.
-
-**Soundbite:** "`stateIn`/`shareIn` share one upstream among collectors; `WhileSubscribed(5000)` keeps it warm across config changes but tears it down when the screen is truly gone."
+**Why `WhileSubscribed(5000)` is the standard choice:** on a configuration change the UI briefly unsubscribes and resubscribes. The 5-second grace period keeps the upstream alive across rotation (so you don't re-query the DB or re-hit the network), but still stops it when the user actually navigates away and backgrounds the app - preventing leaks and wasted work.

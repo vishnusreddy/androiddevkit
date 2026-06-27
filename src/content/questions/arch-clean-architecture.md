@@ -1,17 +1,19 @@
 ---
 question: "Explain Clean Architecture on Android. What are the layers and the dependency rule?"
 topic: architecture
-difficulty: senior
+difficulty: mid
 tags: ["clean-architecture", "layers", "separation"]
 ---
 
-Clean Architecture organizes code into concentric layers with one inviolable rule: **dependencies point inward**. Inner layers know nothing about outer ones.
+Clean Architecture separates code by responsibility. The useful part is not the
+diagram or the number of layers. It is keeping business rules independent from
+Android UI and storage details.
 
 On Android this typically maps to three layers (Google's recommended architecture):
 
-- **Data layer** — repositories and their data sources (network, database, cache). Owns *how* data is fetched/stored. Exposes data to the domain/UI.
-- **Domain layer** (optional) — pure business logic: **use cases** and domain models. **No Android dependencies** — plain Kotlin, fully testable. Defines repository **interfaces**.
-- **UI (presentation) layer** — ViewModels + Compose/Views. Holds UI state, reacts to user input, observes data.
+- **Data layer** - repositories and their data sources (network, database, cache). Owns *how* data is fetched/stored. Exposes data to the domain/UI.
+- **Domain layer** (optional) - pure business logic: **use cases** and domain models. **No Android dependencies** - plain Kotlin, fully testable. Defines repository **interfaces**.
+- **UI (presentation) layer** - ViewModels + Compose/Views. Holds UI state, reacts to user input, observes data.
 
 ```
 UI  ──depends on──▶  Domain  ◀──depends on──  Data
@@ -19,16 +21,18 @@ UI  ──depends on──▶  Domain  ◀──depends on──  Data
                       interfaces)              network, db)
 ```
 
-**The dependency rule in practice:** the domain defines a `UserRepository` **interface**; the data layer **implements** it. So the inner domain doesn't depend on the outer data layer — the data layer depends *inward* via the interface (**dependency inversion**). The UI depends on the domain abstraction, not concrete implementations.
+**The dependency rule in practice:** a domain layer can define a
+`UserRepository` interface and the data layer can implement it. Business logic
+then knows it can load a user, but does not know whether the data came from Room,
+Retrofit, or a fake used in a test.
 
-**Why bother:**
-- **Testability** — domain logic is pure Kotlin, tested without Android.
-- **Replaceability** — swap a data source (REST → GraphQL) without touching UI/domain.
-- **Separation of concerns** — each layer has one reason to change.
+**Why teams use it:**
+- **Testability** - domain logic is pure Kotlin, tested without Android.
+- **Replaceability** - change a data source without rewriting the UI.
+- **Separation of concerns** - each layer has one reason to change.
 
-**Pragmatism interviewers want to hear:**
-- The **domain layer is optional** — for simple screens, ViewModel → Repository is fine; add use cases when business logic is **reused** across ViewModels or gets complex.
+**Keep it practical:**
+- The **domain layer is optional** - for simple screens, ViewModel → Repository is fine; add use cases when business logic is **reused** across ViewModels or gets complex.
 - Don't over-engineer: mapping models across three layers and a use case per call can be **overkill** for a CRUD app. Match the architecture to the app's complexity.
-- Each layer often has its **own models** (DTO / entity / domain / UI model) with mappers at the boundaries — protects layers from each other's changes, at the cost of boilerplate.
-
-**Soundbite:** "Clean Architecture = UI → Domain ← Data with dependencies pointing inward via interfaces (dependency inversion). Domain is pure, testable Kotlin and optional; apply it proportionally to complexity rather than dogmatically."
+- Separate models can protect layers from each other's changes, but mapping every
+  small object through four representations is not automatically better.

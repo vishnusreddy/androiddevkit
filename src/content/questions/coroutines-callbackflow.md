@@ -23,8 +23,8 @@ fun locationUpdates(client: FusedLocationProviderClient): Flow<Location> = callb
 
 The essential pieces:
 - **`trySend(value)`** (or `send`) emits from inside the callback. `callbackFlow` provides a channel, so emission is allowed from other threads/contexts (unlike a plain `flow { }`).
-- **`awaitClose { }`** is **mandatory** — it keeps the flow alive while the callback is registered and runs your **teardown** (unregister the listener) when the collector cancels or the flow completes. Forgetting it throws and, worse, leaks the listener.
+- **`awaitClose { }`** is **mandatory** - it keeps the flow alive while the callback is registered and runs your **teardown** (unregister the listener) when the collector cancels or the flow completes. Forgetting it throws and, worse, leaks the listener.
 
 **`callbackFlow` vs `channelFlow`:** both give you a channel-backed flow you can emit to from multiple contexts. `callbackFlow` is `channelFlow` specialized for the callback-bridging pattern (it expects an `awaitClose`). Use `channelFlow` when you need concurrent emission from multiple coroutines.
 
-**Why not `flow { }`?** A plain `flow { }` enforces context preservation and can't emit from a callback on another thread — `callbackFlow` exists precisely to handle that case safely.
+**Why not `flow { }`?** A plain `flow { }` enforces context preservation and can't emit from a callback on another thread - `callbackFlow` exists precisely to handle that case safely.

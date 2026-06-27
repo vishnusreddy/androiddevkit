@@ -1,7 +1,7 @@
 ---
-question: "How do you architect error handling across layers? (Result types, sealed errors)"
+question: "How should errors move through an app's layers?"
 topic: architecture
-difficulty: senior
+difficulty: mid
 tags: ["error-handling", "result", "sealed-class"]
 ---
 
@@ -41,9 +41,7 @@ when (val r = getUser(id)) {
 
 **Principles:**
 - **Distinguish expected vs unexpected failures.** Expected (network down, validation, 404) → modeled as `Result`/sealed errors and shown to the user. Unexpected (programming bugs) → let them crash/report; don't swallow.
-- **Translate at the boundary** — convert framework exceptions (`IOException`, `HttpException`, `SQLException`) into **domain errors** in the data layer so upper layers don't depend on Retrofit/Room types.
-- **Exhaustive handling** — a sealed `AppError` forces the UI to handle each case (retry, re-login, generic message).
-- For **Flow**, surface errors via a result-emitting flow or the `catch` operator mapping to an error state — never an unhandled throw in `collect`.
-- **Never catch `CancellationException`** in a blanket catch — rethrow it.
-
-**Soundbite:** "Model expected failures as typed values (sealed `Result`/error), convert framework exceptions to domain errors at the data boundary, and map them to UI state in the ViewModel. Crash on real bugs, handle the rest exhaustively, and don't swallow cancellation."
+- **Translate at the boundary** - convert framework exceptions (`IOException`, `HttpException`, `SQLException`) into **domain errors** in the data layer so upper layers don't depend on Retrofit/Room types.
+- **Exhaustive handling** - a sealed `AppError` forces the UI to handle each case (retry, re-login, generic message).
+- For **Flow**, surface errors via a result-emitting flow or the `catch` operator mapping to an error state - never an unhandled throw in `collect`.
+- **Never catch `CancellationException`** in a blanket catch - rethrow it.

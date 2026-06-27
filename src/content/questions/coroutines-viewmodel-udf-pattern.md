@@ -33,8 +33,8 @@ class FeedViewModel(private val repo: FeedRepository) : ViewModel() {
 ```
 
 Why each choice:
-- **`asStateFlow()` / `asSharedFlow()`** expose read-only views so the UI can't mutate state — enforcing **unidirectional data flow**.
+- **`asStateFlow()` / `asSharedFlow()`** expose read-only views so the UI can't mutate state - enforcing **unidirectional data flow**.
 - **`_state.update { it.copy(...) }`** is atomic and works on immutable `data class` state.
-- **State vs event split** — render-able state goes in `StateFlow` (survives rotation, has a current value); transient actions like navigation/snackbars go in `SharedFlow(replay = 0)` so they fire **once** and don't replay on configuration change.
+- **State vs event split** - render-able state goes in `StateFlow` (survives rotation, has a current value); transient actions like navigation/snackbars go in `SharedFlow(replay = 0)` so they fire **once** and don't replay on configuration change.
 
 The UI collects `state` with `collectAsStateWithLifecycle()` (Compose) or `repeatOnLifecycle` (Views), and collects `events` to trigger navigation/toasts.

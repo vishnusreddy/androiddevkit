@@ -1,7 +1,7 @@
 ---
-question: "Why doesn't the UI update? mutableStateOf with a MutableList vs mutableStateListOf."
+question: "Why does changing a MutableList sometimes fail to update Compose?"
 topic: jetpack-compose
-difficulty: senior
+difficulty: mid
 tags: ["compose", "output-based", "state", "collections"]
 ---
 
@@ -16,11 +16,11 @@ fun BrokenList() {
 }
 ```
 
-**The bug:** tapping "Add" mutates the list **in place**. The `MutableState` still holds the **same list reference**, so `.value` hasn't "changed" by Compose's equality check — no recomposition is scheduled, and the new item never appears.
+**The bug:** tapping "Add" mutates the list **in place**. The `MutableState` still holds the **same list reference**, so `.value` hasn't "changed" by Compose's equality check - no recomposition is scheduled, and the new item never appears.
 
 **Two correct approaches:**
 
-**1. Use an observable collection — `mutableStateListOf`:**
+**1. Use an observable collection - `mutableStateListOf`:**
 ```kotlin
 val items = remember { mutableStateListOf("a") }
 Button(onClick = { items.add("b") }) { Text("Add") }   // ✅ add triggers recomposition
@@ -37,4 +37,4 @@ Assigning a **new** list changes `.value`, so Compose detects it.
 
 **Why this happens:** `MutableState` schedules recomposition when `.value` is **set to a different value** (by `equals`). Mutating the contained list doesn't change the reference, so nothing fires. Either make the container observable (`mutableStateListOf`) or always assign a **new** immutable instance.
 
-**Bonus:** the immutable approach also keeps the parameter **stable** for child composables — better for skipping recomposition.
+**Bonus:** the immutable approach also keeps the parameter **stable** for child composables - better for skipping recomposition.

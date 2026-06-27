@@ -1,5 +1,5 @@
 ---
-question: "What's the output? An exception in async that's never awaited."
+question: "What happens when async fails and its result is never awaited?"
 topic: coroutines
 difficulty: senior
 tags: ["coroutines", "output-based", "exceptions", "async"]
@@ -16,9 +16,9 @@ fun main() = runBlocking {
 }
 ```
 
-**Output:** the program **crashes** — `RuntimeException: boom` propagates and `"after delay"` does **not** print.
+**Output:** the program **crashes** - `RuntimeException: boom` propagates and `"after delay"` does **not** print.
 
-**Why this surprises people:** they expect that because `async` "stores" its exception for `await()`, not awaiting means the exception is harmless. But here `async` is a child of `runBlocking`, whose context has a **regular `Job`**. When the child fails, structured concurrency propagates the failure to the **parent**, cancelling it — independent of whether you ever call `await()`. So the whole `runBlocking` fails.
+**Why this surprises people:** they expect that because `async` "stores" its exception for `await()`, not awaiting means the exception is harmless. But here `async` is a child of `runBlocking`, whose context has a **regular `Job`**. When the child fails, structured concurrency propagates the failure to the **parent**, cancelling it - independent of whether you ever call `await()`. So the whole `runBlocking` fails.
 
 The "exception is deferred to `await()`" rule only describes *where you can catch it*; it does **not** stop the failure from propagating up the Job hierarchy and cancelling the parent.
 

@@ -15,9 +15,9 @@ object Analytics {
 Analytics.track("open")   // thread-safe, lazily created on first access
 ```
 
-**2. Companion object** — a singleton tied to a class, called via the class name (factories, constants).
+**2. Companion object** - a singleton tied to a class, called via the class name (factories, constants).
 
-**3. Object expression (anonymous object)** — Kotlin's answer to anonymous classes:
+**3. Object expression (anonymous object)** - Kotlin's answer to anonymous classes:
 ```kotlin
 view.setOnClickListener(object : View.OnClickListener {
     override fun onClick(v: View?) { /* ... */ }
@@ -33,6 +33,6 @@ val point = object {
 **Things to know:**
 - An object declaration is initialized **lazily and thread-safely** on first use.
 - Unlike a class, you can't have a constructor (it takes no parameters).
-- An anonymous object's *type* is only visible locally — if returned from a public function it's seen as its supertype.
+- An anonymous object's *type* is only visible locally - if returned from a public function it's seen as its supertype.
 
-**Android note:** an `object` singleton holding a `Context` is a classic memory leak — store `applicationContext`, never an Activity.
+**Android note:** an `object` singleton holding a `Context` is a classic memory leak - store `applicationContext`, never an Activity.

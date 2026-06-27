@@ -34,9 +34,7 @@ Card(
 You see this everywhere in Material: `Scaffold(topBar = {}, bottomBar = {}, floatingActionButton = {}) { content }`, `Button(content = { })`, `TopAppBar(title, navigationIcon, actions)`.
 
 **Why it's powerful:**
-- **Inversion of control** — the component owns layout/behavior; the caller owns *what* goes inside. No boolean/enum config soup.
-- **Reusable & composable** — one `Card` serves countless use cases.
+- **Inversion of control** - the component owns layout/behavior; the caller owns *what* goes inside. No boolean/enum config soup.
+- **Reusable & composable** - one `Card` serves countless use cases.
 - **`RowScope`/`ColumnScope` receivers** on a slot give the caller scoped modifiers (`Modifier.weight`, `align`) inside that slot.
-- **Trailing-lambda ergonomics** — the last `content` slot reads cleanly with `{ }`.
-
-**Soundbite:** "Slot APIs accept composable lambdas as parameters so callers inject content — inversion of control that makes components reusable without parameter bloat."
+- **Trailing-lambda ergonomics** - the last `content` slot reads cleanly with `{ }`.

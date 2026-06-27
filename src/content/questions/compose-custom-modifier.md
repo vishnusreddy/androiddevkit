@@ -16,9 +16,9 @@ fun Modifier.card() = this
 
 For modifiers that need **state or to participate in layout/draw**, there are two approaches:
 
-**`Modifier.composed { }`** (legacy) — lets you call composable functions (like `remember`) inside a modifier. The problem: it's a **factory that recomposes**, doesn't get inlined/optimized well, allocates per use, and can hurt performance.
+**`Modifier.composed { }`** (legacy) - lets you call composable functions (like `remember`) inside a modifier. The problem: it's a **factory that recomposes**, doesn't get inlined/optimized well, allocates per use, and can hurt performance.
 
-**`Modifier.Node`** (modern, recommended) — a lower-level API where you implement a `Modifier.Node` and a `ModifierNodeElement`. It's **more efficient**: nodes are long-lived, not recreated on recomposition, can directly implement `DrawModifierNode`, `LayoutModifierNode`, `PointerInputModifierNode`, etc., and avoid the composition overhead of `composed`.
+**`Modifier.Node`** (modern, recommended) - a lower-level API where you implement a `Modifier.Node` and a `ModifierNodeElement`. It's **more efficient**: nodes are long-lived, not recreated on recomposition, can directly implement `DrawModifierNode`, `LayoutModifierNode`, `PointerInputModifierNode`, etc., and avoid the composition overhead of `composed`.
 
 ```kotlin
 fun Modifier.circleBorder(color: Color) = this then CircleBorderElement(color)
@@ -37,6 +37,6 @@ private class CircleBorderNode(var color: Color) : DrawModifierNode, Modifier.No
 }
 ```
 
-**Why interviewers ask:** Google migrated all built-in modifiers off `composed` to `Modifier.Node` for performance. Knowing to prefer `Modifier.Node` (and that `composed { }` is discouraged for stateful/drawing modifiers) signals you understand Compose performance at a deeper level.
+**Why this matters:** Google migrated all built-in modifiers off `composed` to `Modifier.Node` for performance. Knowing to prefer `Modifier.Node` (and that `composed { }` is discouraged for stateful/drawing modifiers) signals you understand Compose performance at a deeper level.
 
 **Rule of thumb:** plain chaining for stateless combos; **`Modifier.Node`** for anything stateful, drawing, or layout-affecting; avoid `composed { }` in new code.

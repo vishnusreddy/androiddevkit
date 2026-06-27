@@ -29,8 +29,8 @@ val first = v[0]                 // 4
 ```
 
 **Things interviewers check you know:**
-- The operator function name and signature are **fixed** — you can't invent new symbols.
+- The operator function name and signature are **fixed** - you can't invent new symbols.
 - `==` always routes through `equals` (with a null check), and `===` (referential) **can't** be overloaded.
 - Overloading `invoke` is how `MutableState`-like or DSL objects become "callable."
 
-**Use it sparingly** — only when the operator's meaning is obvious (vectors, money, durations). `kotlin.time.Duration` (`1.hours + 30.minutes`) is a good example of tasteful use.
+**Use it sparingly** - only when the operator's meaning is obvious (vectors, money, durations). `kotlin.time.Duration` (`1.hours + 30.minutes`) is a good example of tasteful use.

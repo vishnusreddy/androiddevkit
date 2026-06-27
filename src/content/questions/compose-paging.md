@@ -1,7 +1,7 @@
 ---
 question: "How do you implement infinite scroll / pagination in Compose?"
 topic: jetpack-compose
-difficulty: senior
+difficulty: mid
 tags: ["compose", "paging", "lazycolumn"]
 ---
 
@@ -43,8 +43,6 @@ LaunchedEffect(shouldLoadMore) {
     if (shouldLoadMore) viewModel.loadNextPage()
 }
 ```
-Note the **`derivedStateOf`** — `visibleItemsInfo` changes every scroll frame, but `shouldLoadMore` only flips occasionally, so this avoids recomposing on every frame.
+Note the **`derivedStateOf`** - `visibleItemsInfo` changes every scroll frame, but `shouldLoadMore` only flips occasionally, so this avoids recomposing on every frame.
 
 **When to use which:** Paging 3 for production lists from network/DB (it solves caching, retry, dedup, placeholders). Manual approach for small or fully-in-memory lists where Paging is overkill.
-
-**Soundbite:** "Paging 3 + `collectAsLazyPagingItems` for real pagination (caching, load states, offline via RemoteMediator); for simple cases, watch `LazyListState` with `derivedStateOf` and trigger load-more in a `LaunchedEffect`."

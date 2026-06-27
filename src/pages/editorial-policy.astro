@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+---
+<BaseLayout
+  title="Editorial Policy"
+  description="How AndroidDevKit selects, reviews, corrects, and updates interview preparation content."
+>
+  <section class="container policy prose">
+    <span class="eyebrow">Project</span>
+    <h1>Editorial policy</h1>
+    <p class="updated">Last updated: 27 June 2026</p>
+
+    <p class="lede text-soft">
+      The question bank is curated, not a dump of every fact an Android
+      developer could memorize. A question should help someone prepare for a
+      realistic interview or understand an important engineering trade-off.
+    </p>
+
+    <h2>What belongs here</h2>
+    <ul class="text-soft">
+      <li>Questions that are commonly asked or test a durable Android skill.</li>
+      <li>Answers that explain reasoning, constraints, and practical trade-offs.</li>
+      <li>Advanced material when it is clearly marked for senior candidates.</li>
+      <li>First-hand experiences written without confidential or identifying details.</li>
+    </ul>
+
+    <h2>What we avoid</h2>
+    <ul class="text-soft">
+      <li>Trivia with no useful connection to day-to-day engineering.</li>
+      <li>Needlessly difficult puzzles presented as hiring requirements.</li>
+      <li>Copied proprietary questions, answer keys, or confidential material.</li>
+      <li>Claims about a company or person that cannot be responsibly published.</li>
+    </ul>
+
+    <h2>Review and corrections</h2>
+    <p class="text-soft">
+      Contributions are reviewed for relevance, clarity, accuracy, and level.
+      Version-sensitive claims should cite primary documentation. Corrections
+      are welcome through a GitHub issue or pull request, and meaningful errors
+      should be fixed directly rather than hidden behind a silent rewrite.
+    </p>
+
+    <h2>Use of writing tools</h2>
+    <p class="text-soft">
+      Tools may help with drafting or editing, but a person should still check
+      the technical claims, remove repetitive filler, and make sure the result
+      sounds natural. Generated text is never a substitute for subject-matter
+      review.
+    </p>
+
+    <h2>Contribute</h2>
+    <p class="text-soft">
+      Read the <a href="/contribute/">contribution guide</a> or visit the
+      <a href={SITE.github} target="_blank" rel="noopener noreferrer">GitHub repository</a>
+      to suggest a correction or new question.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .policy { padding-block: clamp(2.5rem, 6vw, 4rem) 2rem; }
+  .policy h1 { margin: 0.6rem 0 0; }
+  .policy h2 { margin-top: 2.2rem; }
+  .policy li { margin-bottom: 0.55rem; }
+  .updated { color: var(--ink-faint); font-size: 0.85rem; margin-top: 0.6rem; }
+  .lede { font-size: 1.1rem; margin-top: 1.4rem; }
+</style>

@@ -18,9 +18,9 @@ val evens = listOf(1, 2, 3, 4).customFilter { it % 2 == 0 }
 ```
 
 Worth knowing:
-- **Trailing lambda syntax** — if the last parameter is a function, you can move the lambda outside the parentheses: `customFilter { it > 0 }`.
+- **Trailing lambda syntax** - if the last parameter is a function, you can move the lambda outside the parentheses: `customFilter { it > 0 }`.
 - **`it`** is the implicit name for a single-parameter lambda.
-- **Function references** — pass an existing function with `::`: `list.filter(::isValid)`.
+- **Function references** - pass an existing function with `::`: `list.filter(::isValid)`.
 - A lambda is compiled to a **`Function` object** (allocation) unless the function is `inline`.
 
 This is the backbone of the Kotlin stdlib (`map`, `filter`, `forEach`) and of idiomatic APIs like Compose and coroutine builders.

@@ -24,8 +24,8 @@ The `@AssistedFactory` interface is what you inject; you call `factory.create(it
 **Why you need it:** Dagger/Hilt can only provide what's in the graph. A pure `@Inject` constructor can't have a parameter the graph doesn't know (`itemId`). Without assisted injection you'd resort to ugly workarounds (passing the id through a setter after creation, or a manual factory).
 
 **Common Android use cases:**
-- A **ViewModel that needs a runtime argument** (though `SavedStateHandle` often covers nav args — Hilt populates it from the back stack, so prefer `SavedStateHandle` when the value is a navigation argument).
-- A **WorkManager `Worker`** needing injected deps + runtime `WorkerParameters` — Hilt's `@HiltWorker` + `@AssistedInject` handle exactly this.
+- A **ViewModel that needs a runtime argument** (though `SavedStateHandle` often covers nav args - Hilt populates it from the back stack, so prefer `SavedStateHandle` when the value is a navigation argument).
+- A **WorkManager `Worker`** needing injected deps + runtime `WorkerParameters` - Hilt's `@HiltWorker` + `@AssistedInject` handle exactly this.
 - A presenter/use case parameterized by a runtime id or callback.
 
 ```kotlin
@@ -36,5 +36,3 @@ class SyncWorker @AssistedInject constructor(
     private val repo: SyncRepository,        // injected
 ) : CoroutineWorker(ctx, params)
 ```
-
-**Soundbite:** "Assisted injection mixes DI-provided dependencies with runtime parameters the graph can't know (`@Assisted` + `@AssistedFactory`). It's the clean way to build objects like `@HiltWorker`s or ViewModels needing a runtime id — though for nav args, `SavedStateHandle` is usually simpler."

@@ -24,7 +24,7 @@ suspend fun FusedLocationProviderClient.awaitLocation(): Location =
 
 The contract:
 - Call **`resume(value)`** exactly once on success, or **`resumeWithException(e)`** on failure. Calling twice throws.
-- **`invokeOnCancellation { }`** lets you cancel the underlying operation if the coroutine is cancelled while suspended — this is why you use the **`Cancellable`** variant over plain `suspendCoroutine`.
+- **`invokeOnCancellation { }`** lets you cancel the underlying operation if the coroutine is cancelled while suspended - this is why you use the **`Cancellable`** variant over plain `suspendCoroutine`.
 
 **`suspendCancellableCoroutine` vs `callbackFlow`:**
 - `suspendCancellableCoroutine` → **one** value (a single async result). Like awaiting a `Task`/`Future`.

@@ -1,5 +1,5 @@
 ---
-question: "How do you observe a ViewModel's StateFlow in Compose? Why collectAsStateWithLifecycle over collectAsState?"
+question: "How should Compose collect state from a ViewModel?"
 topic: jetpack-compose
 difficulty: mid
 tags: ["compose", "state", "lifecycle", "viewmodel"]
@@ -16,7 +16,7 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
 ```
 
 **`collectAsState()` vs `collectAsStateWithLifecycle()`:**
-- **`collectAsState()`** collects the flow as long as the composable is in **composition** — *including when the app is in the background*. It keeps the upstream active and doing work even when the screen isn't visible.
+- **`collectAsState()`** collects the flow as long as the composable is in **composition** - *including when the app is in the background*. It keeps the upstream active and doing work even when the screen isn't visible.
 - **`collectAsStateWithLifecycle()`** (from `lifecycle-runtime-compose`) collects only while the lifecycle is at least **STARTED**, using `repeatOnLifecycle` under the hood. It stops collecting in the background and resumes in the foreground.
 
 **Why the lifecycle-aware one is the recommended default on Android:**
@@ -28,5 +28,3 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
 - `collectAsState()` is still appropriate for **non-Android / multiplatform** Compose where there's no lifecycle.
 - Pass an explicit `lifecycle`/`minActiveState` if you need a state other than STARTED.
 - It pairs naturally with the `stateIn(..., WhileSubscribed(5000), ...)` upstream pattern in the ViewModel.
-
-**Soundbite:** "`collectAsStateWithLifecycle` only collects while STARTED — the Android-correct default; plain `collectAsState` keeps collecting in the background and wastes work."

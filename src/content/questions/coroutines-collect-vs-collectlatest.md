@@ -22,7 +22,7 @@ flow {
 // Output: start A, start B, done B   (A's work was cancelled by B)
 ```
 
-**`flatMapLatest`** / **`mapLatest`** apply the same idea to transformations — cancel the previous inner flow/computation when upstream emits again. This is the canonical **search-as-you-type** pattern:
+**`flatMapLatest`** / **`mapLatest`** apply the same idea to transformations - cancel the previous inner flow/computation when upstream emits again. This is the common **search-as-you-type** pattern:
 
 ```kotlin
 queryFlow
@@ -36,4 +36,4 @@ queryFlow
 - Only the latest value matters (UI state, search results) → `collectLatest` / `flatMapLatest`.
 - Every value must be processed (analytics events, a write queue) → plain `collect` (with `buffer` if needed).
 
-**Gotcha:** with `collectLatest`, cancellation means the slow block's later lines may never run — don't rely on it for must-complete side effects.
+**Gotcha:** with `collectLatest`, cancellation means the slow block's later lines may never run - don't rely on it for must-complete side effects.

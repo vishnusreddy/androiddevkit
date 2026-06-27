@@ -15,7 +15,7 @@ Layout(content) { measurables, constraints ->
 
 **The single-pass rule** means a parent normally can't know a child's size before measuring it. Two escape hatches:
 
-**Intrinsic measurements** — query a child's "natural" size without a full measure pass. `Modifier.height(IntrinsicSize.Min)` makes a Row tall enough for its tallest child, etc. Used when one child's size should depend on a sibling's natural size (e.g. a divider matching text height). It costs an extra measurement, so use sparingly.
+**Intrinsic measurements** - query a child's "natural" size without a full measure pass. `Modifier.height(IntrinsicSize.Min)` makes a Row tall enough for its tallest child, etc. Used when one child's size should depend on a sibling's natural size (e.g. a divider matching text height). It costs an extra measurement, so use sparingly.
 
 ```kotlin
 Row(Modifier.height(IntrinsicSize.Min)) {
@@ -25,13 +25,11 @@ Row(Modifier.height(IntrinsicSize.Min)) {
 }
 ```
 
-**`BoxWithConstraints`** — exposes the incoming constraints **inside** the composable so you can compose different content based on available space:
+**`BoxWithConstraints`** - exposes the incoming constraints **inside** the composable so you can compose different content based on available space:
 
 ```kotlin
 BoxWithConstraints {
     if (maxWidth < 600.dp) PhoneLayout() else TabletLayout()
 }
 ```
-It's built on **`SubcomposeLayout`** (it composes children *after* knowing constraints), which is **more expensive** than a normal layout — don't reach for it when a regular `Modifier`/`weight` approach works. Prefer it only for genuine "I must know the size before deciding what to compose" cases (responsive/adaptive layouts).
-
-**Soundbite:** "Constraints go down, sizes come up, in one pass. Intrinsics peek at a child's natural size; `BoxWithConstraints` exposes constraints for adaptive content but is subcomposition — use it judiciously."
+It's built on **`SubcomposeLayout`** (it composes children *after* knowing constraints), which is **more expensive** than a normal layout - don't reach for it when a regular `Modifier`/`weight` approach works. Prefer it only for genuine "I must know the size before deciding what to compose" cases (responsive/adaptive layouts).

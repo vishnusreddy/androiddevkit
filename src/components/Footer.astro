@@ -26,6 +26,13 @@ const year = new Date().getFullYear();
       <a href="/about/">About</a>
       <a href="/rss.xml">RSS feed</a>
     </nav>
+
+    <nav class="footer-nav" aria-label="Legal and policies">
+      <h4>Legal</h4>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <a href="/editorial-policy/">Editorial policy</a>
+    </nav>
   </div>
 
   <div class="container footer-bottom">
@@ -43,7 +50,7 @@ const year = new Date().getFullYear();
   }
   .footer-inner {
     display: grid;
-    grid-template-columns: 1.6fr 1fr 1fr;
+    grid-template-columns: 1.6fr repeat(3, 1fr);
     gap: 2.5rem;
   }
   .footer-brand {

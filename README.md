@@ -3,7 +3,7 @@
 > Your one-stop, open-source kit for landing the Android job.
 
 [**androidevkit.com**](https://androidevkit.com) is a community-built
-destination for Android engineers preparing to switch jobs — curated interview
+destination for Android engineers preparing to switch jobs - curated interview
 questions, topic-by-topic guides, and real interview experiences. No paywall, no
 sign-up, ever.
 
@@ -12,10 +12,10 @@ Cloudflare Pages.
 
 ## What's inside
 
-- **Topics** — Kotlin, Coroutines, Jetpack Compose, architecture, system design, and more.
-- **Question bank** — standalone, difficulty-tagged questions with answers that explain the *why*.
-- **Interview experiences** — first-hand write-ups of real loops.
-- **Blog** — longer guides on preparing, negotiating, and growing as a mobile engineer.
+- **Topics** - Kotlin, Coroutines, Jetpack Compose, architecture, system design, and more.
+- **Question bank** - standalone, difficulty-tagged questions with answers that explain the *why*.
+- **Interview experiences** - first-hand write-ups of real interviews.
+- **Blog** - longer guides on preparing, negotiating, and growing as a mobile engineer.
 
 ## Contributing
 
@@ -65,4 +65,4 @@ Every merged PR to `main` triggers an automatic deploy.
 
 ## License
 
-[MIT](./LICENSE) — content and code. Use it, fork it, learn from it.
+[MIT](./LICENSE) - content and code. Use it, fork it, learn from it.

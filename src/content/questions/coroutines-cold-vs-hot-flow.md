@@ -1,5 +1,5 @@
 ---
-question: "What's the difference between a cold flow and a hot flow (StateFlow/SharedFlow)?"
+question: "What is the difference between a cold Flow and a hot Flow?"
 topic: coroutines
 difficulty: mid
 tags: ["flow", "cold-hot", "stateflow", "sharedflow"]
@@ -28,5 +28,3 @@ val numbers = flow {
 **`SharedFlow`** = hot, configurable `replay` and buffer, no "current value" requirement. Great for one-off events (navigation, snackbars) where you don't want replay on rotation.
 
 **Bridging them:** convert a cold flow to hot with **`stateIn`** / **`shareIn`**, so an upstream (e.g. a DB query) runs once and is shared across collectors instead of re-running per subscriber.
-
-**Soundbite:** "Cold = lazy, per-collector; hot = active, shared. `StateFlow` for state, `SharedFlow` for events, `stateIn`/`shareIn` to go from cold to hot."

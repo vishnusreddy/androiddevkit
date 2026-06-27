@@ -5,7 +5,7 @@ difficulty: mid
 tags: ["compose", "performance", "state"]
 ---
 
-Recomposition is Compose re-running a composable to update the UI. It's triggered when a **`State` object that the composable reads** changes value. Compose tracks reads at runtime, so only composables that actually read the changed state recompose — not the whole tree.
+Recomposition is Compose re-running a composable to update the UI. It's triggered when a **`State` object that the composable reads** changes value. Compose tracks reads at runtime, so only composables that actually read the changed state recompose - not the whole tree.
 
 Keeping it cheap comes down to a few habits:
 
@@ -23,4 +23,4 @@ Header(count = count)
 Header(count = { count })
 ```
 
-**How to prove it in an interview:** mention the Layout Inspector's recomposition counts and the Compose compiler metrics/strong-skipping mode — they show you measure rather than guess.
+**How to prove it in an interview:** mention the Layout Inspector's recomposition counts and the Compose compiler metrics/strong-skipping mode - they show you measure rather than guess.

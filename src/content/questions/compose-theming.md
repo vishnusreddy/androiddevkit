@@ -1,7 +1,7 @@
 ---
-question: "How does theming work in Compose? (MaterialTheme, dynamic color, dark mode)"
+question: "How does theming work in Compose?"
 topic: jetpack-compose
-difficulty: mid
+difficulty: junior
 tags: ["compose", "theming", "material"]
 ---
 
@@ -28,10 +28,8 @@ Text("Hi", color = MaterialTheme.colorScheme.primary,
 ```
 
 Key points:
-- **Single source of truth** — define colors/type/shapes once; components read from `MaterialTheme.*`. Don't hardcode colors in composables.
-- **Dark mode** is just a different `ColorScheme`. `isSystemInDarkTheme()` follows the system; toggling is swapping the scheme — the whole tree recomposes with new colors.
+- **Single source of truth** - define colors/type/shapes once; components read from `MaterialTheme.*`. Don't hardcode colors in composables.
+- **Dark mode** is just a different `ColorScheme`. `isSystemInDarkTheme()` follows the system; toggling is swapping the scheme - the whole tree recomposes with new colors.
 - **Dynamic color (Material You)** derives a scheme from the user's wallpaper on Android 12+. Provide static fallbacks for older versions.
-- **Custom design systems** — wrap or replace `MaterialTheme` with your own `CompositionLocalProvider`s (custom spacing, brand colors) and expose them via a `Theme` object.
+- **Custom design systems** - wrap or replace `MaterialTheme` with your own `CompositionLocalProvider`s (custom spacing, brand colors) and expose them via a `Theme` object.
 - Theme values flow through **`staticCompositionLocalOf`**, so reads are cheap but changing the theme recomposes the provided subtree.
-
-**Soundbite:** "`MaterialTheme` exposes colors/typography/shapes via CompositionLocals; dark mode and dynamic color are just different `ColorScheme`s swapped at the top, read with `MaterialTheme.colorScheme.*` everywhere."

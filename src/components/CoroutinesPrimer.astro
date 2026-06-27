@@ -1,0 +1,530 @@
+---
+const singleLaunchCode = `runBlocking {
+    println("1: parent starts")
+
+    val job = launch {
+        println("3: child starts")
+        delay(100)
+        println("4: child resumes")
+    }
+
+    println("2: parent keeps going")
+    job.join()
+    println("5: parent resumes")
+}`;
+
+const twoLaunchCode = `runBlocking {
+    println("start")
+
+    val first = launch {
+        println("A1")
+        delay(200)
+        println("A2")
+    }
+    val second = launch {
+        println("B1")
+        delay(100)
+        println("B2")
+    }
+
+    joinAll(first, second)
+    println("end")
+}`;
+
+const flowCode = `flowOf(1, 2, 3, 4)
+    .map { it * 10 }
+    .filter { it >= 30 }
+    .collect { println(it) }`;
+---
+
+<section class="primer" aria-labelledby="primer-title">
+  <div class="primer-head">
+    <span class="eyebrow">Visual primer</span>
+    <h2 id="primer-title">How coroutines execute</h2>
+    <p>
+      A coroutine is a block of work that can pause without blocking its thread.
+      While one coroutine is suspended, the thread can run another one. When the
+      suspended work is ready, its coroutine continues from the next line.
+    </p>
+  </div>
+
+  <div class="concept-grid">
+    <article class="concept-card">
+      <span class="concept-number">01</span>
+      <h3>Scope</h3>
+      <p>Owns the coroutine. Cancelling the scope cancels its unfinished children.</p>
+    </article>
+    <article class="concept-card">
+      <span class="concept-number">02</span>
+      <h3>Dispatcher</h3>
+      <p>Chooses which thread or thread pool is available to run the work.</p>
+    </article>
+    <article class="concept-card">
+      <span class="concept-number">03</span>
+      <h3>Suspend</h3>
+      <p>Pauses the coroutine, not necessarily the thread. <code>delay</code> is the classic example.</p>
+    </article>
+    <article class="concept-card">
+      <span class="concept-number">04</span>
+      <h3>Job</h3>
+      <p>Tracks the work so it can be joined, cancelled, or checked for completion.</p>
+    </article>
+  </div>
+
+  <div class="mental-model card">
+    <div>
+      <span class="mini-label">The mental model</span>
+      <h3>Pause the task, free the thread</h3>
+      <p>
+        <code>delay(100)</code> records where the coroutine should resume and
+        gives the thread back. <code>Thread.sleep(100)</code> holds the thread
+        and prevents it from doing other work.
+      </p>
+    </div>
+    <div class="model-flow" aria-label="Coroutine suspension flow">
+      <span class="flow-node active">Run</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node paused">Suspend</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node thread">Thread runs other work</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node active">Resume</span>
+    </div>
+  </div>
+
+  <article class="lesson card">
+    <div class="lesson-copy">
+      <span class="mini-label">Example 1</span>
+      <h3>Launching one child</h3>
+      <p>
+        <code>launch</code> schedules a child and returns a <code>Job</code>
+        immediately. The parent continues until <code>join()</code> suspends it.
+      </p>
+      <pre><code>{singleLaunchCode}</code></pre>
+    </div>
+
+    <div class="execution-panel">
+      <div class="panel-title">
+        <span>Execution flow</span>
+        <span class="status-dot">Same scope</span>
+      </div>
+      <ol class="execution-list">
+        <li><span class="step parent">Parent</span><code>1: parent starts</code></li>
+        <li><span class="step parent">Parent</span><code>2: parent keeps going</code></li>
+        <li><span class="step child">Child</span><code>3: child starts</code></li>
+        <li><span class="step child">Child</span><code>delay(100)</code><small>suspends</small></li>
+        <li><span class="step child">Child</span><code>4: child resumes</code></li>
+        <li><span class="step parent">Parent</span><code>5: parent resumes</code></li>
+      </ol>
+      <div class="output-box">
+        <span>Output</span>
+        <code>1 → 2 → 3 → 4 → 5</code>
+      </div>
+    </div>
+  </article>
+
+  <article class="lesson card">
+    <div class="lesson-copy">
+      <span class="mini-label">Example 2</span>
+      <h3>Launching two children</h3>
+      <p>
+        Both children start, then suspend at <code>delay</code>. The second delay
+        finishes first, so <code>B2</code> is printed before <code>A2</code>.
+      </p>
+      <pre><code>{twoLaunchCode}</code></pre>
+      <p class="note">
+        This order assumes the children use the same dispatcher as
+        <code>runBlocking</code>. With different threads, do not rely on the
+        initial order of <code>A1</code> and <code>B1</code>.
+      </p>
+    </div>
+
+    <div class="timeline-panel">
+      <div class="panel-title">
+        <span>Timeline</span>
+        <span class="status-dot">Concurrent work</span>
+      </div>
+      <div class="time-scale" aria-hidden="true">
+        <span>0 ms</span><span>100 ms</span><span>200 ms</span>
+      </div>
+      <div class="timeline" role="img" aria-label="Parent, first child, and second child execution timeline">
+        <div class="track-label">Parent</div>
+        <div class="track">
+          <span class="event start parent-event">start</span>
+          <span class="wait parent-wait">waiting for both</span>
+          <span class="event end parent-event">end</span>
+        </div>
+
+        <div class="track-label">First</div>
+        <div class="track">
+          <span class="event start child-a">A1</span>
+          <span class="wait first-wait">delay 200</span>
+          <span class="event end child-a">A2</span>
+        </div>
+
+        <div class="track-label">Second</div>
+        <div class="track">
+          <span class="event start child-b">B1</span>
+          <span class="wait second-wait">delay 100</span>
+          <span class="event middle child-b">B2</span>
+        </div>
+      </div>
+      <div class="output-box">
+        <span>Output</span>
+        <code>start → A1 → B1 → B2 → A2 → end</code>
+      </div>
+    </div>
+  </article>
+
+  <div class="visual-grid">
+    <article class="visual-card card">
+      <span class="mini-label">Structured concurrency</span>
+      <h3>Children belong to a parent</h3>
+      <div class="job-tree" role="img" aria-label="A ViewModel scope with two child jobs">
+        <div class="tree-node root-node">
+          <small>Parent scope</small>
+          <strong>viewModelScope</strong>
+        </div>
+        <div class="tree-branch" aria-hidden="true"></div>
+        <div class="tree-children">
+          <div class="tree-node"><small>Child job</small><strong>loadUser()</strong></div>
+          <div class="tree-node"><small>Child job</small><strong>loadPosts()</strong></div>
+        </div>
+      </div>
+      <p>
+        When the ViewModel is cleared, its scope cancels both children. The
+        parent also waits for its children before it completes.
+      </p>
+    </article>
+
+    <article class="visual-card card">
+      <span class="mini-label">Flow</span>
+      <h3>Values move through a pipeline</h3>
+      <pre><code>{flowCode}</code></pre>
+      <div class="pipeline" aria-label="Flow values transformed and filtered">
+        <div><span>Emit</span><code>1, 2, 3, 4</code></div>
+        <span class="pipe-arrow">→</span>
+        <div><span>map × 10</span><code>10, 20, 30, 40</code></div>
+        <span class="pipe-arrow">→</span>
+        <div><span>filter ≥ 30</span><code>30, 40</code></div>
+        <span class="pipe-arrow">→</span>
+        <div class="collect-node"><span>Collect</span><code>30, 40</code></div>
+      </div>
+      <p>
+        A cold Flow does nothing until it is collected. Each operator handles a
+        value and passes its result to the next step.
+      </p>
+    </article>
+  </div>
+</section>
+
+<style>
+  .primer {
+    margin-bottom: 3.25rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .primer-head {
+    max-width: 700px;
+    margin-bottom: 1.4rem;
+  }
+  .primer-head h2 {
+    margin: 0.45rem 0 0;
+  }
+  .primer-head p {
+    margin: 0.75rem 0 0;
+    font-size: 1.02rem;
+  }
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+  }
+  .concept-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 1rem;
+  }
+  .concept-number,
+  .mini-label {
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .concept-card h3 {
+    margin: 0.4rem 0 0;
+    font-size: 1rem;
+  }
+  .concept-card p {
+    margin: 0.45rem 0 0;
+    font-size: 0.84rem;
+    line-height: 1.5;
+  }
+  .mental-model {
+    margin-top: 1rem;
+    padding: 1.25rem;
+  }
+  .mental-model h3,
+  .lesson h3,
+  .visual-card h3 {
+    margin: 0.35rem 0 0;
+  }
+  .mental-model p {
+    margin: 0.55rem 0 1rem;
+  }
+  .model-flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+  }
+  .flow-node {
+    flex: 0 0 auto;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    border-radius: 999px;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 650;
+  }
+  .flow-node.active {
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+    color: var(--accent);
+  }
+  .flow-node.thread { border-style: dashed; }
+  .flow-arrow { color: var(--ink-faint); }
+
+  .lesson {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(290px, 0.95fr);
+    gap: 1.25rem;
+    margin-top: 1rem;
+    padding: 1.25rem;
+  }
+  .lesson-copy > p {
+    margin: 0.55rem 0 0;
+  }
+  .lesson pre,
+  .visual-card pre {
+    background: var(--surface-2);
+    margin: 1rem 0 0;
+    font-size: 0.78rem;
+  }
+  .execution-panel,
+  .timeline-panel {
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    border-radius: var(--radius);
+    padding: 1rem;
+    align-self: stretch;
+  }
+  .panel-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+  .status-dot {
+    color: var(--ink-faint);
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .status-dot::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 0.35rem;
+    border-radius: 50%;
+    background: var(--accent-bright);
+  }
+  .execution-list {
+    list-style: none;
+    margin: 0.8rem 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+  .execution-list li {
+    display: grid;
+    grid-template-columns: 54px 1fr auto;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.76rem;
+  }
+  .execution-list small { color: var(--ink-faint); }
+  .step {
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+  }
+  .step.parent { background: var(--accent-soft); color: var(--accent); }
+  .step.child { background: var(--surface-3); color: var(--ink-soft); }
+  .output-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    border-top: 1px solid var(--border);
+    padding-top: 0.75rem;
+  }
+  .output-box span {
+    color: var(--ink-faint);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .output-box code {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .note {
+    color: var(--ink-faint) !important;
+    font-size: 0.78rem;
+  }
+  .time-scale {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.8rem 0 0.5rem 58px;
+    color: var(--ink-faint);
+    font-size: 0.65rem;
+  }
+  .timeline {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0.65rem 0.6rem;
+    align-items: center;
+  }
+  .track-label {
+    color: var(--ink-faint);
+    font-size: 0.7rem;
+    font-weight: 650;
+  }
+  .track {
+    position: relative;
+    height: 28px;
+    border-radius: 6px;
+    background: linear-gradient(to right, var(--border) 1px, transparent 1px) 0 0 / 50% 100%;
+    border-inline: 1px solid var(--border);
+  }
+  .event {
+    position: absolute;
+    top: 4px;
+    z-index: 2;
+    border-radius: 4px;
+    padding: 0.15rem 0.35rem;
+    font: 700 0.65rem var(--font-mono);
+  }
+  .event.start { left: 2px; }
+  .event.middle { left: 50%; transform: translateX(-50%); }
+  .event.end { right: 2px; }
+  .parent-event { background: var(--accent-soft); color: var(--accent); }
+  .child-a { background: #dfe9ff; color: #315aa8; }
+  .child-b { background: #f3e5ff; color: #7a3da1; }
+  :global(:root[data-theme='dark']) .child-a { background: #18243a; color: #91b6ff; }
+  :global(:root[data-theme='dark']) .child-b { background: #2b1c36; color: #d3a5ef; }
+  .wait {
+    position: absolute;
+    top: 13px;
+    height: 2px;
+    border-top: 2px dotted var(--border-strong);
+    color: transparent;
+  }
+  .parent-wait { left: 20%; right: 15%; }
+  .first-wait { left: 15%; right: 15%; }
+  .second-wait { left: 15%; width: 35%; }
+  .timeline-panel .output-box { margin-top: 1rem; }
+
+  .visual-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .visual-card { padding: 1.25rem; }
+  .visual-card > p {
+    margin: 1rem 0 0;
+    font-size: 0.88rem;
+  }
+  .job-tree {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .tree-node {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+    min-width: 125px;
+  }
+  .tree-node small { color: var(--ink-faint); font-size: 0.65rem; }
+  .tree-node strong { color: var(--ink); font-size: 0.78rem; }
+  .root-node { background: var(--accent-soft); border-color: var(--accent); }
+  .tree-branch {
+    width: 55%;
+    height: 22px;
+    border-left: 1px solid var(--border-strong);
+    border-right: 1px solid var(--border-strong);
+    border-top: 1px solid var(--border-strong);
+    transform: translateY(21px);
+  }
+  .tree-children {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
+  }
+  .pipeline > div {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    padding: 0.5rem 0.6rem;
+  }
+  .pipeline span { color: var(--ink-faint); font-size: 0.65rem; }
+  .pipeline code { color: var(--ink); font-size: 0.7rem; }
+  .pipeline .collect-node { border-color: var(--accent); background: var(--accent-soft); }
+  .pipe-arrow { color: var(--ink-faint) !important; }
+
+  @media (max-width: 760px) {
+    .concept-grid { grid-template-columns: repeat(2, 1fr); }
+    .lesson,
+    .visual-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 430px) {
+    .concept-grid { grid-template-columns: 1fr; }
+    .lesson,
+    .mental-model,
+    .visual-card { padding: 1rem; }
+    .execution-list li { grid-template-columns: 50px 1fr; }
+    .execution-list small { grid-column: 2; }
+  }
+</style>

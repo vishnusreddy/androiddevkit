@@ -1,5 +1,5 @@
 ---
-question: "What's the output? Property and init block initialization order."
+question: "In what order are Kotlin properties and init blocks initialized?"
 topic: kotlin
 difficulty: senior
 tags: ["kotlin", "output-based", "initialization"]
@@ -25,7 +25,7 @@ prop b
 init 2
 ```
 
-**Why:** property initializers and `init` blocks run **in the order they're written**, top to bottom, interleaved — not "all properties, then all inits." The constructor effectively executes them as a single sequence.
+**Why:** property initializers and `init` blocks run **in the order they're written**, top to bottom, interleaved - not "all properties, then all inits." The constructor effectively executes them as a single sequence.
 
 **The classic trap** is referencing a property declared *below*:
 ```kotlin

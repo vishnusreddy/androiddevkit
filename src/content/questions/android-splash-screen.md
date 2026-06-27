@@ -34,8 +34,6 @@ Configure the icon/background via a theme:
 
 **Best practices:**
 - The splash should cover **actual startup work**, not an artificial timer. Use `setKeepOnScreenCondition` to hold it only while genuinely loading critical data.
-- Keep it **brief** — if startup is slow, fix startup (lazy init, Baseline Profiles), don't pad it with a splash.
+- Keep it **brief** - if startup is slow, fix startup (lazy init, Baseline Profiles), don't pad it with a splash.
 - Provide an **animated icon** + brand background through the theme; it integrates with the system launch animation seamlessly.
 - On pre-12 devices the library backports the same behavior.
-
-**Soundbite:** "Use the SplashScreen API (`installSplashScreen` + a `Theme.SplashScreen`), not a separate splash Activity. Hold it with `setKeepOnScreenCondition` only while real loading happens — never a fixed timer, which just slows users down."

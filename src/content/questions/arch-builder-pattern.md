@@ -19,7 +19,7 @@ Notification n = new NotificationCompat.Builder(context, channelId)
 
 **Where it appears in Android:** `NotificationCompat.Builder`, `AlertDialog.Builder`, `Retrofit.Builder`, `OkHttpClient.Builder`, `Room.databaseBuilder`, `WorkRequest.Builder`, `Intent` (chained `putExtra`). These predate Kotlin or come from Java APIs.
 
-**Is it still needed in Kotlin?** Often **not** — Kotlin's **default and named arguments** replace most builders:
+**Is it still needed in Kotlin?** Often **not** - Kotlin's **default and named arguments** replace most builders:
 ```kotlin
 data class RequestConfig(
     val url: String,
@@ -32,11 +32,9 @@ RequestConfig(url = "...", retries = 5)   // no builder needed
 
 For more builder-like ergonomics, Kotlin uses:
 - **`apply { }`** to configure an object fluently.
-- **Type-safe DSL builders** — a lambda with receiver (`buildString { }`, `Modifier` chains, Gradle Kotlin DSL) — the idiomatic Kotlin "builder."
+- **Type-safe DSL builders** - a lambda with receiver (`buildString { }`, `Modifier` chains, Gradle Kotlin DSL) - the idiomatic Kotlin "builder."
 
 **When a builder still earns its place in Kotlin:**
-- **Java interop** — your API is consumed from Java (no default args there).
+- **Java interop** - your API is consumed from Java (no default args there).
 - **Step-by-step validation** or enforcing a build order / required-before-optional sequencing.
 - Mirroring an established API style for familiarity.
-
-**Soundbite:** "Builder constructs complex objects step-by-step (NotificationCompat, Retrofit, OkHttp). In pure Kotlin, default + named arguments, `apply`, and DSL builders usually replace it — reach for a real Builder mainly for Java interop or staged/validated construction."

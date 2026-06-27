@@ -23,8 +23,6 @@ class Point(val x: Int, val y: Int) {
 ```
 
 **Gotchas worth raising:**
-- Destructuring is **positional, not by name** — `val (name, id) = user` silently assigns `name = user.id` if you get the order wrong. This is a real bug source; reordering data-class properties can break callers.
+- Destructuring is **positional, not by name** - `val (name, id) = user` silently assigns `name = user.id` if you get the order wrong. This is a real bug source; reordering data-class properties can break callers.
 - Use `_` to skip a component: `val (_, name) = user`.
 - Works in lambda parameters too: `map.forEach { (k, v) -> ... }`.
-
-**Soundbite:** "Destructuring is `componentN()` calls in order — convenient, but positional, so beware reordering data-class fields."

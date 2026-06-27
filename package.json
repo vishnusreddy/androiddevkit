@@ -2,7 +2,12 @@
   "name": "androiddevkit",
   "type": "module",
   "version": "0.1.0",
-  "description": "An open-source, one-stop destination for Android developers preparing for job interviews — curated questions, topic guides, and real interview experiences.",
+  "description": "An open-source, one-stop destination for Android developers preparing for job interviews - curated questions, topic guides, and real interview experiences.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vishnusreddy/androiddevkit.git"
+  },
+  "bugs": "https://github.com/vishnusreddy/androiddevkit/issues",
   "license": "MIT",
   "scripts": {
     "dev": "astro dev",

@@ -26,7 +26,7 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
 ---
 <BaseLayout
   title="Question Bank"
-  description="The full bank of Android interview questions — filter by topic and difficulty, search by keyword, and expand any question for a detailed answer."
+  description="The full bank of Android interview questions - filter by topic and difficulty, search by keyword, and expand any question for a detailed answer."
 >
   <section class="page-head">
     <div class="container">
@@ -34,7 +34,8 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
       <h1>Every question, in one place</h1>
       <p class="lede text-soft">
         {questions.length} questions across {usedTopics.length} topics. Filter,
-        search, and expand for full answers.
+        search, and expand for full answers. The Core view keeps Junior and Mid
+        questions together; Senior is an optional deep dive.
       </p>
     </div>
   </section>
@@ -54,7 +55,8 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
 
       <div class="filter-row">
         <div class="seg" role="group" aria-label="Filter by difficulty">
-          <button class="seg-btn active" data-diff="all">All levels</button>
+          <button class="seg-btn active" data-diff="core">Core</button>
+          <button class="seg-btn" data-diff="all">All levels</button>
           {DIFFICULTY_ORDER.map((d) => (
             <button class="seg-btn" data-diff={d}>{DIFFICULTY_LABEL[d]}</button>
           ))}
@@ -104,7 +106,7 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
       </p>
     ) : (
       <div class="empty card">
-        <h3>The bank is empty — for now</h3>
+        <h3>The bank is empty - for now</h3>
         <p class="text-soft">
           Questions get added in the next phase, and by contributors. Want to
           seed the first one? See <a href="/contribute/">how to contribute</a>.
@@ -243,7 +245,7 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
   const countEl = document.getElementById('result-count');
   const noResults = document.getElementById('no-results');
 
-  let diff = 'all';
+  let diff = 'core';
 
   function apply() {
     const term = (search?.value ?? '').trim().toLowerCase();
@@ -251,7 +253,10 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
     let shown = 0;
 
     for (const el of items) {
-      const okDiff = diff === 'all' || el.dataset.diff === diff;
+      const okDiff =
+        diff === 'all' ||
+        (diff === 'core' && el.dataset.diff !== 'senior') ||
+        el.dataset.diff === diff;
       const okTopic = topic === 'all' || el.dataset.topic === topic;
       const okTerm = term === '' || (el.dataset.search ?? '').includes(term);
       const visible = okDiff && okTopic && okTerm;

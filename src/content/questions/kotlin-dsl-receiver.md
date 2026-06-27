@@ -18,13 +18,11 @@ fun html(block: HtmlBuilder.() -> Unit): String =
     HtmlBuilder().apply(block).sb.toString()
 
 val page = html {
-    p("Hello")     // `this` is HtmlBuilder — call p() directly
+    p("Hello")     // `this` is HtmlBuilder - call p() directly
     p("World")
 }
 ```
 
-This is exactly how `buildString { append(...) }`, Gradle Kotlin DSL, Compose `Modifier` chains, and `apply { }` work — `apply` is literally `fun T.apply(block: T.() -> Unit): T`.
+This is exactly how `buildString { append(...) }`, Gradle Kotlin DSL, Compose `Modifier` chains, and `apply { }` work - `apply` is literally `fun T.apply(block: T.() -> Unit): T`.
 
 **Advanced point:** `@DslMarker` annotations stop you from accidentally calling an **outer** receiver's methods inside a nested block, which keeps nested DSLs (like a table inside a row) unambiguous.
-
-**Soundbite:** "A receiver lambda turns the object into the implicit `this` of the block — that's what makes builder DSLs read like a mini-language."

@@ -13,7 +13,7 @@ This gives you three guarantees:
 2. **Cancellation propagates.** Cancelling a parent cancels its children; a failing child (by default) cancels its siblings and parent.
 3. **Errors aren't lost.** Exceptions surface to the scope rather than vanishing on some detached thread.
 
-**Why it matters on Android:** `viewModelScope` is cancelled in `onCleared()`, and `lifecycleScope` follows the lifecycle. Tie your coroutines to these and work is automatically cancelled when the user leaves — no manual teardown, no callbacks firing on a dead screen.
+**Why it matters on Android:** `viewModelScope` is cancelled in `onCleared()`, and `lifecycleScope` follows the lifecycle. Tie your coroutines to these and work is automatically cancelled when the user leaves - no manual teardown, no callbacks firing on a dead screen.
 
 ```kotlin
 class FeedViewModel : ViewModel() {
@@ -24,4 +24,4 @@ class FeedViewModel : ViewModel() {
 }
 ```
 
-**Follow-up to be ready for:** use `supervisorScope` (or a `SupervisorJob`) when you *don't* want one child's failure to cancel its siblings — e.g. loading several independent widgets where one failing shouldn't blank the rest.
+**Follow-up to be ready for:** use `supervisorScope` (or a `SupervisorJob`) when you *don't* want one child's failure to cancel its siblings - e.g. loading several independent widgets where one failing shouldn't blank the rest.

@@ -5,7 +5,7 @@ difficulty: mid
 tags: ["kotlin", "typealias", "value-class"]
 ---
 
-A **`typealias`** gives an existing type a new name. It introduces **no new type** — it's a pure compile-time alias, fully interchangeable with the original.
+A **`typealias`** gives an existing type a new name. It introduces **no new type** - it's a pure compile-time alias, fully interchangeable with the original.
 
 ```kotlin
 typealias UserId = String
@@ -13,7 +13,7 @@ typealias ClickHandler = (View) -> Unit
 typealias Headers = Map<String, List<String>>
 
 fun fetch(id: UserId) { }
-fetch("u123")                 // a plain String works — same type
+fetch("u123")                 // a plain String works - same type
 ```
 
 Use it to shorten verbose generic/function types and improve readability.

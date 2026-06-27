@@ -32,9 +32,9 @@ when {
 ```
 
 Key abilities to mention:
-- **Exhaustiveness** — when used as an expression on a `sealed` type or `enum`, the compiler requires all cases (no `else` needed), and errors if you miss one later.
+- **Exhaustiveness** - when used as an expression on a `sealed` type or `enum`, the compiler requires all cases (no `else` needed), and errors if you miss one later.
 - **Smart casts** inside `is` branches.
 - **Ranges and collections** with `in`.
 - **Capturing the subject**: `when (val r = compute()) { ... }`.
 
-**Interview note:** prefer `when` as an *expression* returning a value over mutating a variable in branches — it's more idiomatic and the exhaustiveness check protects you.
+**Interview note:** prefer `when` as an *expression* returning a value over mutating a variable in branches - it's more idiomatic and the exhaustiveness check protects you.

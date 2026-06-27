@@ -1,6 +1,6 @@
 ---
 question: "How do you unit-test a ViewModel?"
-topic: architecture
+topic: testing-quality
 difficulty: mid
 tags: ["testing", "viewmodel", "coroutines"]
 ---
@@ -36,13 +36,11 @@ class FeedViewModelTest {
 ```
 
 **The essentials:**
-- **`Dispatchers.setMain(testDispatcher)`** in setup — `viewModelScope` runs on `Dispatchers.Main`, which doesn't exist in unit tests; replace it. Reset in teardown.
+- **`Dispatchers.setMain(testDispatcher)`** in setup - `viewModelScope` runs on `Dispatchers.Main`, which doesn't exist in unit tests; replace it. Reset in teardown.
 - **`runTest`** gives a virtual clock (delays skipped) and `advanceUntilIdle()` to flush coroutines.
 - **Inject dispatchers** into the ViewModel/repo rather than hardcoding `Dispatchers.IO`, so tests are deterministic.
-- **Fake, don't hit real I/O** — a `FakeRepository` returning canned data/errors. Prefer fakes over mocking frameworks for state.
+- **Fake, don't hit real I/O** - a `FakeRepository` returning canned data/errors. Prefer fakes over mocking frameworks for state.
 - **Assert on emitted state** with **Turbine** (`.test { awaitItem() }`) or by collecting into a list.
 - Use **`InstantTaskExecutorRule`** if testing `LiveData`.
 
 **What to test:** initial state, success path, error/empty paths, that events produce the right state transitions, and that one-off events are emitted.
-
-**Soundbite:** "Inject a fake repository and a test dispatcher, set `Dispatchers.Main`, then drive events and assert on emitted `UiState` with `runTest` + Turbine. The ViewModel is pure-ish, so testing is feeding input and checking state out."

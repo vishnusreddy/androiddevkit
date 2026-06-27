@@ -1,6 +1,6 @@
 ---
 question: "How do you test Compose UI?"
-topic: jetpack-compose
+topic: testing-quality
 difficulty: mid
 tags: ["compose", "testing"]
 ---
@@ -22,16 +22,14 @@ class CounterTest {
 ```
 
 The pieces:
-- **Finders** — `onNodeWithText`, `onNodeWithTag` (`Modifier.testTag("...")`), `onNodeWithContentDescription`, `onAllNodes`.
-- **Assertions** — `assertIsDisplayed`, `assertExists`, `assertIsEnabled`, `assertTextEquals`.
-- **Actions** — `performClick`, `performTextInput`, `performScrollTo`, `performTouchInput`.
+- **Finders** - `onNodeWithText`, `onNodeWithTag` (`Modifier.testTag("...")`), `onNodeWithContentDescription`, `onAllNodes`.
+- **Assertions** - `assertIsDisplayed`, `assertExists`, `assertIsEnabled`, `assertTextEquals`.
+- **Actions** - `performClick`, `performTextInput`, `performScrollTo`, `performTouchInput`.
 - **`createComposeRule`** for pure Compose; **`createAndroidComposeRule<Activity>()`** when you need a real Activity/host.
 
-**Synchronization:** the test framework **auto-syncs** with recomposition and Compose-driven animations/coroutines — `waitForIdle()` happens implicitly between actions, so you rarely sleep. For non-Compose async, use `waitUntil { }`. You can disable auto-advance and control the clock with `mainClock` for animation tests.
+**Synchronization:** the test framework **auto-syncs** with recomposition and Compose-driven animations/coroutines - `waitForIdle()` happens implicitly between actions, so you rarely sleep. For non-Compose async, use `waitUntil { }`. You can disable auto-advance and control the clock with `mainClock` for animation tests.
 
 **Good practices:**
 - Add **`testTag`** for elements without stable text.
-- Test **stateless composables** by passing state directly — easy because they're pure functions of inputs.
+- Test **stateless composables** by passing state directly - easy because they're pure functions of inputs.
 - **`@Preview`** + screenshot testing (Paparazzi / Roborazzi) catches visual regressions without a device.
-
-**Soundbite:** "Compose tests query the semantics tree via a `ComposeTestRule` — finders, assertions, actions — with automatic recomposition sync; tag elements with `testTag` and prefer testing stateless composables."

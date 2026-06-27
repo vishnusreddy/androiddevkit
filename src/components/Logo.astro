@@ -5,20 +5,23 @@ interface Props {
 const { withText = true } = Astro.props;
 ---
 <a class="logo" href="/" aria-label="AndroidDevKit home">
-  <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-    <rect width="32" height="32" rx="8" fill="var(--accent)" />
-    <!-- stylized android head -->
+  <svg class="logo-mark" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="8.25" fill="#11201a" stroke="#3ddc84" stroke-opacity="0.32" stroke-width="1.5" />
     <path
-      d="M9 18.5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1V24a2 2 0 0 1-2 2h-1.5v2.2a1.3 1.3 0 1 1-2.6 0V26h-2.8v2.2a1.3 1.3 0 1 1-2.6 0V26H11a2 2 0 0 1-2-2v-5.5Z"
-      fill="var(--on-accent)"
+      d="M12.2 9.75 6.75 16l5.45 6.25"
+      stroke="#e9f0eb"
+      stroke-width="2.35"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
     <path
-      d="M11.2 16.5a4.8 4.8 0 0 1 9.6 0H11.2Z"
-      fill="var(--on-accent)"
+      d="M19.8 9.75 25.25 16l-5.45 6.25"
+      stroke="#e9f0eb"
+      stroke-width="2.35"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
-    <circle cx="13.8" cy="13.6" r="0.8" fill="var(--accent)" />
-    <circle cx="18.2" cy="13.6" r="0.8" fill="var(--accent)" />
-    <path d="M12 11l-1.4-1.7M20 11l1.4-1.7" stroke="var(--on-accent)" stroke-width="1.1" stroke-linecap="round" />
+    <path d="m18.3 7.5-4.6 17" stroke="#3ddc84" stroke-width="2.45" stroke-linecap="round" />
   </svg>
   {withText && (
     <span class="logo-text">Android<strong>DevKit</strong></span>
@@ -29,17 +32,21 @@ const { withText = true } = Astro.props;
   .logo {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.65rem;
     color: var(--ink);
     font-weight: 700;
+  }
+  .logo-mark {
+    flex: 0 0 auto;
+    filter: drop-shadow(0 3px 7px rgba(17, 32, 26, 0.16));
   }
   .logo:hover {
     color: var(--ink);
   }
   .logo-text {
-    font-size: 1.1rem;
-    letter-spacing: -0.02em;
-    font-weight: 600;
+    font-size: 1.08rem;
+    letter-spacing: -0.025em;
+    font-weight: 650;
   }
   .logo-text strong {
     color: var(--accent);

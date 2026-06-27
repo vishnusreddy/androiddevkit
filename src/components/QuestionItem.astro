@@ -35,6 +35,13 @@ const {
     </div>
   </summary>
   <div class="q-answer prose">
+    {difficulty === 'senior' && (
+      <p class="advanced-note">
+        <strong>Optional deep dive:</strong> This is useful after you are
+        comfortable with the everyday version of the topic. Focus on the main
+        idea first; the implementation details are a senior-level follow-up.
+      </p>
+    )}
     <slot />
   </div>
 </details>
@@ -126,5 +133,12 @@ const {
   }
   .q-answer :global(pre) {
     margin: 1rem 0;
+  }
+  .advanced-note {
+    padding: 0.75rem 0.85rem;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 0.9rem;
   }
 </style>

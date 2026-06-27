@@ -4,9 +4,8 @@ export const SITE = {
   url: 'https://androidevkit.com',
   tagline: 'Your one-stop kit for landing the Android job.',
   description:
-    'An open-source, community-driven destination for Android developers preparing to switch jobs — curated interview questions, topic-by-topic guides, and real interview experiences.',
-  // Update once you create the repo.
-  github: 'https://github.com/androidevkit/androidevkit',
+    'An open-source, community-driven destination for Android developers preparing to switch jobs - curated interview questions, topic-by-topic guides, and real interview experiences.',
+  github: 'https://github.com/vishnusreddy/androiddevkit',
   author: 'AndroidDevKit Community',
 };
 

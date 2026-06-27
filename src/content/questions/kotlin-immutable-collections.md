@@ -5,7 +5,7 @@ difficulty: mid
 tags: ["kotlin", "collections", "immutability"]
 ---
 
-No — `List` is **read-only, not immutable**. The `List` interface simply *doesn't expose* mutating methods like `add`/`remove`; it doesn't guarantee the underlying data can't change.
+No - `List` is **read-only, not immutable**. The `List` interface simply *doesn't expose* mutating methods like `add`/`remove`; it doesn't guarantee the underlying data can't change.
 
 Two ways that bites you:
 
@@ -14,7 +14,7 @@ Two ways that bites you:
 val mutable = mutableListOf(1, 2, 3)
 val readOnly: List<Int> = mutable   // same backing object
 mutable.add(4)
-println(readOnly)   // [1, 2, 3, 4]  — it changed under you
+println(readOnly)   // [1, 2, 3, 4]  - it changed under you
 ```
 
 **2. A `List` can be cast back (it's often an `ArrayList` at runtime).**
@@ -26,5 +26,3 @@ So `List` protects *your* code from calling mutators, but it's not a deep immuta
 ```kotlin
 val items: ImmutableList<Item> = persistentListOf(a, b, c)
 ```
-
-**Soundbite:** "`MutableList` vs `List` is about the *interface* you expose; `persistentListOf` is about *actual* immutability."

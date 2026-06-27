@@ -1,13 +1,13 @@
 # Contributing to AndroidDevKit
 
 Thank you for helping Android engineers land their next role! Everything here is
-Markdown + pull requests — no CMS, no login.
+Markdown + pull requests - no CMS, no login.
 
 ## Quick start
 
 ```bash
 # 1. Fork the repo on GitHub, then:
-git clone https://github.com/<you>/androidevkit.git
+git clone https://github.com/vishnusreddy/androiddevkit.git
 cd androidevkit
 npm install
 npm run dev          # preview at http://localhost:4321
@@ -19,7 +19,7 @@ git checkout -b add-coroutines-question
 git push origin add-coroutines-question
 ```
 
-Keep each PR focused on **one thing** — it gets reviewed and merged faster.
+Keep each PR focused on **one thing** - it gets reviewed and merged faster.
 
 ## Adding an interview question
 
@@ -35,7 +35,7 @@ tags: ["coroutines", "scopes"]
 author: "Your Name"      # optional
 ---
 
-Your answer in Markdown. Explain the **why** and the trade-offs — that's what
+Your answer in Markdown. Explain the **why** and the trade-offs - that's what
 interviewers actually probe for. Code blocks are syntax-highlighted:
 
 ​```kotlin
@@ -61,13 +61,13 @@ author: "Anonymous"
 tags: ["compose", "system-design"]
 ---
 
-## Round 1 — Phone screen
+## Round 1 - Phone screen
 ...
 ```
 
 ## Adding a topic
 
-Topics are the spine of the site. Add a file in `src/content/topics/` — the
+Topics are the spine of the site. Add a file in `src/content/topics/` - the
 **filename (without extension) becomes the topic `id`** that questions reference.
 
 ```markdown

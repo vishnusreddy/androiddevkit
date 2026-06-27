@@ -31,14 +31,12 @@ fun SimpleColumn(content: @Composable () -> Unit, modifier: Modifier = Modifier)
 ```
 
 The three steps:
-1. **Measure** — call `measurable.measure(constraints)` on each child **exactly once** (measuring twice throws). You may tighten/loosen the constraints you pass down.
-2. **Size yourself** — call `layout(width, height)` based on children's measured sizes.
-3. **Place** — inside the `layout {}` block, position each `Placeable` with `placeRelative`/`place`.
+1. **Measure** - call `measurable.measure(constraints)` on each child **exactly once** (measuring twice throws). You may tighten/loosen the constraints you pass down.
+2. **Size yourself** - call `layout(width, height)` based on children's measured sizes.
+3. **Place** - inside the `layout {}` block, position each `Placeable` with `placeRelative`/`place`.
 
 **Key concepts interviewers probe:**
 - **Constraints** = min/max width and height passed top-down. A child must size within them.
-- **Single-pass measurement** — Compose layout is single-pass for performance (no double measure like some View layouts), which is why measuring a child twice is an error.
-- **`SubcomposeLayout`** — for the rare case where you must measure something *before* composing its children (e.g. `BoxWithConstraints`, lazy lists). It's more expensive; avoid unless needed.
+- **Single-pass measurement** - Compose layout is single-pass for performance (no double measure like some View layouts), which is why measuring a child twice is an error.
+- **`SubcomposeLayout`** - for the rare case where you must measure something *before* composing its children (e.g. `BoxWithConstraints`, lazy lists). It's more expensive; avoid unless needed.
 - **Intrinsic measurements** (`Modifier.height(IntrinsicSize.Min)`) let a parent query a child's natural size when one-pass isn't enough.
-
-**Soundbite:** "Custom layout = measure each child once with constraints, choose your size, place the placeables — single pass, constraints down, sizes up."

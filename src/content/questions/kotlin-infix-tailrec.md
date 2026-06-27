@@ -14,13 +14,11 @@ infix fun Int.times(str: String) = str.repeat(this)
 
 You already use stdlib infix functions: `to` (`"key" to 1` builds a `Pair`), `until`, `downTo`, `step`, `and`/`or`, `shl`.
 
-**`tailrec` functions** — when a recursive function's recursive call is the very last operation (tail position), `tailrec` lets the compiler **rewrite it into a loop**, avoiding stack growth and `StackOverflowError`.
+**`tailrec` functions** - when a recursive function's recursive call is the very last operation (tail position), `tailrec` lets the compiler **rewrite it into a loop**, avoiding stack growth and `StackOverflowError`.
 
 ```kotlin
 tailrec fun factorial(n: Long, acc: Long = 1): Long =
     if (n <= 1) acc else factorial(n - 1, acc * n)   // tail call → compiled to a loop
 ```
 
-The catch: the recursive call must be the **last action** — `return 1 + factorial(...)` is *not* tail-recursive (the addition happens after), and the compiler warns. The accumulator-parameter trick (as above) is the usual way to make a function tail-recursive.
-
-**Soundbite:** "`infix` is syntactic sugar for one-arg calls; `tailrec` turns tail recursion into a loop so deep recursion won't blow the stack."
+The catch: the recursive call must be the **last action** - `return 1 + factorial(...)` is *not* tail-recursive (the addition happens after), and the compiler warns. The accumulator-parameter trick (as above) is the usual way to make a function tail-recursive.

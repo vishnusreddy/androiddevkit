@@ -1,5 +1,5 @@
 ---
-question: "What's the visual difference? Modifier order: padding vs background."
+question: "Why does Modifier order change a composable's appearance?"
 topic: jetpack-compose
 difficulty: mid
 tags: ["compose", "output-based", "modifier"]
@@ -14,10 +14,10 @@ Box(Modifier.background(Color.Red).padding(16.dp).size(100.dp))
 ```
 
 **Result:**
-- **A** — 16dp of *transparent* space, then a red 100dp box. The padding is applied **before** the background, so the background only covers the area inside the padding.
-- **B** — a red box with 16dp of *red* padding inside it before the content. The background is applied **first**, so it fills the outer bounds, and padding insets the content within the red area.
+- **A** - 16dp of *transparent* space, then a red 100dp box. The padding is applied **before** the background, so the background only covers the area inside the padding.
+- **B** - a red box with 16dp of *red* padding inside it before the content. The background is applied **first**, so it fills the outer bounds, and padding insets the content within the red area.
 
-**Why:** Modifiers are applied **in order, left to right** — each one wraps the result of the previous. The order literally is the order of operations:
+**Why:** Modifiers are applied **in order, left to right** - each one wraps the result of the previous. The order literally is the order of operations:
 - A: "add padding, *then* draw background inside that" → background sits inside the padded region.
 - B: "draw background, *then* pad" → background covers everything, padding pushes content in.
 
@@ -26,4 +26,4 @@ Box(Modifier.background(Color.Red).padding(16.dp).size(100.dp))
 - `clip()` before `background()` clips the background; after, it doesn't.
 - `clickable()` before `padding()` makes the padded area clickable; after, only the inner area is.
 
-**Interview takeaway:** "Modifiers compose like nested wrappers in declaration order — position `padding`, `background`, `clip`, and `clickable` deliberately."
+**Interview takeaway:** "Modifiers compose like nested wrappers in declaration order - position `padding`, `background`, `clip`, and `clickable` deliberately."

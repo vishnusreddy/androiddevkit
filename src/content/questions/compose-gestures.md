@@ -19,7 +19,7 @@ Modifier
     .transformable(...) // pinch/zoom/rotate
 ```
 
-**Low-level `pointerInput`** for custom gestures — gives raw pointer events and coroutine-based detectors:
+**Low-level `pointerInput`** for custom gestures - gives raw pointer events and coroutine-based detectors:
 ```kotlin
 Modifier.pointerInput(Unit) {
     detectTapGestures(
@@ -38,9 +38,7 @@ Modifier.pointerInput(Unit) {
 ```
 
 Key points:
-- **`pointerInput(key)`** restarts the gesture coroutine when the key changes — pass relevant state as the key (a common bug is `pointerInput(Unit)` capturing stale state).
+- **`pointerInput(key)`** restarts the gesture coroutine when the key changes - pass relevant state as the key (a common bug is `pointerInput(Unit)` capturing stale state).
 - **Consume events** (`change.consume()`) to stop them propagating to parents and avoid conflicting gestures.
 - Built-in detectors: `detectTapGestures`, `detectDragGestures`, `detectTransformGestures`, `awaitPointerEventScope { awaitFirstDown() ... }` for fully custom flows.
 - For **accessibility**, prefer the semantic modifiers (`clickable` adds roles/handlers) over raw `pointerInput` where possible, or add `Modifier.semantics`.
-
-**Soundbite:** "Use `clickable`/`draggable`/`transformable` for common gestures, drop to `pointerInput` + `detect*Gestures` for custom ones — key it on the state it reads and consume events to resolve conflicts."

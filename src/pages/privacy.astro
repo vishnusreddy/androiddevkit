@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+---
+<BaseLayout
+  title="Privacy Policy"
+  description="How AndroidDevKit handles visitor data and community contributions."
+>
+  <section class="container policy prose">
+    <span class="eyebrow">Legal</span>
+    <h1>Privacy policy</h1>
+    <p class="updated">Last updated: 27 June 2026</p>
+
+    <p class="lede text-soft">
+      AndroidDevKit is a public, static website. You can read it without an
+      account, a newsletter subscription, or a paywall.
+    </p>
+
+    <h2>Information this site stores</h2>
+    <p class="text-soft">
+      The site stores your light or dark theme preference in your browser's
+      local storage. That preference stays on your device and is not sent to us.
+      We do not currently use advertising cookies or third-party analytics.
+    </p>
+
+    <h2>Hosting data</h2>
+    <p class="text-soft">
+      Like most websites, the hosting provider may process basic request data
+      such as an IP address, browser type, requested page, and timestamp for
+      security, reliability, and abuse prevention. Its handling of that data is
+      governed by the hosting provider's own terms and privacy practices.
+    </p>
+
+    <h2>GitHub and external links</h2>
+    <p class="text-soft">
+      Contributions, issues, and pull requests are handled on GitHub. Anything
+      you submit there may be public and associated with your GitHub profile.
+      Links to other websites are governed by those sites' privacy policies.
+    </p>
+
+    <h2>Interview experiences</h2>
+    <p class="text-soft">
+      Contributors may publish under their name or as Anonymous. Please remove
+      personal information, confidential material, interviewer names, and any
+      detail that could identify someone who did not consent to publication.
+      We may edit or remove a submission to protect privacy.
+    </p>
+
+    <h2>Questions or removal requests</h2>
+    <p class="text-soft">
+      To report personal information or request a correction, open an issue in
+      the <a href={SITE.github} target="_blank" rel="noopener noreferrer">project repository</a>.
+      Do not include additional sensitive information in a public issue.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .policy { padding-block: clamp(2.5rem, 6vw, 4rem) 2rem; }
+  .policy h1 { margin: 0.6rem 0 0; }
+  .policy h2 { margin-top: 2.2rem; }
+  .updated { color: var(--ink-faint); font-size: 0.85rem; margin-top: 0.6rem; }
+  .lede { font-size: 1.1rem; margin-top: 1.4rem; }
+</style>

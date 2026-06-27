@@ -29,10 +29,8 @@ repository.observe()
 ```
 
 Key points:
-- **`retry(n) { predicate }`** — simpler: retry up to `n` times while the predicate is true.
-- **`retryWhen { cause, attempt -> Boolean }`** — full control: inspect the **exception type** and **attempt index**, `delay()` for backoff, return `true` to retry / `false` to give up.
-- **Only retry transient failures.** Check the cause — retry `IOException`/timeouts, but *not* a 4xx auth error or a `CancellationException` (never retry cancellation).
+- **`retry(n) { predicate }`** - simpler: retry up to `n` times while the predicate is true.
+- **`retryWhen { cause, attempt -> Boolean }`** - full control: inspect the **exception type** and **attempt index**, `delay()` for backoff, return `true` to retry / `false` to give up.
+- **Only retry transient failures.** Check the cause - retry `IOException`/timeouts, but *not* a 4xx auth error or a `CancellationException` (never retry cancellation).
 - Pair with **`catch`** as a final fallback so the UI shows an error state after retries are exhausted.
 - Add **jitter** (a small random offset) in production to avoid thundering-herd retries.
-
-**Soundbite:** "`retryWhen` re-subscribes on failure; gate it on exception type and attempt count, `delay` with exponential backoff, and `catch` for the final fallback."

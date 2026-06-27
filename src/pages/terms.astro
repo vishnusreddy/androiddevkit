@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+---
+<BaseLayout
+  title="Terms of Use"
+  description="Terms for using and contributing to AndroidDevKit."
+>
+  <section class="container policy prose">
+    <span class="eyebrow">Legal</span>
+    <h1>Terms of use</h1>
+    <p class="updated">Last updated: 27 June 2026</p>
+
+    <p class="lede text-soft">
+      By using AndroidDevKit, you agree to use the site lawfully and to respect
+      the rights of contributors, interviewers, employers, and other visitors.
+    </p>
+
+    <h2>Educational content</h2>
+    <p class="text-soft">
+      The material is provided for general learning and interview preparation.
+      It is not a promise of employment, a complete account of any employer's
+      hiring process, or professional legal, career, or financial advice.
+      Technical information can become outdated, so verify important details
+      against current primary documentation.
+    </p>
+
+    <h2>Acceptable use</h2>
+    <p class="text-soft">
+      Do not disrupt the site, attempt unauthorized access, scrape it in a way
+      that harms availability, publish personal information without permission,
+      or submit confidential interview material. Company names are used only to
+      describe contributor experiences; they do not imply endorsement.
+    </p>
+
+    <h2>Contributions and licensing</h2>
+    <p class="text-soft">
+      By submitting content or code, you confirm that you have the right to
+      share it and agree that it may be used under the license in the
+      <a href={SITE.github} target="_blank" rel="noopener noreferrer">repository</a>.
+      Contributions may be edited, declined, or removed for accuracy, safety,
+      privacy, relevance, or maintainability.
+    </p>
+
+    <h2>No warranty</h2>
+    <p class="text-soft">
+      The site is provided as is, without warranties. To the extent allowed by
+      law, the maintainers are not liable for losses resulting from reliance on
+      the content, temporary unavailability, or third-party links.
+    </p>
+
+    <h2>Changes</h2>
+    <p class="text-soft">
+      These terms may change as the project evolves. The date above will be
+      updated when material changes are published.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .policy { padding-block: clamp(2.5rem, 6vw, 4rem) 2rem; }
+  .policy h1 { margin: 0.6rem 0 0; }
+  .policy h2 { margin-top: 2.2rem; }
+  .updated { color: var(--ink-faint); font-size: 0.85rem; margin-top: 0.6rem; }
+  .lede { font-size: 1.1rem; margin-top: 1.4rem; }
+</style>

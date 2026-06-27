@@ -1,7 +1,7 @@
 ---
 question: "Explain the scope functions: let, run, with, apply, also. How do you choose?"
 topic: kotlin
-difficulty: mid
+difficulty: junior
 tags: ["kotlin", "scope-functions", "stdlib"]
 ---
 
@@ -16,16 +16,16 @@ They all execute a block on an object; they differ in **how you reference the ob
 | `also`  | `it`   | the object | side effects (logging, validation) |
 
 ```kotlin
-// let — operate on a nullable, transform
+// let - operate on a nullable, transform
 val len = name?.let { it.trim().length } ?: 0
 
-// apply — configure and return the same object
+// apply - configure and return the same object
 val paint = Paint().apply {
     color = Color.RED
     isAntiAlias = true
 }
 
-// also — side effect, pass through
+// also - side effect, pass through
 val user = repo.load().also { Log.d("TAG", "loaded $it") }
 ```
 

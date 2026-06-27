@@ -1,5 +1,5 @@
 ---
-question: "lateinit vs lazy — what's the difference and when do you use each?"
+question: "lateinit vs lazy - what's the difference and when do you use each?"
 topic: kotlin
 difficulty: mid
 tags: ["kotlin", "lateinit", "lazy", "initialization"]
@@ -12,7 +12,7 @@ Both defer initialization, but they're for different situations.
 - Only for **non-null, non-primitive** types (`var x: Int` won't work).
 - Accessing it before assignment throws `UninitializedPropertyException`.
 - You can reassign it and check `::x.isInitialized`.
-- Use when something injects/sets the value later — Dagger fields, `onCreate` views/binding, test setup.
+- Use when something injects/sets the value later - Dagger fields, `onCreate` views/binding, test setup.
 
 ```kotlin
 private lateinit var binding: ActivityMainBinding

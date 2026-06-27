@@ -20,10 +20,8 @@ showSnackbar("Saved")
 showSnackbar("Undo delete", actionLabel = "Undo", onAction = { restore() })
 ```
 
-Together they **replace most builder patterns and telescoping overloads** in Kotlin — no `Builder` class, no five overloaded constructors. One function with defaults covers it.
+Together they **replace most builder patterns and telescoping overloads** in Kotlin - no `Builder` class, no five overloaded constructors. One function with defaults covers it.
 
 **Interop gotchas:**
-- Java callers don't see Kotlin defaults. Add **`@JvmOverloads`** to generate overloads for them — essential when writing a custom `View` whose constructors Java/XML inflation calls.
+- Java callers don't see Kotlin defaults. Add **`@JvmOverloads`** to generate overloads for them - essential when writing a custom `View` whose constructors Java/XML inflation calls.
 - Named arguments don't work when calling **Java** methods (the parameter names aren't reliably in the bytecode).
-
-**Soundbite:** "Default + named arguments are Kotlin's built-in builder pattern — `@JvmOverloads` when Java needs to call it."

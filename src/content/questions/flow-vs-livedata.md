@@ -1,7 +1,7 @@
 ---
 question: "When would you use StateFlow over LiveData?"
 topic: coroutines
-difficulty: mid
+difficulty: junior
 tags: ["flow", "state", "lifecycle"]
 ---
 

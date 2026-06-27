@@ -1,7 +1,7 @@
 ---
-question: "How do extension functions work under the hood? Are they resolved statically or dynamically?"
+question: "What are extension functions, and how are they resolved?"
 topic: kotlin
-difficulty: mid
+difficulty: junior
 tags: ["kotlin", "extensions", "dispatch"]
 ---
 
@@ -23,12 +23,12 @@ fun A.name() = "A"
 fun B.name() = "B"
 
 val x: A = B()
-println(x.name())   // "A"  — uses the static type A, not B
+println(x.name())   // "A"  - uses the static type A, not B
 ```
 
 Other things to know:
 - A **member function always wins** over an extension with the same signature.
-- Extensions can't access `private`/`protected` members of the receiver — they're just outside static functions.
+- Extensions can't access `private`/`protected` members of the receiver - they're just outside static functions.
 - They're great for keeping APIs focused and adding utilities to types you don't own (`Context`, `View`, `Flow`), which is why Android codebases lean on them heavily.
 
 **Interview trap:** the polymorphism question above. If you say it prints "B", that's the classic miss.

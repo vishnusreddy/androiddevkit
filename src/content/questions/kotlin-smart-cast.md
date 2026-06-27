@@ -17,7 +17,7 @@ fun describe(x: Any) {
 
 It works after `is` checks, `!= null` checks, and on the matched branch of a `when`.
 
-**When it fails — the classic interview point:** the compiler only smart-casts if it can *guarantee* the value didn't change between the check and the use. So it fails for:
+**When it fails - the classic interview point:** the compiler only smart-casts if it can *guarantee* the value didn't change between the check and the use. So it fails for:
 
 - **`var` properties (especially of another class / open):** they could be modified by another thread or an overridden getter between check and use.
 - **Custom getters:** a `val` with a custom getter could return a different value each call.

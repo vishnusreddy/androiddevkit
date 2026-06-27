@@ -21,9 +21,9 @@ button.text = "Count: $count"   // you manually keep the view in sync
 ```
 
 Key differences:
-- **No XML / no findViewById** — UI is Kotlin functions.
-- **State-driven** — when state changes, Compose **recomposes** (re-invokes the affected composables) instead of you manually updating views.
-- **No view hierarchy inflation** — composables don't map 1:1 to `View` objects; Compose maintains its own tree and renders directly.
-- **Single source of truth** — the UI can't drift out of sync with state because it's derived from state.
+- **No XML / no findViewById** - UI is Kotlin functions.
+- **State-driven** - when state changes, Compose **recomposes** (re-invokes the affected composables) instead of you manually updating views.
+- **No view hierarchy inflation** - composables don't map 1:1 to `View` objects; Compose maintains its own tree and renders directly.
+- **Single source of truth** - the UI can't drift out of sync with state because it's derived from state.
 
-**The mental model interviewers want:** `UI = f(state)`. Instead of imperatively poking widgets when data changes, you make the UI a pure function of state and let recomposition handle updates.
+**A useful mental model:** `UI = f(state)`. Instead of imperatively poking widgets when data changes, you make the UI a pure function of state and let recomposition handle updates.

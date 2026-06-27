@@ -1,17 +1,17 @@
 ---
-question: "How does Paging 3 fit into app architecture? (PagingSource, RemoteMediator)"
+question: "How does Paging 3 fit into an Android app's architecture?"
 topic: architecture
-difficulty: senior
+difficulty: mid
 tags: ["paging", "architecture", "offline-first"]
 ---
 
 Paging 3 is the Jetpack solution for **incrementally loading large lists**, integrated across all three layers.
 
 **The pieces:**
-- **`PagingSource`** — loads one page from a **single** source (e.g. network only). Defines how to fetch a page and the keys for next/prev.
-- **`RemoteMediator`** — coordinates **network + database** for offline-first paging: it fetches pages from the network and **writes them into Room**, while a Room-backed `PagingSource` serves the UI from the DB.
-- **`Pager`** — config (page size, prefetch) that produces a `Flow<PagingData<T>>`.
-- **`PagingData`** — a stream of paged items the UI consumes.
+- **`PagingSource`** - loads one page from a **single** source (e.g. network only). Defines how to fetch a page and the keys for next/prev.
+- **`RemoteMediator`** - coordinates **network + database** for offline-first paging: it fetches pages from the network and **writes them into Room**, while a Room-backed `PagingSource` serves the UI from the DB.
+- **`Pager`** - config (page size, prefetch) that produces a `Flow<PagingData<T>>`.
+- **`PagingData`** - a stream of paged items the UI consumes.
 
 **Layered flow (network + DB, the recommended setup):**
 ```
@@ -34,8 +34,6 @@ val items: Flow<PagingData<Article>> = Pager(
 **What Paging handles for you:** page requests on scroll, **prefetch distance**, **deduplication**, **placeholders**, retries, and exposing **`LoadState`** (loading/error for refresh/append/prepend) so the UI can show spinners/retry footers. UI side: `collectAsLazyPagingItems()` (Compose) or `PagingDataAdapter` + DiffUtil (Views).
 
 **Why architecturally clean:**
-- **Single source of truth** — with `RemoteMediator`, the DB is the truth; the UI always pages from Room → **offline-first** for free.
+- **Single source of truth** - with `RemoteMediator`, the DB is the truth; the UI always pages from Room → **offline-first** for free.
 - **`cachedIn(scope)`** keeps paged data across recreation so scroll position/data isn't lost on rotation.
 - Each layer keeps its role: data fetches/stores, ViewModel configures the Pager, UI renders `PagingData`.
-
-**Soundbite:** "Paging 3 spans the layers: a `RemoteMediator` fetches network pages into Room (single source of truth), a Room `PagingSource` feeds the UI, and the ViewModel exposes `Flow<PagingData>` (`cachedIn`). You get offline-first paging with load states, placeholders, and prefetch handled for you."

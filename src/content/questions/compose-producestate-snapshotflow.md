@@ -7,7 +7,7 @@ tags: ["compose", "side-effects", "produceState", "snapshotFlow"]
 
 Both bridge between Compose state and coroutines/flows, in opposite directions.
 
-**`produceState`** — turn a **coroutine/async source into Compose `State`**. It launches a coroutine (like `LaunchedEffect`) and gives you a `value` you set over time.
+**`produceState`** - turn a **coroutine/async source into Compose `State`**. It launches a coroutine (like `LaunchedEffect`) and gives you a `value` you set over time.
 
 ```kotlin
 @Composable
@@ -20,9 +20,9 @@ fun userState(userId: String): State<Result<User>> = produceState(
     // optional awaitDispose { } for cleanup
 }
 ```
-It's essentially `remember { mutableStateOf(initial) }` + `LaunchedEffect` combined — ideal for "load this async and expose it as state."
+It's essentially `remember { mutableStateOf(initial) }` + `LaunchedEffect` combined - ideal for "load this async and expose it as state."
 
-**`snapshotFlow`** — the reverse: turn **Compose `State` reads into a `Flow`**. It observes the state read inside its block and emits when that state changes.
+**`snapshotFlow`** - the reverse: turn **Compose `State` reads into a `Flow`**. It observes the state read inside its block and emits when that state changes.
 
 ```kotlin
 LaunchedEffect(listState) {

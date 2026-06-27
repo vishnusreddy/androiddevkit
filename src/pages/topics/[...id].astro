@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CoroutinesPrimer from '../../components/CoroutinesPrimer.astro';
 import QuestionItem from '../../components/QuestionItem.astro';
 import { DIFFICULTY_ORDER, DIFFICULTY_LABEL, SITE } from '../../consts';
 
@@ -35,6 +36,27 @@ const counts = DIFFICULTY_ORDER.map((d) => ({
   n: questions.filter((q) => q.data.difficulty === d).length,
 })).filter((c) => c.n > 0);
 
+const levelIntro: Record<string, { title: string; description: string }> = {
+  junior: {
+    title: 'Start here',
+    description: 'Core ideas you should be able to explain in plain language.',
+  },
+  mid: {
+    title: 'Use it in practice',
+    description: 'Common implementation choices, debugging, and trade-offs.',
+  },
+  senior: {
+    title: 'Optional deep dives',
+    description: 'Internals and broader design questions to study after the core material.',
+  },
+};
+
+const questionGroups = DIFFICULTY_ORDER.map((level) => ({
+  level,
+  ...levelIntro[level],
+  items: rendered.filter(({ q }) => q.data.difficulty === level),
+})).filter((group) => group.items.length > 0);
+
 const { Content: Overview } = await render(topic);
 const hasOverview = topic.body && topic.body.trim().length > 0;
 ---
@@ -66,17 +88,27 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
       </div>
     )}
 
+    {topic.id === 'coroutines' && <CoroutinesPrimer />}
+
     {questions.length > 0 ? (
       <div class="q-list">
-        {rendered.map(({ q, Content }) => (
-          <QuestionItem
-            id={q.id}
-            question={q.data.question}
-            difficulty={q.data.difficulty}
-            tags={q.data.tags}
-          >
-            <Content />
-          </QuestionItem>
+        {questionGroups.map((group) => (
+          <section class="level-group" aria-labelledby={`${group.level}-heading`}>
+            <div class="level-head">
+              <h2 id={`${group.level}-heading`}>{group.title}</h2>
+              <p>{group.description}</p>
+            </div>
+            {group.items.map(({ q, Content }) => (
+              <QuestionItem
+                id={q.id}
+                question={q.data.question}
+                difficulty={q.data.difficulty}
+                tags={q.data.tags}
+              >
+                <Content />
+              </QuestionItem>
+            ))}
+          </section>
         ))}
       </div>
     ) : (
@@ -157,6 +189,21 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
   }
   .q-list {
     margin-top: 0.5rem;
+  }
+  .level-group + .level-group {
+    margin-top: 2.75rem;
+  }
+  .level-head {
+    margin-bottom: 1rem;
+  }
+  .level-head h2 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+  .level-head p {
+    color: var(--ink-soft);
+    margin: 0.3rem 0 0;
+    font-size: 0.93rem;
   }
   .empty {
     padding: 2.5rem 2rem;

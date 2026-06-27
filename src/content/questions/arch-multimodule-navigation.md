@@ -5,7 +5,7 @@ difficulty: senior
 tags: ["modularization", "navigation", "decoupling"]
 ---
 
-The problem: in a multi-module app, `:feature:checkout` shouldn't directly depend on `:feature:profile` — that creates **tight coupling** and **dependency cycles**. But they sometimes need to navigate to each other.
+The problem: in a multi-module app, `:feature:checkout` shouldn't directly depend on `:feature:profile` - that creates **tight coupling** and **dependency cycles**. But they sometimes need to navigate to each other.
 
 **Solutions (least to most decoupled):**
 
@@ -24,10 +24,8 @@ The `:feature:profile` module implements it; other features inject `ProfileNavig
 
 **3. `api` vs `impl` module split.** A feature exposes a small **`:feature:profile:api`** (interfaces, navigation entry points) that others depend on, while **`:feature:profile:impl`** stays private. Maximum decoupling for large codebases.
 
-**Key principles interviewers want:**
-- **Features depend on `core`/abstractions, never on each other** — avoids cycles and keeps build parallelism.
-- **The `:app` module is the composition root** — it knows all features and wires the graph/DI.
+**Key principles:**
+- **Features depend on `core`/abstractions, never on each other** - avoids cycles and keeps build parallelism.
+- **The `:app` module is the composition root** - it knows all features and wires the graph/DI.
 - **Deep links** double as the inter-feature navigation contract.
 - Type-safe routes (Navigation 2.8+) reduce stringly-typed errors.
-
-**Soundbite:** "Navigate between features via shared **routes/deep links** or an injected **navigation interface** in a `:core` module — never a direct module-to-module dependency. The `:app` composition root wires the graph and DI, keeping features decoupled and cycle-free."

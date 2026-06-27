@@ -1,7 +1,7 @@
 ---
-question: "How do you design an offline-first architecture? (single source of truth, NetworkBoundResource)"
+question: "How do you design an app that works offline?"
 topic: architecture
-difficulty: senior
+difficulty: mid
 tags: ["offline-first", "caching", "single-source-of-truth", "repository"]
 ---
 
@@ -28,11 +28,9 @@ fun observeArticles(): Flow<List<Article>> = flow {
 
 **Key design decisions interviewers probe:**
 - **Source of truth = DB**, not the network response. This is what makes it consistent and offline-capable.
-- **Freshness policy** — cache-then-network, TTL-based invalidation, or pull-to-refresh forcing a fetch.
-- **Writes / sync** — queue local mutations (likes, edits) with a status flag, do **optimistic UI**, and sync to the server when online (often via **WorkManager** with a network constraint); reconcile conflicts (last-write-wins, version vectors, or server authority).
-- **Pagination** — **Paging 3 + `RemoteMediator`** implements offline-first paging: pages are written to Room, the UI pages from Room.
+- **Freshness policy** - cache-then-network, TTL-based invalidation, or pull-to-refresh forcing a fetch.
+- **Writes / sync** - queue local mutations (likes, edits) with a status flag, do **optimistic UI**, and sync to the server when online (often via **WorkManager** with a network constraint); reconcile conflicts (last-write-wins, version vectors, or server authority).
+- **Pagination** - **Paging 3 + `RemoteMediator`** implements offline-first paging: pages are written to Room, the UI pages from Room.
 - **Conflict resolution** and **partial failure** handling are the senior-level details.
 
 **Why it's better than fetch-on-demand:** instant loads from cache, resilience to flaky networks, consistent UI, and less redundant fetching.
-
-**Soundbite:** "Offline-first = the database is the single source of truth; UI observes the DB, network writes to the DB (NetworkBoundResource). Add a freshness policy, queue+sync local writes (WorkManager) with optimistic UI and conflict resolution, and page from Room via RemoteMediator."
