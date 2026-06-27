@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 import cloudflare from "@astrojs/cloudflare";
 
 // Update this to your production domain once the site is live.
-const SITE = 'https://androidevkit.com';
+const SITE = 'https://androiddevkit.com';
 
 // https://astro.build/config
 export default defineConfig({

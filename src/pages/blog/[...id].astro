@@ -19,7 +19,18 @@ const fmt = d.date.toLocaleDateString('en-US', {
   year: 'numeric',
 });
 ---
-<BaseLayout title={d.title} description={d.description}>
+<BaseLayout
+  title={d.title}
+  description={d.description}
+  image={d.heroImage}
+  imageAlt={d.heroAlt}
+  imageType={d.heroImage?.endsWith('.png') ? 'image/png' : d.heroImage ? 'image/jpeg' : undefined}
+  imageWidth={d.heroImage ? 1672 : undefined}
+  imageHeight={d.heroImage ? 941 : undefined}
+  type="article"
+  author={d.author}
+  publishedTime={d.date}
+>
   <article class="container post-article">
     <a class="back" href="/blog/">← All posts</a>
 

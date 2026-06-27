@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://androidevkit.com/sitemap-index.xml
+Sitemap: https://androiddevkit.com/sitemap-index.xml

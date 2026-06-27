@@ -1,0 +1,17 @@
+{
+  "name": "AndroidDevKit",
+  "short_name": "AndroidDevKit",
+  "description": "Open-source interview prep for Android engineers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e0c",
+  "theme_color": "#11201a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

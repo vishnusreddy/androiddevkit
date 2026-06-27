@@ -2,7 +2,7 @@
 
 > Your one-stop, open-source kit for landing the Android job.
 
-[**androidevkit.com**](https://androidevkit.com) is a community-built
+[**androiddevkit.com**](https://androiddevkit.com) is a community-built
 destination for Android engineers preparing to switch jobs - curated interview
 questions, topic-by-topic guides, and real interview experiences. No paywall, no
 sign-up, ever.
@@ -22,7 +22,7 @@ Cloudflare Pages.
 This site is only as good as the community makes it. Adding a question, fixing
 an answer, or sharing your interview experience is just a Markdown file and a
 pull request. See **[CONTRIBUTING.md](./CONTRIBUTING.md)** or the
-[Contribute page](https://androidevkit.com/contribute/).
+[Contribute page](https://androiddevkit.com/contribute/).
 
 ## Local development
 

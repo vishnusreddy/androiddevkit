@@ -62,7 +62,7 @@ export async function GET() {
   for (const e of published) {
     records.push({
       type: 'interview',
-      title: `${e.data.company} — ${e.data.role}`,
+      title: `${e.data.company} - ${e.data.role}`,
       url: `/experiences/${e.id}/`,
       meta: [e.data.level, e.data.location, e.data.outcome].filter(Boolean).join(' · '),
       tags: e.data.tags ?? [],

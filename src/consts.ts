@@ -1,10 +1,13 @@
 export const SITE = {
   name: 'AndroidDevKit',
-  domain: 'androidevkit.com',
-  url: 'https://androidevkit.com',
+  domain: 'androiddevkit.com',
+  url: 'https://androiddevkit.com',
   tagline: 'Your one-stop kit for landing the Android job.',
   description:
     'An open-source, community-driven destination for Android developers preparing to switch jobs - curated interview questions, topic-by-topic guides, and real interview experiences.',
+  socialImage: '/og-default.png',
+  socialImageAlt:
+    'AndroidDevKit - open-source interview prep for Android engineers',
   github: 'https://github.com/vishnusreddy/androiddevkit',
   author: 'AndroidDevKit Community',
 };
