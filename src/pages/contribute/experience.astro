@@ -231,6 +231,21 @@ const today = new Date().toISOString().slice(0, 10);
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.85rem;
   }
+  /* Reset native select sizing (Safari/macOS render it at a different
+     height than the text inputs) and draw a consistent custom chevron. */
+  .field select {
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 2.1rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236d7d74' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1rem;
+  }
+  .field option {
+    background: var(--bg);
+    color: var(--ink);
+  }
   .field input:focus,
   .field select:focus,
   .field textarea:focus {
