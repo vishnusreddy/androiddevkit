@@ -91,6 +91,19 @@ Optional overview shown above the questions on the topic page.`;
     </div>
   </section>
 
+  <section class="container">
+    <div class="card no-github">
+      <div>
+        <h2>Not on GitHub? Share an experience in seconds</h2>
+        <p class="text-soft">
+          Use the in-browser form - no account, no pull request, no setup. We
+          open the PR for you and a maintainer reviews it before it goes live.
+        </p>
+      </div>
+      <a class="btn btn-primary" href="/contribute/experience/">Share your experience</a>
+    </div>
+  </section>
+
   <section class="container guide">
     <div class="steps">
       {steps.map((s) => (
@@ -227,9 +240,34 @@ Optional overview shown above the questions on the topic page.`;
   .guidelines strong {
     color: var(--ink);
   }
+  .no-github {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.6rem 2rem;
+    margin-top: 1.5rem;
+    border: 1px solid var(--accent);
+  }
+  .no-github h2 {
+    margin: 0 0 0.4rem;
+    font-size: 1.15rem;
+  }
+  .no-github p {
+    margin: 0;
+    max-width: 52ch;
+  }
+  .no-github .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
   @media (max-width: 680px) {
     .steps {
       grid-template-columns: 1fr;
+    }
+    .no-github {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>
