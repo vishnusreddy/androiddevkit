@@ -1,0 +1,487 @@
+---
+// Global search: a header trigger that opens a full-site search overlay.
+// The index is a static JSON file (see src/pages/search.json.js) fetched once
+// on first open; matching/ranking happens client-side. Covers topics,
+// questions, companies, interview experiences, and blog posts.
+---
+<button id="search-trigger" class="search-trigger" type="button" aria-label="Search the site" aria-haspopup="dialog">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+  <span class="search-trigger-label">Search</span>
+  <kbd class="search-trigger-kbd"><span class="kbd-mod">⌘</span>K</kbd>
+</button>
+
+<div id="search-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Site search" hidden>
+  <div class="search-panel" role="document">
+    <div class="search-input-wrap">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input
+        id="search-input"
+        type="search"
+        placeholder="Search questions, topics, companies, interviews…"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-label="Search"
+        aria-controls="search-results"
+      />
+      <button id="search-close" class="search-close" type="button" aria-label="Close search">Esc</button>
+    </div>
+    <div id="search-results" class="search-results" role="listbox" aria-label="Search results"></div>
+    <div class="search-foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+      <span><kbd>↵</kbd> to open</span>
+      <span><kbd>esc</kbd> to close</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .search-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 40px;
+    padding: 0 0.7rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-faint);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .search-trigger:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .search-trigger-label {
+    color: var(--ink-soft);
+  }
+  .search-trigger-kbd {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    font-size: 0.72rem;
+    font-family: inherit;
+    color: var(--ink-faint);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.1rem 0.35rem;
+    line-height: 1;
+  }
+  .kbd-mod {
+    font-size: 0.85em;
+  }
+
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: clamp(3rem, 12vh, 8rem) 1rem 2rem;
+    background: color-mix(in srgb, var(--ink) 35%, transparent);
+    backdrop-filter: blur(3px);
+  }
+  .search-overlay[hidden] {
+    display: none;
+  }
+  .search-panel {
+    width: 100%;
+    max-width: 640px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: min(70vh, 560px);
+  }
+  .search-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-faint);
+  }
+  #search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 1.05rem;
+  }
+  #search-input::-webkit-search-cancel-button {
+    display: none;
+  }
+  .search-close {
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--ink-faint);
+    border-radius: 6px;
+    font: inherit;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.45rem;
+    cursor: pointer;
+  }
+  .search-close:hover {
+    color: var(--ink);
+    border-color: var(--border-strong);
+  }
+
+  .search-results {
+    overflow-y: auto;
+    padding: 0.4rem;
+  }
+  /*
+   * Result items are injected via innerHTML at runtime, so they don't receive
+   * Astro's scoped-style attribute. Match them through the scoped .search-results
+   * parent with :global() so the rules apply without leaking site-wide.
+   */
+  .search-results :global(.search-group-label) {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    padding: 0.7rem 0.65rem 0.3rem;
+  }
+  .search-results :global(.search-hit) {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.65rem;
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .search-results :global(.search-hit:hover),
+  .search-results :global(.search-hit.active) {
+    background: var(--surface-2);
+  }
+  .search-results :global(.search-hit.active) {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  .search-results :global(.hit-icon) {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+  }
+  .search-results :global(.hit-body) {
+    min-width: 0;
+    flex: 1;
+  }
+  .search-results :global(.hit-title) {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .search-results :global(.hit-meta) {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    margin-top: 0.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .search-results :global(.hit-type) {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.12rem 0.5rem;
+    text-transform: capitalize;
+  }
+  .search-results :global(.hit-title mark) {
+    background: var(--accent-soft);
+    color: var(--accent-hover);
+    border-radius: 3px;
+    padding: 0 1px;
+  }
+
+  .search-results :global(.search-empty) {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: 0.95rem;
+  }
+  .search-foot {
+    display: flex;
+    gap: 1.1rem;
+    padding: 0.6rem 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+  }
+  .search-foot kbd,
+  .search-foot :global(kbd) {
+    font-family: inherit;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.05rem 0.3rem;
+    margin-right: 2px;
+  }
+
+  @media (max-width: 820px) {
+    .search-trigger-label,
+    .search-trigger-kbd {
+      display: none;
+    }
+    .search-trigger {
+      width: 40px;
+      justify-content: center;
+      padding: 0;
+    }
+    .search-foot {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  type Record = {
+    type: 'topic' | 'question' | 'company' | 'interview' | 'blog';
+    title: string;
+    url: string;
+    meta: string;
+    tags: string[];
+    body: string;
+  };
+
+  const trigger = document.getElementById('search-trigger');
+  const overlay = document.getElementById('search-overlay');
+  const input = document.getElementById('search-input') as HTMLInputElement | null;
+  const closeBtn = document.getElementById('search-close');
+  const resultsEl = document.getElementById('search-results');
+
+  const ICONS: Record['type'][] | any = {
+    topic: '▚',
+    question: '?',
+    company: '◳',
+    interview: '✎',
+    blog: '✦',
+  };
+  const TYPE_LABEL: any = {
+    topic: 'Topics',
+    question: 'Questions',
+    company: 'Companies',
+    interview: 'Interviews',
+    blog: 'Blog',
+  };
+  const GROUP_ORDER: Record['type'][] = [
+    'question',
+    'topic',
+    'company',
+    'interview',
+    'blog',
+  ];
+
+  let index: Record[] | null = null;
+  let loading: Promise<Record[]> | null = null;
+  let activeIndex = -1;
+  let hits: { url: string }[] = [];
+
+  function loadIndex(): Promise<Record[]> {
+    if (index) return Promise.resolve(index);
+    if (!loading) {
+      loading = fetch('/search.json')
+        .then((r) => r.json())
+        .then((data: Record[]) => {
+          index = data;
+          return data;
+        })
+        .catch(() => {
+          loading = null;
+          return [];
+        });
+    }
+    return loading;
+  }
+
+  function escapeHtml(s: string) {
+    return s.replace(/[&<>"]/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string)
+    );
+  }
+
+  function highlight(text: string, terms: string[]) {
+    let out = escapeHtml(text);
+    for (const t of terms) {
+      if (!t) continue;
+      const re = new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'ig');
+      out = out.replace(re, '<mark>$1</mark>');
+    }
+    return out;
+  }
+
+  // Lightweight token scoring: title hits weigh most, then tags, then body.
+  function score(rec: Record, terms: string[]) {
+    const title = rec.title.toLowerCase();
+    const tags = rec.tags.join(' ').toLowerCase();
+    const body = rec.body.toLowerCase();
+    let total = 0;
+    for (const t of terms) {
+      let s = 0;
+      if (title.includes(t)) s += 10;
+      if (title.startsWith(t)) s += 6;
+      if (tags.includes(t)) s += 5;
+      if (body.includes(t)) s += 2;
+      if (s === 0) return 0; // every term must match somewhere
+      total += s;
+    }
+    return total;
+  }
+
+  function render(query: string) {
+    if (!resultsEl) return;
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+
+    if (terms.length === 0) {
+      resultsEl.innerHTML =
+        '<p class="search-empty">Search across questions, topics, companies, interviews and blog posts.</p>';
+      hits = [];
+      activeIndex = -1;
+      return;
+    }
+
+    const matched = (index ?? [])
+      .map((rec) => ({ rec, s: score(rec, terms) }))
+      .filter((m) => m.s > 0)
+      .sort((a, b) => b.s - a.s)
+      .slice(0, 40);
+
+    if (matched.length === 0) {
+      resultsEl.innerHTML = `<p class="search-empty">No results for “${escapeHtml(query)}”.</p>`;
+      hits = [];
+      activeIndex = -1;
+      return;
+    }
+
+    const groups = new Map<Record['type'], typeof matched>();
+    for (const m of matched) {
+      const g = groups.get(m.rec.type) ?? [];
+      g.push(m);
+      groups.set(m.rec.type, g);
+    }
+
+    let html = '';
+    hits = [];
+    for (const type of GROUP_ORDER) {
+      const group = groups.get(type);
+      if (!group || group.length === 0) continue;
+      html += `<div class="search-group-label">${TYPE_LABEL[type]}</div>`;
+      for (const { rec } of group) {
+        const i = hits.length;
+        hits.push({ url: rec.url });
+        html += `<a class="search-hit" data-i="${i}" href="${escapeHtml(rec.url)}" role="option">
+          <span class="hit-icon" aria-hidden="true">${ICONS[rec.type]}</span>
+          <span class="hit-body">
+            <span class="hit-title">${highlight(rec.title, terms)}</span>
+            ${rec.meta ? `<span class="hit-meta">${escapeHtml(rec.meta)}</span>` : ''}
+          </span>
+          <span class="hit-type">${rec.type}</span>
+        </a>`;
+      }
+    }
+    resultsEl.innerHTML = html;
+    activeIndex = 0;
+    paintActive();
+  }
+
+  function paintActive() {
+    if (!resultsEl) return;
+    const els = Array.from(resultsEl.querySelectorAll<HTMLElement>('.search-hit'));
+    els.forEach((el, i) => {
+      const on = i === activeIndex;
+      el.classList.toggle('active', on);
+      if (on) el.scrollIntoView({ block: 'nearest' });
+    });
+  }
+
+  function open() {
+    if (!overlay || !input) return;
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    loadIndex().then(() => render(input.value));
+    input.focus();
+    input.select();
+    if (!input.value) render('');
+  }
+
+  function close() {
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  trigger?.addEventListener('click', open);
+  closeBtn?.addEventListener('click', close);
+
+  overlay?.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
+
+  input?.addEventListener('input', () => render(input.value));
+
+  input?.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (hits.length) activeIndex = (activeIndex + 1) % hits.length;
+      paintActive();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (hits.length) activeIndex = (activeIndex - 1 + hits.length) % hits.length;
+      paintActive();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const hit = hits[activeIndex];
+      if (hit) window.location.href = hit.url;
+    }
+  });
+
+  // Click is handled by the anchor href; just close after navigation intent.
+  resultsEl?.addEventListener('click', () => close());
+
+  document.addEventListener('keydown', (e) => {
+    const isOpen = overlay && !overlay.hidden;
+    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      isOpen ? close() : open();
+    } else if (e.key === '/' && !isOpen) {
+      const t = e.target as HTMLElement;
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable;
+      if (!typing) {
+        e.preventDefault();
+        open();
+      }
+    } else if (e.key === 'Escape' && isOpen) {
+      close();
+    }
+  });
+</script>
