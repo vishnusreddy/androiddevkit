@@ -56,20 +56,6 @@ async function verifyTurnstile(secret: string, token: string | undefined, ip: st
   return data.success === true;
 }
 
-/**
- * Diagnostic probe. Reports only booleans about which env the running Worker
- * sees - never the secret values themselves. Safe to leave in or remove.
- * Visit /api/experiences in a browser to check production config.
- */
-export const GET: APIRoute = async ({ locals }) => {
-  const env = locals.runtime?.env ?? ({} as Env);
-  return json({
-    githubTokenConfigured: Boolean(env.GITHUB_TOKEN),
-    turnstileConfigured: Boolean(env.TURNSTILE_SECRET_KEY),
-    runtimeAvailable: Boolean(locals.runtime),
-  });
-};
-
 export const POST: APIRoute = async ({ request, locals }) => {
   const env = locals.runtime?.env ?? ({} as Env);
 
@@ -176,14 +162,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } catch (err) {
     const status = err instanceof GitHubError ? 502 : 500;
     console.error('Experience submission failed:', err);
-    // TEMP: surface the underlying error to help debug production config.
-    // Remove `detail` once submissions are confirmed working.
-    return json(
-      {
-        error: 'Could not open the pull request. Please try again later.',
-        detail: err instanceof Error ? err.message : String(err),
-      },
-      status,
-    );
+    return json({ error: 'Could not open the pull request. Please try again later.' }, status);
   }
 };
