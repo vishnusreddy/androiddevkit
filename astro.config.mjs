@@ -3,6 +3,8 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
+import cloudflare from "@astrojs/cloudflare";
+
 // Update this to your production domain once the site is live.
 const SITE = 'https://androidevkit.com';
 
@@ -10,6 +12,7 @@ const SITE = 'https://androidevkit.com';
 export default defineConfig({
   site: SITE,
   integrations: [mdx(), sitemap()],
+
   markdown: {
     shikiConfig: {
       themes: {
@@ -19,4 +22,6 @@ export default defineConfig({
       wrap: true,
     },
   },
+
+  adapter: cloudflare()
 });
