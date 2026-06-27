@@ -1,0 +1,96 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TopicCard from '../../components/TopicCard.astro';
+import { SITE } from '../../consts';
+
+const topics = await getCollection('topics');
+const questions = await getCollection('questions');
+const countFor = (id: string) =>
+  questions.filter((q) => q.data.topic.id === id).length;
+
+// Group topics by category, preserving a sensible category order.
+const byCategory = new Map<string, typeof topics>();
+for (const t of [...topics].sort((a, b) => a.data.order - b.data.order)) {
+  const list = byCategory.get(t.data.category) ?? [];
+  list.push(t);
+  byCategory.set(t.data.category, list);
+}
+const categories = [...byCategory.entries()];
+---
+<BaseLayout
+  title="Topics"
+  description="Browse Android interview topics — Kotlin, Coroutines, Jetpack Compose, architecture, system design and more, each with a curated bank of questions."
+>
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Topics</span>
+      <h1>Every area, organized</h1>
+      <p class="lede text-soft">
+        Pick a topic and drill its questions, or skim everything in the
+        <a href="/questions/">full question bank</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="container topic-sections">
+    {categories.length === 0 && (
+      <div class="empty card">
+        <p>
+          No topics published yet. They land in the next phase — or add the
+          first one via a <a href={SITE.github}>pull request</a>.
+        </p>
+      </div>
+    )}
+    {categories.map(([category, list]) => (
+      <div class="cat-block">
+        <h2 class="cat-title">{category}</h2>
+        <div class="grid grid-3">
+          {list.map((t) => (
+            <TopicCard
+              href={`/topics/${t.id}/`}
+              title={t.data.title}
+              description={t.data.description}
+              category={t.data.category}
+              icon={t.data.icon}
+              count={countFor(t.id)}
+            />
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+  .page-head .lede {
+    max-width: 580px;
+    margin-top: 0.8rem;
+    font-size: 1.08rem;
+  }
+  .topic-sections {
+    padding-block: 2rem 1rem;
+  }
+  .cat-block {
+    margin-bottom: 3rem;
+  }
+  .cat-title {
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    padding-bottom: 0.7rem;
+    margin: 0 0 1.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .empty {
+    padding: 2rem;
+    text-align: center;
+  }
+  .empty p {
+    margin: 0;
+  }
+</style>

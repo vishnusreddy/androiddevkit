@@ -1,0 +1,96 @@
+---
+import Logo from './Logo.astro';
+import { NAV, SITE } from '../consts';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <Logo />
+      <p class="text-soft">{SITE.tagline}</p>
+      <p class="text-faint footer-oss">
+        Open source &amp; community-built. Found a mistake or want to add a
+        question? <a href={SITE.github} target="_blank" rel="noopener noreferrer">Send a PR</a>.
+      </p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer">
+      <h4>Explore</h4>
+      {NAV.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+
+    <nav class="footer-nav" aria-label="Project">
+      <h4>Project</h4>
+      <a href={SITE.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="/contribute/">Contribute</a>
+      <a href="/about/">About</a>
+      <a href="/rss.xml">RSS feed</a>
+    </nav>
+  </div>
+
+  <div class="container footer-bottom">
+    <span class="text-faint">© {year} {SITE.name}. MIT licensed.</span>
+    <span class="text-faint">Built with Astro · Deployed on Cloudflare Pages</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    margin-top: 4rem;
+    padding-block: 3rem 1.5rem;
+  }
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 2.5rem;
+  }
+  .footer-brand {
+    max-width: 340px;
+  }
+  .footer-brand p {
+    margin: 0.75rem 0 0;
+    font-size: 0.9rem;
+  }
+  .footer-oss {
+    font-size: 0.82rem !important;
+  }
+  .footer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .footer-nav h4 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin: 0 0 0.3rem;
+  }
+  .footer-nav a {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+  .footer-nav a:hover {
+    color: var(--accent);
+  }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem;
+  }
+  @media (max-width: 720px) {
+    .footer-inner {
+      grid-template-columns: 1fr 1fr;
+    }
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

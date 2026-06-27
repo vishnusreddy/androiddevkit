@@ -1,0 +1,48 @@
+---
+interface Props {
+  withText?: boolean;
+}
+const { withText = true } = Astro.props;
+---
+<a class="logo" href="/" aria-label="AndroidDevKit home">
+  <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <rect width="32" height="32" rx="8" fill="var(--accent)" />
+    <!-- stylized android head -->
+    <path
+      d="M9 18.5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1V24a2 2 0 0 1-2 2h-1.5v2.2a1.3 1.3 0 1 1-2.6 0V26h-2.8v2.2a1.3 1.3 0 1 1-2.6 0V26H11a2 2 0 0 1-2-2v-5.5Z"
+      fill="var(--on-accent)"
+    />
+    <path
+      d="M11.2 16.5a4.8 4.8 0 0 1 9.6 0H11.2Z"
+      fill="var(--on-accent)"
+    />
+    <circle cx="13.8" cy="13.6" r="0.8" fill="var(--accent)" />
+    <circle cx="18.2" cy="13.6" r="0.8" fill="var(--accent)" />
+    <path d="M12 11l-1.4-1.7M20 11l1.4-1.7" stroke="var(--on-accent)" stroke-width="1.1" stroke-linecap="round" />
+  </svg>
+  {withText && (
+    <span class="logo-text">Android<strong>DevKit</strong></span>
+  )}
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .logo:hover {
+    color: var(--ink);
+  }
+  .logo-text {
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+  }
+  .logo-text strong {
+    color: var(--accent);
+    font-weight: 800;
+  }
+</style>

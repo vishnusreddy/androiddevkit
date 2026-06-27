@@ -1,0 +1,74 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  description: string;
+  category: string;
+  icon: string;
+  count: number;
+}
+const { href, title, description, category, icon, count } = Astro.props;
+---
+<a class="card topic-card" href={href}>
+  <div class="topic-top">
+    <span class="topic-icon" aria-hidden="true">{icon}</span>
+    <span class="topic-cat">{category}</span>
+  </div>
+  <h3>{title}</h3>
+  <p>{description}</p>
+  <span class="topic-count">
+    {count} {count === 1 ? 'question' : 'questions'}
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </span>
+</a>
+
+<style>
+  .topic-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.4rem;
+    height: 100%;
+  }
+  .topic-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+  }
+  .topic-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: var(--accent-soft);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+  .topic-cat {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+  }
+  .topic-card h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1.15rem;
+  }
+  .topic-card p {
+    margin: 0;
+    font-size: 0.92rem;
+    flex: 1;
+  }
+  .topic-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 1.1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+</style>

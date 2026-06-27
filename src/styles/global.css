@@ -1,0 +1,328 @@
+/* =========================================================================
+   AndroidDevKit — design tokens & base styles
+   A restrained, professional palette. Android green is used as a precise
+   accent against deep slate-green neutrals — recognizable, not toy-like.
+   ========================================================================= */
+
+:root {
+  /* Light theme (default) */
+  --bg: #fbfcfb;
+  --surface: #ffffff;
+  --surface-2: #f1f5f2;
+  --surface-3: #e8efea;
+  --border: #e1e8e3;
+  --border-strong: #cdd8d0;
+
+  --ink: #11201a;
+  --ink-soft: #45564d;
+  --ink-faint: #6d7d74;
+
+  --accent: #0b8a4b;        /* accessible green for links / buttons on light */
+  --accent-hover: #097040;
+  --accent-bright: #3ddc84; /* the iconic Android green, used sparingly */
+  --accent-soft: #e7f7ee;
+  --on-accent: #ffffff;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 18px;
+
+  --shadow-sm: 0 1px 2px rgba(17, 32, 26, 0.05);
+  --shadow: 0 4px 20px -8px rgba(17, 32, 26, 0.18);
+  --shadow-lg: 0 18px 50px -20px rgba(17, 32, 26, 0.28);
+
+  --maxw: 1120px;
+  --maxw-prose: 760px;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code",
+    Menlo, Consolas, monospace;
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: #0a0e0c;
+  --surface: #111714;
+  --surface-2: #161e1a;
+  --surface-3: #1d2722;
+  --border: #243029;
+  --border-strong: #324338;
+
+  --ink: #e9f0eb;
+  --ink-soft: #a3b4aa;
+  --ink-faint: #7b8d83;
+
+  --accent: #3ddc84;
+  --accent-hover: #5be89a;
+  --accent-bright: #3ddc84;
+  --accent-soft: #112a1d;
+  --on-accent: #06140d;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 20px -8px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 18px 50px -20px rgba(0, 0, 0, 0.7);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+h3 {
+  font-size: 1.25rem;
+}
+
+p {
+  color: var(--ink-soft);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover {
+  color: var(--accent-hover);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+:not(pre) > code {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.12em 0.4em;
+  color: var(--ink);
+}
+
+pre {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+::selection {
+  background: var(--accent-bright);
+  color: #06140d;
+}
+
+/* ---- layout helpers ---- */
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+.prose {
+  max-width: var(--maxw-prose);
+}
+
+.section {
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---- buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.btn-primary:hover {
+  background: var(--accent-hover);
+  color: var(--on-accent);
+  transform: translateY(-1px);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--border-strong);
+}
+.btn-ghost:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+/* ---- badges / chips ---- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  text-transform: capitalize;
+}
+.badge-junior {
+  color: #1f7a3d;
+  background: #e7f7ee;
+  border-color: #b6e6cb;
+}
+.badge-mid {
+  color: #9a6b00;
+  background: #fdf2d8;
+  border-color: #f0dca0;
+}
+.badge-senior {
+  color: #a33a2a;
+  background: #fbe7e2;
+  border-color: #f1c2b6;
+}
+:root[data-theme='dark'] .badge-junior {
+  color: #6fe6a0;
+  background: #112a1d;
+  border-color: #1f4530;
+}
+:root[data-theme='dark'] .badge-mid {
+  color: #f0c869;
+  background: #2a2310;
+  border-color: #4a3d1a;
+}
+:root[data-theme='dark'] .badge-senior {
+  color: #f0a292;
+  background: #2a1512;
+  border-color: #4a2a23;
+}
+
+/* ---- cards ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.18s ease, transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+a.card:hover,
+.card-hover:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+
+.grid {
+  display: grid;
+  gap: 1.25rem;
+}
+.grid-2 {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+.grid-3 {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.text-soft {
+  color: var(--ink-soft);
+}
+.text-faint {
+  color: var(--ink-faint);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

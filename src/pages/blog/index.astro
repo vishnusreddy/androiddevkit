@@ -1,0 +1,133 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../consts';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+const [featured, ...rest] = posts;
+---
+<BaseLayout
+  title="Blog"
+  description="Guides, strategy, and deep-dives on preparing for Android engineering interviews and switching jobs."
+>
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Blog</span>
+      <h1>Guides &amp; strategy</h1>
+      <p class="lede text-soft">
+        Longer-form articles on preparing for Android interviews, negotiating
+        offers, and growing as a mobile engineer.
+      </p>
+    </div>
+  </section>
+
+  <section class="container blog-wrap">
+    {posts.length === 0 && (
+      <div class="empty card">
+        <h3>No posts yet</h3>
+        <p class="text-soft">
+          Articles land in the next phase. Want to write one? Open a
+          <a href={SITE.github}>pull request</a>.
+        </p>
+      </div>
+    )}
+
+    {featured && (
+      <a class="card featured-post" href={`/blog/${featured.id}/`}>
+        <span class="eyebrow">Latest</span>
+        <h2>{featured.data.title}</h2>
+        <p class="text-soft">{featured.data.description}</p>
+        <div class="post-meta">
+          <span>{featured.data.author}</span>
+          <span class="dot-sep">·</span>
+          <span>{fmt(featured.data.date)}</span>
+        </div>
+      </a>
+    )}
+
+    {rest.length > 0 && (
+      <div class="grid grid-2 post-grid">
+        {rest.map((p) => (
+          <a class="card post-card" href={`/blog/${p.id}/`}>
+            <h3>{p.data.title}</h3>
+            <p class="text-soft">{p.data.description}</p>
+            <div class="post-meta">
+              <span>{p.data.author}</span>
+              <span class="dot-sep">·</span>
+              <span>{fmt(p.data.date)}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+  .page-head .lede {
+    max-width: 560px;
+    margin-top: 0.7rem;
+    font-size: 1.06rem;
+  }
+  .blog-wrap {
+    padding-block: 1.5rem 1rem;
+  }
+  .featured-post {
+    display: block;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    background:
+      radial-gradient(circle at 100% 0%, var(--accent-soft), transparent 50%),
+      var(--surface);
+  }
+  .featured-post h2 {
+    margin: 0.6rem 0 0.6rem;
+  }
+  .featured-post p {
+    margin: 0;
+    max-width: 640px;
+  }
+  .post-grid {
+    margin-top: 0;
+  }
+  .post-card {
+    padding: 1.6rem;
+  }
+  .post-card h3 {
+    margin: 0 0 0.5rem;
+  }
+  .post-card p {
+    margin: 0;
+    font-size: 0.94rem;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.1rem;
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+  }
+  .dot-sep {
+    opacity: 0.6;
+  }
+  .empty {
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+  .empty h3 {
+    margin: 0 0 0.5rem;
+  }
+  .empty p {
+    margin: 0;
+  }
+</style>

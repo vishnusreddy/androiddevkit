@@ -1,0 +1,189 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../consts';
+
+const experiences = (await getCollection('experiences'))
+  .filter((e) => !e.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+const outcomeClass = (o: string) =>
+  o === 'Offer'
+    ? 'out-offer'
+    : o === 'Rejected'
+      ? 'out-reject'
+      : 'out-neutral';
+---
+<BaseLayout
+  title="Interview Experiences"
+  description="Real, first-hand Android interview experiences — the rounds, the questions asked, and what the hiring bar actually looked like."
+>
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Interview experiences</span>
+      <h1>What the loop actually looked like</h1>
+      <p class="lede text-soft">
+        First-hand write-ups from real Android interviews — rounds, questions,
+        and outcomes. Share yours via a
+        <a href={SITE.github} target="_blank" rel="noopener noreferrer">pull request</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="container exp-wrap">
+    {experiences.length > 0 ? (
+      <div class="exp-list">
+        {experiences.map((e) => (
+          <a class="card exp-card" href={`/experiences/${e.id}/`}>
+            <div class="exp-main">
+              <div class="exp-top">
+                <h3>{e.data.company}</h3>
+                <span class:list={['out-badge', outcomeClass(e.data.outcome)]}>
+                  {e.data.outcome}
+                </span>
+              </div>
+              <p class="exp-role text-soft">
+                {e.data.role} · {e.data.level}
+                {e.data.location && ` · ${e.data.location}`}
+                {e.data.remote && ' · Remote'}
+              </p>
+              {e.data.tags.length > 0 && (
+                <div class="exp-tags">
+                  {e.data.tags.slice(0, 4).map((t) => <span class="exp-tag">#{t}</span>)}
+                </div>
+              )}
+            </div>
+            <div class="exp-meta">
+              <span class="text-faint">{fmt(e.data.date)}</span>
+              <span class="text-faint">{e.data.author}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <div class="empty card">
+        <h3>No experiences shared yet</h3>
+        <p class="text-soft">
+          This section is powered entirely by the community. If you have
+          interviewed for an Android role recently, your write-up could be the
+          one that helps someone else.
+        </p>
+        <a class="btn btn-primary" href="/contribute/">Share your experience</a>
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+  .page-head .lede {
+    max-width: 600px;
+    margin-top: 0.7rem;
+    font-size: 1.06rem;
+  }
+  .exp-wrap {
+    padding-block: 1.5rem 1rem;
+  }
+  .exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .exp-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.3rem 1.5rem;
+  }
+  .exp-top {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .exp-card h3 {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+  .exp-role {
+    margin: 0.35rem 0 0;
+    font-size: 0.9rem;
+  }
+  .exp-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.7rem;
+  }
+  .exp-tag {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+  }
+  .exp-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+  .out-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+  }
+  .out-offer {
+    color: #1f7a3d;
+    background: #e7f7ee;
+    border-color: #b6e6cb;
+  }
+  .out-reject {
+    color: #a33a2a;
+    background: #fbe7e2;
+    border-color: #f1c2b6;
+  }
+  .out-neutral {
+    color: var(--ink-soft);
+    background: var(--surface-2);
+  }
+  :global(:root[data-theme='dark']) .out-offer {
+    color: #6fe6a0;
+    background: #112a1d;
+    border-color: #1f4530;
+  }
+  :global(:root[data-theme='dark']) .out-reject {
+    color: #f0a292;
+    background: #2a1512;
+    border-color: #4a2a23;
+  }
+  .empty {
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+  .empty h3 {
+    margin: 0 0 0.5rem;
+  }
+  .empty p {
+    margin: 0 auto 1.4rem;
+    max-width: 460px;
+  }
+  @media (max-width: 560px) {
+    .exp-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+    .exp-meta {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.8rem;
+    }
+  }
+</style>

@@ -1,0 +1,172 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import QuestionItem from '../../components/QuestionItem.astro';
+import { DIFFICULTY_ORDER, DIFFICULTY_LABEL, SITE } from '../../consts';
+
+export const getStaticPaths = (async () => {
+  const topics = await getCollection('topics');
+  return topics.map((topic) => ({
+    params: { id: topic.id },
+    props: { topic },
+  }));
+}) satisfies GetStaticPaths;
+
+const { topic } = Astro.props;
+
+const allQuestions = await getCollection('questions');
+const questions = allQuestions
+  .filter((q) => q.data.topic.id === topic.id)
+  .sort(
+    (a, b) =>
+      DIFFICULTY_ORDER.indexOf(a.data.difficulty) -
+      DIFFICULTY_ORDER.indexOf(b.data.difficulty)
+  );
+
+// Pre-render each answer body.
+const rendered = await Promise.all(
+  questions.map(async (q) => ({ q, Content: (await render(q)).Content }))
+);
+
+const counts = DIFFICULTY_ORDER.map((d) => ({
+  level: d,
+  label: DIFFICULTY_LABEL[d],
+  n: questions.filter((q) => q.data.difficulty === d).length,
+})).filter((c) => c.n > 0);
+
+const { Content: Overview } = await render(topic);
+const hasOverview = topic.body && topic.body.trim().length > 0;
+---
+<BaseLayout title={topic.data.title} description={topic.data.description}>
+  <section class="page-head">
+    <div class="container">
+      <a class="back" href="/topics/">← All topics</a>
+      <div class="t-head">
+        <span class="t-icon" aria-hidden="true">{topic.data.icon}</span>
+        <div>
+          <span class="eyebrow">{topic.data.category}</span>
+          <h1>{topic.data.title}</h1>
+        </div>
+      </div>
+      <p class="lede text-soft">{topic.data.description}</p>
+      <div class="t-counts">
+        <span class="count-pill">{questions.length} questions</span>
+        {counts.map((c) => (
+          <span class="count-pill">{c.n} {c.label.toLowerCase()}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="container topic-body">
+    {hasOverview && (
+      <div class="overview prose">
+        <Overview />
+      </div>
+    )}
+
+    {questions.length > 0 ? (
+      <div class="q-list">
+        {rendered.map(({ q, Content }) => (
+          <QuestionItem
+            id={q.id}
+            question={q.data.question}
+            difficulty={q.data.difficulty}
+            tags={q.data.tags}
+          >
+            <Content />
+          </QuestionItem>
+        ))}
+      </div>
+    ) : (
+      <div class="empty card">
+        <h3>No questions here yet</h3>
+        <p class="text-soft">
+          Be the first to add a question for {topic.data.title}. Drop a markdown
+          file into <code>src/content/questions/</code> and open a pull request.
+        </p>
+        <a class="btn btn-primary" href="/contribute/">How to contribute</a>
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2rem, 5vw, 3rem) 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .back {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .back:hover {
+    color: var(--accent);
+  }
+  .t-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .t-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    background: var(--accent-soft);
+    font-size: 1.7rem;
+    flex-shrink: 0;
+  }
+  .t-head h1 {
+    margin: 0.15rem 0 0;
+  }
+  .page-head .lede {
+    margin: 1rem 0 0;
+    max-width: 640px;
+    font-size: 1.05rem;
+  }
+  .t-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+  }
+  .count-pill {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+  }
+
+  .topic-body {
+    padding-block: 2.2rem 1rem;
+    max-width: 860px;
+  }
+  .overview {
+    margin-bottom: 2.2rem;
+    padding-bottom: 1.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .q-list {
+    margin-top: 0.5rem;
+  }
+  .empty {
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+  .empty h3 {
+    margin: 0 0 0.5rem;
+  }
+  .empty p {
+    margin: 0 auto 1.4rem;
+    max-width: 440px;
+  }
+</style>

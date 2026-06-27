@@ -1,0 +1,148 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const getStaticPaths = (async () => {
+  const experiences = await getCollection('experiences');
+  return experiences
+    .filter((e) => !e.data.draft)
+    .map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const fmt = d.date.toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+---
+<BaseLayout
+  title={`${d.company} — Interview Experience`}
+  description={`A first-hand Android interview experience at ${d.company} for a ${d.level} ${d.role} role.`}
+>
+  <article class="container exp-article">
+    <a class="back" href="/experiences/">← All experiences</a>
+
+    <header class="exp-header">
+      <h1>{d.company}</h1>
+      <p class="exp-sub text-soft">
+        {d.role} · {d.level}
+        {d.location && ` · ${d.location}`}
+        {d.remote && ' · Remote'}
+      </p>
+      <div class="exp-facts">
+        <span class:list={['fact', d.outcome === 'Offer' ? 'fact-good' : d.outcome === 'Rejected' ? 'fact-bad' : '']}>
+          <strong>Outcome</strong> {d.outcome}
+        </span>
+        <span class="fact"><strong>Interviewed</strong> {fmt}</span>
+        <span class="fact"><strong>By</strong> {d.author}</span>
+      </div>
+      {d.tags.length > 0 && (
+        <div class="exp-tags">
+          {d.tags.map((t) => <span class="exp-tag">#{t}</span>)}
+        </div>
+      )}
+    </header>
+
+    <div class="prose exp-body">
+      <Content />
+    </div>
+
+    <footer class="exp-footer">
+      <p class="text-faint">
+        Interviewed somewhere recently? Help the next person —
+        <a href="/contribute/">share your experience</a>.
+      </p>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .exp-article {
+    max-width: var(--maxw-prose);
+    padding-block: clamp(2rem, 5vw, 3rem) 2rem;
+  }
+  .back {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .back:hover {
+    color: var(--accent);
+  }
+  .exp-header {
+    padding: 1.4rem 0 1.8rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .exp-header h1 {
+    margin: 1rem 0 0.3rem;
+  }
+  .exp-sub {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  .exp-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.3rem;
+  }
+  .fact {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
+  }
+  .fact strong {
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-right: 0.3rem;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+  .fact-good {
+    border-color: #b6e6cb;
+    background: #e7f7ee;
+  }
+  .fact-bad {
+    border-color: #f1c2b6;
+    background: #fbe7e2;
+  }
+  :global(:root[data-theme='dark']) .fact-good {
+    border-color: #1f4530;
+    background: #112a1d;
+  }
+  :global(:root[data-theme='dark']) .fact-bad {
+    border-color: #4a2a23;
+    background: #2a1512;
+  }
+  .exp-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .exp-tag {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+  .exp-body :global(h2) {
+    margin-top: 2rem;
+  }
+  .exp-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .exp-footer p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+</style>

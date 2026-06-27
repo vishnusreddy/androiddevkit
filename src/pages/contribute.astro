@@ -1,0 +1,235 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+
+const steps = [
+  {
+    n: 1,
+    title: 'Fork & clone',
+    body: 'Fork the repo on GitHub and clone it locally. Run npm install && npm run dev to preview your changes.',
+  },
+  {
+    n: 2,
+    title: 'Add a content file',
+    body: 'Drop a Markdown file into the right folder under src/content/. Each question, post, or experience is a single file — copy a template below.',
+  },
+  {
+    n: 3,
+    title: 'Open a pull request',
+    body: 'Commit on a new branch, push to your fork, and open a PR. A maintainer reviews for accuracy and merges. Cloudflare Pages deploys automatically.',
+  },
+];
+
+const questionTemplate = `---
+question: "What is structured concurrency in Kotlin coroutines?"
+topic: coroutines        # must match a topic id in src/content/topics/
+difficulty: mid          # junior | mid | senior
+tags: ["coroutines", "scopes"]
+author: "Your Name"      # optional
+---
+
+Structured concurrency ties the lifetime of coroutines to a **scope**...
+
+\\\`\\\`\\\`kotlin
+viewModelScope.launch {
+    val user = async { repo.user() }
+    val feed = async { repo.feed() }
+    render(user.await(), feed.await())
+}
+\\\`\\\`\\\`
+
+Explain trade-offs, edge cases, and what an interviewer is really probing for.`;
+
+const experienceTemplate = `---
+company: "Acme Corp"
+role: "Senior Android Engineer"
+level: "Senior"          # Intern | Junior | Mid | Senior | Staff+
+location: "Bengaluru, India"
+remote: false
+outcome: "Offer"         # Offer | Rejected | Withdrew | In Progress | No Response
+date: 2026-05-12
+author: "Anonymous"
+tags: ["compose", "system-design"]
+---
+
+## Round 1 — Phone screen
+What they asked, how it went...
+
+## Round 2 — Coding
+...
+
+## Takeaways
+What you'd do differently next time.`;
+
+const topicTemplate = `---
+title: "Coroutines"
+description: "Structured concurrency, scopes, dispatchers, and Flow."
+category: "Kotlin"       # groups topics on the index page
+order: 10                # lower sorts first
+icon: "⟳"
+---
+
+Optional overview shown above the questions on the topic page.`;
+---
+<BaseLayout
+  title="Contribute"
+  description="AndroidDevKit is open source and community-built. Learn how to add interview questions, topics, blog posts, and your own interview experiences via GitHub pull requests."
+>
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Open source</span>
+      <h1>Contribute to AndroidDevKit</h1>
+      <p class="lede text-soft">
+        Everything here is community-built and lives on
+        <a href={SITE.github} target="_blank" rel="noopener noreferrer">GitHub</a>.
+        No CMS, no login — just Markdown files and pull requests. Here is how to
+        add yours.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href={SITE.github} target="_blank" rel="noopener noreferrer">Open the repository</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container guide">
+    <div class="steps">
+      {steps.map((s) => (
+        <div class="card step">
+          <span class="step-n">{s.n}</span>
+          <h3>{s.title}</h3>
+          <p class="text-soft">{s.body}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="tpl">
+      <h2 id="add-question">Add an interview question</h2>
+      <p class="text-soft">
+        Create a file in <code>src/content/questions/</code>, e.g.
+        <code>structured-concurrency.md</code>. One question per file keeps
+        reviews fast.
+      </p>
+      <pre><code>{questionTemplate}</code></pre>
+    </div>
+
+    <div class="tpl">
+      <h2 id="add-experience">Share an interview experience</h2>
+      <p class="text-soft">
+        Create a file in <code>src/content/experiences/</code>. Anonymize
+        anything you need to — <code>author: "Anonymous"</code> is welcome.
+      </p>
+      <pre><code>{experienceTemplate}</code></pre>
+    </div>
+
+    <div class="tpl">
+      <h2 id="add-topic">Add a new topic</h2>
+      <p class="text-soft">
+        Topics are the spine of the site. Add one in
+        <code>src/content/topics/</code> — the filename (minus extension)
+        becomes the topic <code>id</code> that questions reference.
+      </p>
+      <pre><code>{topicTemplate}</code></pre>
+    </div>
+
+    <div class="tpl">
+      <h2 id="write-post">Write a blog post</h2>
+      <p class="text-soft">
+        Longer guides go in <code>src/content/blog/</code> with
+        <code>title</code>, <code>description</code>, and <code>date</code>
+        frontmatter. Markdown and MDX are both supported.
+      </p>
+    </div>
+
+    <div class="card guidelines">
+      <h2>Review guidelines</h2>
+      <ul>
+        <li><strong>Be accurate.</strong> Answers should be correct and current — link sources where it helps.</li>
+        <li><strong>Be respectful.</strong> Never name individual interviewers, and don't post proprietary or NDA-bound material.</li>
+        <li><strong>Be concise.</strong> Explain the <em>why</em>, not just the <em>what</em> — that's what interviewers probe for.</li>
+        <li><strong>One thing per PR.</strong> Smaller pull requests get reviewed and merged faster.</li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+  .page-head .lede {
+    max-width: 620px;
+    margin-top: 0.8rem;
+    font-size: 1.08rem;
+  }
+  .hero-cta {
+    margin-top: 1.6rem;
+  }
+  .guide {
+    padding-block: 2rem 1rem;
+    max-width: 860px;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+  .step {
+    padding: 1.5rem;
+  }
+  .step-n {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .step h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1.05rem;
+  }
+  .step p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  .tpl {
+    margin-bottom: 2.5rem;
+  }
+  .tpl h2 {
+    scroll-margin-top: 90px;
+  }
+  .tpl p {
+    margin: 0.5rem 0 1rem;
+  }
+  .tpl pre {
+    font-size: 0.82rem;
+  }
+  .guidelines {
+    padding: 1.8rem 2rem;
+    margin-top: 1rem;
+  }
+  .guidelines h2 {
+    margin-top: 0;
+  }
+  .guidelines ul {
+    margin: 1rem 0 0;
+    padding-left: 1.1rem;
+    color: var(--ink-soft);
+  }
+  .guidelines li {
+    margin-bottom: 0.6rem;
+  }
+  .guidelines strong {
+    color: var(--ink);
+  }
+  @media (max-width: 680px) {
+    .steps {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

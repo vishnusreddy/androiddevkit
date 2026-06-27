@@ -1,0 +1,169 @@
+---
+import Logo from './Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { NAV, SITE } from '../consts';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <Logo />
+
+    <nav class="nav-desktop" aria-label="Primary">
+      {NAV.map((item) => (
+        <a
+          href={item.href}
+          class:list={['nav-link', { active: isActive(item.href) }]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="header-actions">
+      <a
+        class="github-link"
+        href={SITE.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="GitHub repository"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.2c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.39 1.24-3.23-.13-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.25 2.87.12 3.18.77.84 1.23 1.92 1.23 3.23 0 4.62-2.81 5.64-5.49 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58A12.01 12.01 0 0 0 24 12.5C24 5.87 18.63.5 12 .5z" />
+        </svg>
+      </a>
+      <ThemeToggle />
+      <button id="menu-btn" class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" class="nav-mobile" aria-label="Mobile" hidden>
+    {NAV.map((item) => (
+      <a
+        href={item.href}
+        class:list={['nav-link', { active: isActive(item.href) }]}
+      >
+        {item.label}
+      </a>
+    ))}
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: saturate(160%) blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: 64px;
+  }
+  .nav-desktop {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+    margin-right: 0.5rem;
+  }
+  .nav-link {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding: 0.45rem 0.7rem;
+    border-radius: 8px;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .nav-link:hover {
+    color: var(--ink);
+    background: var(--surface-2);
+  }
+  .nav-link.active {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    color: var(--ink-soft);
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .github-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .nav-mobile {
+    display: none;
+    flex-direction: column;
+    padding: 0.5rem 1.25rem 1rem;
+    border-top: 1px solid var(--border);
+    gap: 0.15rem;
+  }
+  .nav-mobile .nav-link {
+    padding: 0.7rem 0.5rem;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 820px) {
+    .nav-desktop {
+      display: none;
+    }
+    .github-link {
+      display: none;
+    }
+    .menu-btn {
+      display: inline-flex;
+    }
+    .nav-mobile[data-open='true'] {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('menu-btn');
+  const nav = document.getElementById('mobile-nav');
+  btn?.addEventListener('click', () => {
+    const open = nav?.getAttribute('data-open') === 'true';
+    const next = !open;
+    nav?.setAttribute('data-open', String(next));
+    if (next) {
+      nav?.removeAttribute('hidden');
+    }
+    btn.setAttribute('aria-expanded', String(next));
+  });
+</script>

@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Page not found">
+  <section class="container nf">
+    <span class="code">404</span>
+    <h1>This screen crashed</h1>
+    <p class="text-soft">
+      The page you're looking for doesn't exist — maybe it was refactored away.
+      Let's get you back on track.
+    </p>
+    <div class="cta">
+      <a class="btn btn-primary" href="/">Back home</a>
+      <a class="btn btn-ghost" href="/topics/">Browse topics</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    text-align: center;
+    padding-block: clamp(4rem, 12vw, 8rem);
+    max-width: 520px;
+  }
+  .code {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.04em;
+  }
+  .nf h1 {
+    margin: 0.5rem 0 0.8rem;
+  }
+  .cta {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+</style>

@@ -1,0 +1,106 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('blog');
+  return posts
+    .filter((p) => !p.data.draft)
+    .map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const fmt = d.date.toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+---
+<BaseLayout title={d.title} description={d.description}>
+  <article class="container post-article">
+    <a class="back" href="/blog/">← All posts</a>
+
+    <header class="post-header">
+      <h1>{d.title}</h1>
+      <p class="post-desc text-soft">{d.description}</p>
+      <div class="post-byline">
+        <span>{d.author}</span>
+        <span class="dot-sep">·</span>
+        <time datetime={d.date.toISOString()}>{fmt}</time>
+      </div>
+      {d.tags.length > 0 && (
+        <div class="post-tags">
+          {d.tags.map((t) => <span class="post-tag">#{t}</span>)}
+        </div>
+      )}
+    </header>
+
+    <div class="prose post-body">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post-article {
+    max-width: var(--maxw-prose);
+    padding-block: clamp(2rem, 5vw, 3rem) 2rem;
+  }
+  .back {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .back:hover {
+    color: var(--accent);
+  }
+  .post-header {
+    padding: 1.4rem 0 1.8rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .post-header h1 {
+    margin: 1rem 0 0.6rem;
+  }
+  .post-desc {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  .post-byline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+    font-size: 0.88rem;
+    color: var(--ink-faint);
+  }
+  .dot-sep {
+    opacity: 0.6;
+  }
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+  }
+  .post-tag {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+  .post-body :global(h2) {
+    margin-top: 2.2rem;
+  }
+  .post-body :global(h3) {
+    margin-top: 1.6rem;
+  }
+  .post-body :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    margin: 1.5rem 0;
+    padding: 0.2rem 0 0.2rem 1.2rem;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+</style>

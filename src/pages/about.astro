@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+---
+<BaseLayout
+  title="About"
+  description="About AndroidDevKit — an open-source, community-driven destination for Android engineers preparing to switch jobs."
+>
+  <section class="container about prose">
+    <span class="eyebrow">About</span>
+    <h1>Built by Android devs, for Android devs</h1>
+
+    <p class="lede text-soft">
+      {SITE.name} exists because Android interview prep is scattered across
+      outdated blog posts, dead Gists, and paywalled courses. This is one
+      maintained, open place for all of it.
+    </p>
+
+    <h2>What you'll find here</h2>
+    <ul>
+      <li><strong>Topic guides</strong> — Kotlin, Coroutines, Compose, Jetpack, architecture, system design, and more, each with a curated question bank.</li>
+      <li><strong>A real question bank</strong> — standalone questions tagged by difficulty, with answers that explain the reasoning an interviewer is after.</li>
+      <li><strong>Interview experiences</strong> — first-hand write-ups of real loops, so you know what to expect before you walk in.</li>
+      <li><strong>Guides &amp; strategy</strong> — longer articles on preparing, negotiating, and growing as a mobile engineer.</li>
+    </ul>
+
+    <h2>Why open source</h2>
+    <p class="text-soft">
+      The best interview material comes from people who just sat in the chair —
+      and it goes stale fast. Keeping everything on
+      <a href={SITE.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      means anyone can fix an answer, add a question, or share an experience in
+      minutes, and the whole community benefits. No paywall, no sign-up, ever.
+    </p>
+
+    <h2>The stack</h2>
+    <p class="text-soft">
+      Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>,
+      content authored in Markdown, and deployed on Cloudflare Pages. It's fast,
+      static, and free to run — so it can stay that way.
+    </p>
+
+    <div class="cta">
+      <a class="btn btn-primary" href="/contribute/">Contribute</a>
+      <a class="btn btn-ghost" href="/topics/">Start studying</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: var(--maxw-prose);
+    padding-block: clamp(2.5rem, 6vw, 4rem) 2rem;
+  }
+  .about h1 {
+    margin: 0.6rem 0 0;
+  }
+  .lede {
+    font-size: 1.15rem;
+    margin-top: 1.2rem;
+  }
+  .about h2 {
+    margin-top: 2.4rem;
+  }
+  .about ul {
+    color: var(--ink-soft);
+    padding-left: 1.1rem;
+  }
+  .about li {
+    margin-bottom: 0.6rem;
+  }
+  .about strong {
+    color: var(--ink);
+  }
+  .cta {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+</style>

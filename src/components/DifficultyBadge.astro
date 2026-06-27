@@ -1,0 +1,9 @@
+---
+import { DIFFICULTY_LABEL } from '../consts';
+interface Props {
+  level: string;
+}
+const { level } = Astro.props;
+const label = DIFFICULTY_LABEL[level] ?? level;
+---
+<span class:list={['badge', `badge-${level}`]}>{label}</span>

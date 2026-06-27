@@ -1,0 +1,130 @@
+---
+import DifficultyBadge from './DifficultyBadge.astro';
+interface Props {
+  id: string;
+  question: string;
+  difficulty: string;
+  tags?: string[];
+  topicTitle?: string;
+  topicHref?: string;
+  /** When true the answer starts expanded. */
+  open?: boolean;
+}
+const {
+  id,
+  question,
+  difficulty,
+  tags = [],
+  topicTitle,
+  topicHref,
+  open = false,
+} = Astro.props;
+---
+<details class="qitem" id={id} open={open}>
+  <summary>
+    <div class="q-head">
+      <span class="q-text">{question}</span>
+      <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <div class="q-meta">
+      <DifficultyBadge level={difficulty} />
+      {topicTitle && topicHref && (
+        <a class="q-topic" href={topicHref}>{topicTitle}</a>
+      )}
+      {tags.map((t) => <span class="q-tag">#{t}</span>)}
+    </div>
+  </summary>
+  <div class="q-answer prose">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .qitem {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    margin-bottom: 0.85rem;
+    overflow: hidden;
+    transition: border-color 0.15s ease;
+    scroll-margin-top: 90px;
+  }
+  .qitem[open] {
+    border-color: var(--border-strong);
+  }
+  .qitem:hover {
+    border-color: var(--accent);
+  }
+  summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .q-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .q-text {
+    font-weight: 600;
+    font-size: 1.02rem;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  .chev {
+    flex-shrink: 0;
+    color: var(--ink-faint);
+    margin-top: 2px;
+    transition: transform 0.2s ease;
+  }
+  .qitem[open] .chev {
+    transform: rotate(180deg);
+  }
+  .q-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .q-topic {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.18rem 0.6rem;
+  }
+  .q-topic:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .q-tag {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+  }
+  .q-answer {
+    padding: 0.25rem 1.25rem 1.35rem;
+    border-top: 1px solid var(--border);
+    margin-top: -0.2rem;
+  }
+  .q-answer :global(p:first-child) {
+    margin-top: 0.9rem;
+  }
+  .q-answer :global(p) {
+    color: var(--ink-soft);
+  }
+  .q-answer :global(li) {
+    color: var(--ink-soft);
+  }
+  .q-answer :global(pre) {
+    margin: 1rem 0;
+  }
+</style>
