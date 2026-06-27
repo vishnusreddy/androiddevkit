@@ -1,6 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import SearchBar from './SearchBar.astro';
 import { NAV, SITE } from '../consts';
 
 const path = Astro.url.pathname;
@@ -23,6 +24,7 @@ const isActive = (href: string) =>
     </nav>
 
     <div class="header-actions">
+      <SearchBar />
       <a
         class="github-link"
         href={SITE.github}

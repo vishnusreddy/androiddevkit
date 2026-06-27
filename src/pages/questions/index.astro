@@ -281,5 +281,24 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
     })
   );
 
+  // When arriving via a deep link (e.g. from global search: /questions/#<id>),
+  // clear filters so the target isn't hidden, then open and reveal it.
+  function revealFromHash() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (!target) return;
+    diff = 'all';
+    segBtns.forEach((b) => b.classList.toggle('active', b.dataset.diff === 'all'));
+    if (topicSel) topicSel.value = 'all';
+    if (search) search.value = '';
+    apply();
+    if (target instanceof HTMLDetailsElement) target.open = true;
+    target.scrollIntoView({ block: 'start' });
+  }
+
+  window.addEventListener('hashchange', revealFromHash);
+
   apply();
+  revealFromHash();
 </script>
