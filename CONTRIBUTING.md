@@ -94,6 +94,33 @@ frontmatter. Markdown and MDX are both supported.
 - **Be concise.** Explain reasoning, not just definitions.
 - **Run it locally.** `npm run build` should pass before you open the PR.
 
+## On-site submission form (maintainers)
+
+Visitors can submit an interview experience without GitHub via the form at
+`/contribute/experience/`. It POSTs to `src/pages/api/experiences.ts` (a
+Cloudflare Worker route), which validates the input, optionally verifies a
+Cloudflare Turnstile token, and opens a PR through the GitHub API for review.
+
+It needs these set on the **Worker** (Cloudflare → Workers & Pages →
+`androiddevkit` → Settings → Variables and Secrets):
+
+| Name | Required | Notes |
+| --- | --- | --- |
+| `GITHUB_TOKEN` | yes | Fine-grained token, Contents + Pull requests: R/W on this repo. |
+| `TURNSTILE_SECRET_KEY` | no | Enables spam protection. Skipped when unset. |
+| `GITHUB_OWNER` / `GITHUB_REPO` / `GITHUB_BASE_BRANCH` | no | Override repo defaults (owner/repo come from `SITE.github`; base defaults to `main`). |
+
+The public site key (`PUBLIC_TURNSTILE_SITE_KEY`) is a **build-time** var, set in
+Cloudflare's build settings or a `.env` file - not a secret.
+
+> **Secrets apply per build/version.** If you add or change a secret, re-deploy
+> (push a commit or re-run the build) so the running version picks it up -
+> otherwise the endpoint returns `Submissions are not configured on the server yet.`
+
+For local testing, copy `.dev.vars.example` to `.dev.vars`, fill in
+`GITHUB_TOKEN`, and run `npm run preview` (which runs `wrangler dev`). Plain
+`npm run dev` has no runtime secrets, so the endpoint will 503 there by design.
+
 ## Code of conduct
 
 Be kind and constructive. We're all here to help each other grow.
