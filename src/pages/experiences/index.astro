@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { SITE } from '../../consts';
 
 const experiences = (await getCollection('experiences'))
   .filter((e) => !e.data.draft)
@@ -27,8 +26,8 @@ const outcomeClass = (o: string) =>
       <h1>What the interview was actually like</h1>
       <p class="lede text-soft">
         First-hand write-ups from real Android interviews - rounds, questions,
-        and outcomes. Share yours via a
-        <a href={SITE.github} target="_blank" rel="noopener noreferrer">pull request</a>.
+        and outcomes. <a href="/contribute/experience/">Share yours</a> - no
+        GitHub account needed.
       </p>
     </div>
   </section>

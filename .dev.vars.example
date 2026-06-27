@@ -1,0 +1,23 @@
+# Secrets for the on-site "Share your experience" form (src/pages/api/experiences.ts).
+# Copy this file to `.dev.vars` for local `wrangler dev`, and set the same values
+# in production with `wrangler secret put <NAME>` (or the Cloudflare dashboard).
+
+# Fine-grained GitHub token scoped to this repo with:
+#   - Contents: Read and write
+#   - Pull requests: Read and write
+# Create at https://github.com/settings/personal-access-tokens  (REQUIRED)
+GITHUB_TOKEN=
+
+# Optional overrides. Defaults are derived from SITE.github in src/consts.ts.
+# GITHUB_OWNER=vishnusreddy
+# GITHUB_REPO=androiddevkit
+# GITHUB_BASE_BRANCH=main
+
+# Cloudflare Turnstile secret key for spam protection. If unset, the captcha
+# step is skipped entirely (fine for local dev). Get one at:
+#   https://dash.cloudflare.com/?to=/:account/turnstile
+# TURNSTILE_SECRET_KEY=
+
+# The matching PUBLIC site key is a build-time var, not a secret. Set it in a
+# `.env` file or your Cloudflare build settings so the form renders the widget:
+# PUBLIC_TURNSTILE_SITE_KEY=
