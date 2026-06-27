@@ -47,6 +47,8 @@ const blog = defineCollection({
     date: z.coerce.date(),
     author: z.string().default('AndroidDevKit'),
     tags: z.array(z.string()).default([]),
+    heroImage: z.string().optional(),
+    heroAlt: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });

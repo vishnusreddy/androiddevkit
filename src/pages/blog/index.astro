@@ -40,13 +40,25 @@ const [featured, ...rest] = posts;
 
     {featured && (
       <a class="card featured-post" href={`/blog/${featured.id}/`}>
-        <span class="eyebrow">Latest</span>
-        <h2>{featured.data.title}</h2>
-        <p class="text-soft">{featured.data.description}</p>
-        <div class="post-meta">
-          <span>{featured.data.author}</span>
-          <span class="dot-sep">·</span>
-          <span>{fmt(featured.data.date)}</span>
+        {featured.data.heroImage && (
+          <img
+            class="featured-image"
+            src={featured.data.heroImage}
+            alt={featured.data.heroAlt ?? ''}
+            width="1672"
+            height="941"
+            decoding="async"
+          />
+        )}
+        <div class="featured-copy">
+          <span class="eyebrow">Latest</span>
+          <h2>{featured.data.title}</h2>
+          <p class="text-soft">{featured.data.description}</p>
+          <div class="post-meta">
+            <span>{featured.data.author}</span>
+            <span class="dot-sep">·</span>
+            <span>{fmt(featured.data.date)}</span>
+          </div>
         </div>
       </a>
     )}
@@ -55,12 +67,25 @@ const [featured, ...rest] = posts;
       <div class="grid grid-2 post-grid">
         {rest.map((p) => (
           <a class="card post-card" href={`/blog/${p.id}/`}>
-            <h3>{p.data.title}</h3>
-            <p class="text-soft">{p.data.description}</p>
-            <div class="post-meta">
-              <span>{p.data.author}</span>
-              <span class="dot-sep">·</span>
-              <span>{fmt(p.data.date)}</span>
+            {p.data.heroImage && (
+              <img
+                class="post-image"
+                src={p.data.heroImage}
+                alt=""
+                width="1672"
+                height="941"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+            <div class="post-copy">
+              <h3>{p.data.title}</h3>
+              <p class="text-soft">{p.data.description}</p>
+              <div class="post-meta">
+                <span>{p.data.author}</span>
+                <span class="dot-sep">·</span>
+                <span>{fmt(p.data.date)}</span>
+              </div>
             </div>
           </a>
         ))}
@@ -82,12 +107,23 @@ const [featured, ...rest] = posts;
     padding-block: 1.5rem 1rem;
   }
   .featured-post {
-    display: block;
-    padding: 2rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+    overflow: hidden;
     margin-bottom: 1.5rem;
     background:
       radial-gradient(circle at 100% 0%, var(--accent-soft), transparent 50%),
       var(--surface);
+  }
+  .featured-copy {
+    padding: clamp(1.5rem, 4vw, 2.4rem);
+    align-self: center;
+  }
+  .featured-image {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    object-fit: cover;
   }
   .featured-post h2 {
     margin: 0.6rem 0 0.6rem;
@@ -100,7 +136,17 @@ const [featured, ...rest] = posts;
     margin-top: 0;
   }
   .post-card {
-    padding: 1.6rem;
+    overflow: hidden;
+  }
+  .post-copy {
+    padding: 1.35rem 1.5rem 1.5rem;
+  }
+  .post-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border);
   }
   .post-card h3 {
     margin: 0 0 0.5rem;
@@ -129,5 +175,14 @@ const [featured, ...rest] = posts;
   }
   .empty p {
     margin: 0;
+  }
+  @media (max-width: 760px) {
+    .featured-post {
+      grid-template-columns: 1fr;
+    }
+    .featured-image {
+      min-height: 0;
+      aspect-ratio: 16 / 9;
+    }
   }
 </style>

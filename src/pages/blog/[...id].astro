@@ -38,6 +38,18 @@ const fmt = d.date.toLocaleDateString('en-US', {
       )}
     </header>
 
+    {d.heroImage && (
+      <figure class="post-hero">
+        <img
+          src={d.heroImage}
+          alt={d.heroAlt ?? ''}
+          width="1672"
+          height="941"
+          decoding="async"
+        />
+      </figure>
+    )}
+
     <div class="prose post-body">
       <Content />
     </div>
@@ -60,7 +72,7 @@ const fmt = d.date.toLocaleDateString('en-US', {
   .post-header {
     padding: 1.4rem 0 1.8rem;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   .post-header h1 {
     margin: 1rem 0 0.6rem;
@@ -90,6 +102,18 @@ const fmt = d.date.toLocaleDateString('en-US', {
     font-size: 0.8rem;
     color: var(--ink-faint);
   }
+  .post-hero {
+    margin: 0 0 2.2rem;
+  }
+  .post-hero img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+  }
   .post-body :global(h2) {
     margin-top: 2.2rem;
   }
@@ -102,5 +126,84 @@ const fmt = d.date.toLocaleDateString('en-US', {
     padding: 0.2rem 0 0.2rem 1.2rem;
     color: var(--ink-soft);
     font-style: italic;
+  }
+  .post-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.35rem 0;
+    font-size: 0.9rem;
+  }
+  .post-body :global(th),
+  .post-body :global(td) {
+    padding: 0.7rem 0.75rem;
+    border: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .post-body :global(th) {
+    color: var(--ink);
+    background: var(--surface-2);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .post-body :global(.article-flow) {
+    display: flex;
+    align-items: stretch;
+    gap: 0.45rem;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+  }
+  .post-body :global(.flow-step) {
+    flex: 1 0 118px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+  }
+  .post-body :global(.flow-step > span) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 800;
+  }
+  .post-body :global(.flow-step strong) {
+    color: var(--ink);
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+  .post-body :global(.flow-step small) {
+    color: var(--ink-faint);
+    font-size: 0.7rem;
+    line-height: 1.35;
+  }
+  .post-body :global(.flow-arrow) {
+    align-self: center;
+    color: var(--accent);
+    font-weight: 800;
+  }
+  @media (max-width: 620px) {
+    .post-hero {
+      margin-inline: -0.35rem;
+    }
+    .post-body :global(table) {
+      display: block;
+      overflow-x: auto;
+      white-space: normal;
+    }
   }
 </style>
