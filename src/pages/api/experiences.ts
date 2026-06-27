@@ -56,6 +56,20 @@ async function verifyTurnstile(secret: string, token: string | undefined, ip: st
   return data.success === true;
 }
 
+/**
+ * Diagnostic probe. Reports only booleans about which env the running Worker
+ * sees - never the secret values themselves. Safe to leave in or remove.
+ * Visit /api/experiences in a browser to check production config.
+ */
+export const GET: APIRoute = async ({ locals }) => {
+  const env = locals.runtime?.env ?? ({} as Env);
+  return json({
+    githubTokenConfigured: Boolean(env.GITHUB_TOKEN),
+    turnstileConfigured: Boolean(env.TURNSTILE_SECRET_KEY),
+    runtimeAvailable: Boolean(locals.runtime),
+  });
+};
+
 export const POST: APIRoute = async ({ request, locals }) => {
   const env = locals.runtime?.env ?? ({} as Env);
 
