@@ -88,6 +88,12 @@ const pageSchema = type === 'article'
     <meta name="generator" content={Astro.generator} />
     <meta name="author" content={SITE.author} />
 
+    <!-- Google AdSense -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5864821304414128"
+      crossorigin="anonymous"></script>
+
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
