@@ -1,28 +1,43 @@
 ---
-question: "What are the three phases of Jetpack Compose?"
+question: "What are the three Compose phases, and why do they matter?"
 topic: jetpack-compose
 difficulty: mid
+order: 30
+starred: true
+section: "State and recomposition"
 tags: ["compose", "phases", "performance"]
 ---
 
-Compose renders a frame in three phases, in order:
+Compose updates UI through three main phases:
 
-1. **Composition** - *what* to show. Compose runs your `@Composable` functions to build/update the UI tree (the description of widgets). This is where recomposition happens.
-2. **Layout** - *where* to put it. Each node is measured and placed: the tree is measured top-down, then children are placed. This is the measure/place pass.
-3. **Drawing** - *how* it looks. Each node draws itself onto the canvas.
+1. **Composition** decides what UI exists by running composable functions.
+2. **Layout** measures each element and decides where it goes.
+3. **Drawing** renders pixels.
 
-```
-State change → Composition → Layout → Drawing → frame on screen
-```
-
-**Why this matters for performance:** a state change doesn't always need all three phases. If you can **defer a state read to a later phase**, you skip the earlier ones:
+The useful part is not memorizing the order. It is knowing that state reads are
+tracked in the phase where they happen. A change can restart only the phase that
+needs new work.
 
 ```kotlin
-// ❌ reads scroll offset in composition → recomposes every scroll frame
-Box(Modifier.offset(x = scrollState.value.dp))
+// Reads offset during composition
+Box(Modifier.offset(x = scrollOffset.dp, y = 0.dp))
 
-// ✅ reads it in the layout phase via a lambda → skips composition
-Box(Modifier.offset { IntOffset(scrollState.value, 0) })
+// Reads offset during layout
+Box(
+    Modifier.offset {
+        IntOffset(x = scrollOffset, y = 0)
+    }
+)
 ```
 
-The lambda version of `offset`/`graphicsLayer`/`drawBehind` reads the value during **layout/draw**, not composition - so a changing offset re-runs only layout/draw, not your composable. This deferred-read technique is a core Compose performance pattern.
+For rapidly changing pixel values, the lambda overload can avoid composition
+and go straight to layout. A value used only for color or a canvas operation can
+often be read in a draw modifier.
+
+Do not force every state read into a later phase. If a value changes which
+composables exist, composition is exactly where it belongs. If it changes size,
+layout still has to run.
+
+**A solid performance answer:** identify what the state changes, find where it is
+read, and check which phase actually needs to rerun. Then measure in a release
+build before rewriting code.

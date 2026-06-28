@@ -1,23 +1,41 @@
 ---
-question: "remember vs rememberSaveable - what's the difference?"
+question: "What is the difference between remember and rememberSaveable?"
 topic: jetpack-compose
 difficulty: junior
-tags: ["compose", "state"]
+order: 20
+starred: true
+section: "State fundamentals"
+tags: ["compose", "state", "remember"]
 ---
 
-Both cache a value across recompositions, but they survive different events.
-
-- **`remember`** keeps a value across **recompositions**. It's lost on configuration change (rotation) or process death, because the composition is recreated.
-- **`rememberSaveable`** also persists across **configuration changes and process death** by writing into the saved-instance-state `Bundle`.
+Both keep a value across recompositions. The difference is what happens when the
+composition itself is recreated.
 
 ```kotlin
-// Survives recomposition only
-var query by remember { mutableStateOf("") }
-
-// Also survives rotation / process death
+var menuOpen by remember { mutableStateOf(false) }
 var query by rememberSaveable { mutableStateOf("") }
 ```
 
-Use `rememberSaveable` for UI state the user would be annoyed to lose - text fields, scroll position, expanded/collapsed flags. Use `remember` for things that are cheap to recreate or derived from other state.
+- `remember` stores the value in the current composition. It is forgotten when
+  that call leaves the composition, including after a configuration change that
+  recreates the Activity.
+- `rememberSaveable` also saves a compatible value through Android's saved-state
+  mechanism. It can restore after configuration change and system-initiated
+  process recreation.
 
-**Gotcha:** `rememberSaveable` can only store types that go in a `Bundle` (primitives, `Parcelable`, etc.). For a custom type, provide a `Saver`.
+Use `remember` for objects that are cheap to recreate or only meaningful while
+the composable is present. Use `rememberSaveable` for small pieces of UI state a
+user would notice losing, such as entered text, a selected tab, or an expanded
+section.
+
+There are two limits worth saying out loud:
+
+1. `rememberSaveable` is not permanent storage. It does not replace Room or
+   DataStore, and it will not restore state after the user deliberately removes
+   the task.
+2. The value must be saveable. Common primitives and `Parcelable` values work;
+   custom types may need a `Saver`.
+
+Also check the owner. Screen data and business state usually belong in a
+`ViewModel`, with essential restoration inputs kept in `SavedStateHandle`.
+`rememberSaveable` is mainly for UI element state.

@@ -2,6 +2,9 @@
 question: "How do you implement infinite scroll / pagination in Compose?"
 topic: jetpack-compose
 difficulty: mid
+order: 360
+starred: false
+section: "Lists"
 tags: ["compose", "paging", "lazycolumn"]
 ---
 

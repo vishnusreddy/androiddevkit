@@ -2,6 +2,9 @@
 question: "How do you mix Compose and the View system in both directions?"
 topic: jetpack-compose
 difficulty: mid
+order: 350
+starred: false
+section: "App integration"
 tags: ["compose", "interop", "views"]
 ---
 

@@ -1,33 +1,50 @@
 ---
-question: "How do you manage TextField state in Compose, and what is the recomposition concern?"
+question: "How should text field state be managed in modern Compose?"
 topic: jetpack-compose
 difficulty: mid
-tags: ["compose", "textfield", "state"]
+order: 110
+starred: false
+section: "Everyday UI"
+tags: ["compose", "textfield", "state", "input"]
 ---
 
-A `TextField` is **stateless** - it shows the `value` you give it and reports edits via `onValueChange`. You own the state (state hoisting):
+Compose has value-based and state-based text field APIs. Know both, because many
+codebases still use the value-based form:
 
 ```kotlin
 var text by rememberSaveable { mutableStateOf("") }
-TextField(value = text, onValueChange = { text = it })
+
+TextField(
+    value = text,
+    onValueChange = { text = it },
+)
 ```
 
-`rememberSaveable` keeps the text across rotation/process death.
+This is controlled input. The field reports an edit, and the caller must provide
+the updated value on the next composition. Delaying that round trip through
+asynchronous `ViewModel` work can cause lost edits or cursor jumps.
 
-**The recomposition concern:** every keystroke updates the state, which recomposes the `TextField` (and anything reading `text`). For most screens that's fine. Problems appear when:
-- `onValueChange` routes through a **ViewModel + StateFlow** round-trip - the extra hop can cause **lag or cursor jumps** if updates are async or debounced incorrectly. Keep the text state close to the field (often local `rememberSaveable`), and send only *derived* actions (search query) to the ViewModel via `debounce`.
-- Heavy work runs in `onValueChange` - keep it light; do validation/search reactively (e.g. `snapshotFlow { text }.debounce(300)`).
-
-**The modern API - `TextFieldState`** (Compose Foundation `BasicTextField` with state-based API) manages text, selection, and composition more robustly than the value/callback pair, avoiding a class of cursor/state desync bugs:
+For new code, state-based fields are designed to manage text, selection, and IME
+composition together:
 
 ```kotlin
-val state = rememberTextFieldState()
-BasicTextField(state = state)
-// read with state.text
+val textState = rememberTextFieldState()
+
+TextField(
+    state = textState,
+    lineLimits = TextFieldLineLimits.SingleLine,
+)
 ```
 
-**Key points:**
-- Hoist text with `rememberSaveable` for config-change survival.
-- Don't introduce async latency between keystroke and displayed value - it causes janky typing/cursor jumps.
-- Prefer the newer `TextFieldState` API for complex inputs; it handles selection/IME edge cases.
-- Use `KeyboardOptions`/`KeyboardActions` for input type and IME actions, and `visualTransformation` for masking (passwords, currency).
+`rememberTextFieldState()` includes save and restore support. State-based APIs
+also separate input changes from display transformation, which avoids changing
+the backing text just to format what the user sees.
+
+Keep immediate editing state close enough to the field to update synchronously.
+Send meaningful events or a debounced query to the `ViewModel` when business
+logic needs it. Do not run network requests or heavy validation directly in an
+edit callback.
+
+For an interview, also mention selection, IME composition, keyboard actions,
+accessibility, and restoration. A text field stores more than a `String`, which
+is why complex input benefits from `TextFieldState`.

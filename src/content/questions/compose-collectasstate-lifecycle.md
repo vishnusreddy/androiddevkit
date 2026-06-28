@@ -1,30 +1,56 @@
 ---
-question: "How should Compose collect state from a ViewModel?"
+question: "How should a Compose screen collect ViewModel state?"
 topic: jetpack-compose
 difficulty: mid
-tags: ["compose", "state", "lifecycle", "viewmodel"]
+order: 60
+starred: true
+section: "State and recomposition"
+tags: ["compose", "state", "lifecycle", "viewmodel", "flow"]
 ---
 
-You convert the flow into Compose `State` so reads trigger recomposition:
+On Android, the usual choice is `collectAsStateWithLifecycle()`:
 
 ```kotlin
 @Composable
-fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    FeedContent(state)
+fun FeedRoute(viewModel: FeedViewModel = viewModel()) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    FeedScreen(
+        state = uiState,
+        onRetry = viewModel::retry,
+    )
 }
 ```
 
-**`collectAsState()` vs `collectAsStateWithLifecycle()`:**
-- **`collectAsState()`** collects the flow as long as the composable is in **composition** - *including when the app is in the background*. It keeps the upstream active and doing work even when the screen isn't visible.
-- **`collectAsStateWithLifecycle()`** (from `lifecycle-runtime-compose`) collects only while the lifecycle is at least **STARTED**, using `repeatOnLifecycle` under the hood. It stops collecting in the background and resumes in the foreground.
+It converts a `Flow` into Compose `State`, so reading `uiState` participates in
+recomposition. Collection is active only while the lifecycle is at least the
+configured state, `STARTED` by default.
 
-**Why the lifecycle-aware one is the recommended default on Android:**
-- Avoids wasted work, CPU, and battery while backgrounded.
-- Lets the upstream (`stateIn(WhileSubscribed(5000))`) actually stop, since collection is properly cancelled.
-- Prevents updates to UI state that isn't visible.
+`collectAsState()` is tied to the composition but not to an Android lifecycle.
+That makes it appropriate for platform-independent Compose code. On Android, it
+can keep collecting while an Activity is stopped but its composition still
+exists.
 
-**Notes:**
-- `collectAsState()` is still appropriate for **non-Android / multiplatform** Compose where there's no lifecycle.
-- Pass an explicit `lifecycle`/`minActiveState` if you need a state other than STARTED.
-- It pairs naturally with the `stateIn(..., WhileSubscribed(5000), ...)` upstream pattern in the ViewModel.
+The lifecycle-aware version pairs well with a `StateFlow` exposed by the
+`ViewModel`:
+
+```kotlin
+val uiState = repository.feed
+    .map(::toUiState)
+    .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = FeedUiState.Loading,
+    )
+```
+
+When the screen stops collecting, `WhileSubscribed` can eventually stop the
+upstream work as well.
+
+Keep the route and content split in mind. A route collects state and connects
+the `ViewModel`; a stateless `FeedScreen` receives values and callbacks. That
+keeps previews and UI tests simple.
+
+For one-off events, do not automatically put consumable flags into the state and
+reset them from composition. Model durable screen state as state, and handle
+transient events with a lifecycle-aware design suited to their delivery needs.

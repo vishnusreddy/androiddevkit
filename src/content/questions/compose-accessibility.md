@@ -2,6 +2,9 @@
 question: "How do you make a Compose screen accessible?"
 topic: jetpack-compose
 difficulty: mid
+order: 300
+starred: false
+section: "Everyday UI"
 tags: ["compose", "accessibility", "semantics"]
 ---
 

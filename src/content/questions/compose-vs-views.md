@@ -1,25 +1,39 @@
 ---
-question: "When would you choose Compose or the View system?"
+question: "When would you choose Compose, Views, or a mixed UI?"
 topic: jetpack-compose
 difficulty: mid
-tags: ["compose", "views", "tradeoffs"]
+order: 100
+starred: false
+section: "Mental model"
+tags: ["compose", "views", "tradeoffs", "migration"]
 ---
 
-**Compose advantages:**
-- **Less code, one language** - UI in Kotlin, no XML, no `findViewById`/ViewBinding boilerplate.
-- **State-driven** - `UI = f(state)` eliminates manual view-syncing bugs and inconsistent UI.
-- **Powerful, simpler customization** - custom layouts, animations, and theming are far easier than custom Views/`onDraw`.
-- **Reusable** via slot APIs; great tooling (Previews, live edit).
+For a new Android screen, Compose is usually the practical default. It gives the
+team state-driven UI, Kotlin-only components, flexible layouts, previews, and a
+strong modern ecosystem.
 
-**Compose costs / caveats:**
-- **Maturity gaps** - some specialized widgets and third-party SDKs still ship Views (maps, ads, some media) - handled via `AndroidView` interop.
-- **Performance footguns** - easy to cause excessive recomposition if you don't understand stability/phases; needs Baseline Profiles to match View startup.
-- **Learning curve** - recomposition, state, and effects are a different mental model.
-- **Min SDK / size** - adds runtime; fine for most apps but a consideration for tiny ones.
+That does not make every rewrite sensible. Keep or embed Views when:
 
-**When you might stick with Views:**
-- A large existing **View codebase** - migrate incrementally (Compose in a `ComposeView`) rather than rewrite.
-- Heavy reliance on a **View-only SDK** with no Compose equivalent.
-- Team without Compose experience on a tight timeline.
+- a mature screen works well and has little reason to change
+- a required SDK or specialist component only provides a View
+- migration risk is larger than the product value
+- the team needs to ship a focused change before it can invest in migration
 
-**The honest interview answer:** Compose is Google's recommended default for new UI in 2024+, and most shops are adopting it. But it's not all-or-nothing - interop lets Compose and Views coexist, so the real-world answer is usually "Compose for new screens, interop for the rest," not a big-bang rewrite.
+Interop lets the decision happen one boundary at a time:
+
+- Put Compose inside an existing hierarchy with `ComposeView`.
+- Put a View inside Compose with `AndroidView` or `AndroidViewBinding`.
+- In a Fragment, choose a composition disposal strategy that follows the
+  Fragment view lifecycle.
+
+The cost of a mixed screen is not just rendering. It includes two testing
+models, focus and accessibility handoff, lifecycle ownership, nested scrolling,
+theming, and debugging across the boundary. Keep the boundary deliberate and
+small.
+
+A senior answer should be based on constraints, not toolkit loyalty. Consider
+the age of the code, team experience, SDK dependencies, performance evidence,
+test coverage, and expected lifetime of the screen.
+
+"Compose for new work, migrate existing UI when the value justifies it" is a
+reasonable default. A big-bang rewrite is rarely the only option.

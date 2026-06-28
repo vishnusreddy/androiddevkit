@@ -2,6 +2,9 @@
 question: "How do you build a custom layout in Compose? Explain the measure/place model."
 topic: jetpack-compose
 difficulty: senior
+order: 110
+starred: false
+section: "Layout and modifiers"
 tags: ["compose", "layout", "custom-layout"]
 ---
 

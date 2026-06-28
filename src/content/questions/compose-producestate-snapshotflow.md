@@ -2,6 +2,9 @@
 question: "What do produceState and snapshotFlow do?"
 topic: jetpack-compose
 difficulty: senior
+order: 130
+starred: false
+section: "Effects and lifecycle"
 tags: ["compose", "side-effects", "produceState", "snapshotFlow"]
 ---
 

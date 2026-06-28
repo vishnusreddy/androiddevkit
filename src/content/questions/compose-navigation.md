@@ -1,33 +1,65 @@
 ---
-question: "How do navigation, arguments, and ViewModels work in Compose?"
+question: "How should navigation, arguments, and ViewModels be handled in Compose?"
 topic: jetpack-compose
 difficulty: mid
-tags: ["compose", "navigation"]
+order: 80
+starred: true
+section: "App integration"
+tags: ["compose", "navigation", "viewmodel"]
 ---
 
-Navigation-Compose models the app as a **`NavHost`** with composable destinations addressed by routes, driven by a **`NavController`**.
+Keep navigation at the edge of a screen. A reusable screen should receive
+callbacks, not a `NavController`:
 
 ```kotlin
-val navController = rememberNavController()
-NavHost(navController, startDestination = "feed") {
-    composable("feed") {
-        FeedScreen(onItemClick = { id -> navController.navigate("detail/$id") })
+@Composable
+fun FeedScreen(
+    state: FeedUiState,
+    onOpenArticle: (String) -> Unit,
+) {
+    ArticleList(
+        articles = state.articles,
+        onArticleClick = { article -> onOpenArticle(article.id) },
+    )
+}
+```
+
+The navigation host connects that callback to the back stack. In Navigation
+Compose, prefer type-safe routes where the project version supports them:
+
+```kotlin
+@Serializable data object Feed
+@Serializable data class Article(val articleId: String)
+
+NavHost(navController, startDestination = Feed) {
+    composable<Feed> {
+        FeedRoute(
+            onOpenArticle = { id ->
+                navController.navigate(Article(id))
+            },
+        )
     }
-    composable(
-        "detail/{itemId}",
-        arguments = listOf(navArgument("itemId") { type = NavType.StringType }),
-    ) { backStackEntry ->
-        val id = backStackEntry.arguments?.getString("itemId")!!
-        DetailScreen(id)
+
+    composable<Article> { backStackEntry ->
+        val route = backStackEntry.toRoute<Article>()
+        ArticleRoute(articleId = route.articleId)
     }
 }
 ```
 
-Key points:
-- **Routes** are strings (older API) or **type-safe** classes/objects with Kotlin Serialization (newer Navigation 2.8+ type-safe routes) - prefer type-safe to avoid stringly-typed bugs.
-- **Arguments** are declared with `navArgument` and read from the `backStackEntry`. Pass **IDs**, not whole objects - large/complex args don't belong in the back stack.
-- **ViewModel scoping** - `hiltViewModel()` inside a `composable {}` scopes the ViewModel to that **NavBackStackEntry**, so it survives recomposition and config changes but is cleared when you pop the destination.
-- **Nested graphs** group related destinations; a ViewModel scoped to a nested graph (`hiltViewModel(graphEntry)`) can be **shared** across screens in a flow (e.g. a multi-step checkout).
-- **Results between screens** - use the previous entry's `SavedStateHandle`, or share a graph-scoped ViewModel, rather than passing data forward and back through routes.
+Pass a small identifier, not a whole domain object. The destination can load the
+current data from its repository or `ViewModel`. This avoids stale copies and
+keeps the back stack's saved state small.
 
-**Common gotchas:** don't pass non-trivial objects as nav args (serialize an ID instead); use `popUpTo`/`launchSingleTop` to control the back stack; and remember each destination's ViewModel lifecycle is tied to its back stack entry.
+A destination's `ViewModel` is normally scoped to its `NavBackStackEntry`. It
+survives recomposition and configuration change, then clears when that entry is
+removed. Scope a shared `ViewModel` to a parent graph only when several
+destinations genuinely own one flow, such as checkout.
+
+Senior discussion points include deep links, multiple back stacks, process
+recreation, and result delivery. The principle stays the same: make back-stack
+ownership explicit and keep composables testable without a navigation runtime.
+
+Navigation libraries are evolving, including Navigation 3 for Compose-first
+apps. State the version and architecture you have used rather than mixing APIs
+from different generations in one example.

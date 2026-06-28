@@ -2,6 +2,9 @@
 question: "How does theming work in Compose?"
 topic: jetpack-compose
 difficulty: junior
+order: 60
+starred: false
+section: "Everyday UI"
 tags: ["compose", "theming", "material"]
 ---
 

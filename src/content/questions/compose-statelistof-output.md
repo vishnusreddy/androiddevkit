@@ -2,6 +2,9 @@
 question: "Why does changing a MutableList sometimes fail to update Compose?"
 topic: jetpack-compose
 difficulty: mid
+order: 150
+starred: false
+section: "State and recomposition"
 tags: ["compose", "output-based", "state", "collections"]
 ---
 
@@ -36,5 +39,3 @@ Button(onClick = { items = items + "b" }) { Text("Add") }  // ✅ new list → n
 Assigning a **new** list changes `.value`, so Compose detects it.
 
 **Why this happens:** `MutableState` schedules recomposition when `.value` is **set to a different value** (by `equals`). Mutating the contained list doesn't change the reference, so nothing fires. Either make the container observable (`mutableStateListOf`) or always assign a **new** immutable instance.
-
-**Bonus:** the immutable approach also keeps the parameter **stable** for child composables - better for skipping recomposition.

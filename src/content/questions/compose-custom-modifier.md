@@ -2,6 +2,9 @@
 question: "How do you write a custom Modifier, and why prefer Modifier.Node over composed { }?"
 topic: jetpack-compose
 difficulty: senior
+order: 120
+starred: false
+section: "Layout and modifiers"
 tags: ["compose", "modifier", "performance"]
 ---
 
