@@ -2,6 +2,9 @@
 question: "What is a recomposition scope, and what is the 'donut-hole skipping' optimization?"
 topic: jetpack-compose
 difficulty: senior
+order: 30
+starred: false
+section: "Performance and runtime"
 tags: ["compose", "recomposition", "performance"]
 ---
 

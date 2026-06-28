@@ -2,6 +2,9 @@
 question: "What does the key() composable do, and why is identity important in Compose?"
 topic: jetpack-compose
 difficulty: mid
+order: 130
+starred: false
+section: "State and recomposition"
 tags: ["compose", "key", "state", "identity"]
 ---
 

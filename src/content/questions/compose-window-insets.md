@@ -2,6 +2,9 @@
 question: "How do you handle window insets and edge-to-edge in Compose?"
 topic: jetpack-compose
 difficulty: mid
+order: 380
+starred: false
+section: "Everyday UI"
 tags: ["compose", "insets", "edge-to-edge"]
 ---
 

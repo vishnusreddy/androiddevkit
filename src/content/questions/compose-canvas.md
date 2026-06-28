@@ -2,6 +2,9 @@
 question: "How do you do custom drawing in Compose? (Canvas, drawBehind, drawWithCache)"
 topic: jetpack-compose
 difficulty: mid
+order: 320
+starred: false
+section: "Layout and modifiers"
 tags: ["compose", "canvas", "drawing"]
 ---
 

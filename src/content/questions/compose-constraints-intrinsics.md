@@ -2,6 +2,9 @@
 question: "What are constraints, intrinsic measurements, and BoxWithConstraints?"
 topic: jetpack-compose
 difficulty: senior
+order: 100
+starred: false
+section: "Layout and modifiers"
 tags: ["compose", "layout", "constraints"]
 ---
 

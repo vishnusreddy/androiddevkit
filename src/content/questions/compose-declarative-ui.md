@@ -1,29 +1,53 @@
 ---
-question: "What is declarative UI, and how is Compose different from the View system?"
+question: "What does declarative UI mean, and how is Compose different from Views?"
 topic: jetpack-compose
 difficulty: junior
+order: 10
+starred: true
+section: "Mental model"
 tags: ["compose", "fundamentals", "declarative"]
 ---
 
-**Declarative** means you describe *what* the UI should look like for a given state, and the framework figures out *how* to update the screen. You don't hold view references and mutate them; you re-describe the UI when state changes.
+In a declarative UI, you describe what the screen should look like for the
+current state. When the state changes, Compose runs the relevant composables
+again and updates the UI.
 
 ```kotlin
-// Declarative (Compose): describe UI as a function of state
 @Composable
 fun Counter(count: Int, onIncrement: () -> Unit) {
-    Button(onClick = onIncrement) { Text("Count: $count") }
+    Button(onClick = onIncrement) {
+        Text("Count: $count")
+    }
 }
 ```
 
-vs the **imperative** View system, where you fetch a widget and mutate it:
-```kotlin
-button.text = "Count: $count"   // you manually keep the view in sync
+`Counter` does not find a text view and change its text. It simply says, "for
+this value of `count`, show this button." A useful shorthand is:
+
+```text
+UI = f(state)
 ```
 
-Key differences:
-- **No XML / no findViewById** - UI is Kotlin functions.
-- **State-driven** - when state changes, Compose **recomposes** (re-invokes the affected composables) instead of you manually updating views.
-- **No view hierarchy inflation** - composables don't map 1:1 to `View` objects; Compose maintains its own tree and renders directly.
-- **Single source of truth** - the UI can't drift out of sync with state because it's derived from state.
+The View system is usually imperative. Code keeps references to widgets and
+updates them directly:
 
-**A useful mental model:** `UI = f(state)`. Instead of imperatively poking widgets when data changes, you make the UI a pure function of state and let recomposition handle updates.
+```kotlin
+countText.text = "Count: $count"
+incrementButton.isEnabled = count < 10
+```
+
+The practical differences are:
+
+- Compose UI is written in Kotlin rather than inflated from XML.
+- State is the source of truth. The UI is derived from it.
+- A composable call does not correspond one-to-one with an Android `View`.
+- Recomposition can rerun a function, skip it, or discard the result, so the
+  composable body should be free of uncontrolled side effects.
+
+An interview answer should not stop at "Compose has no XML." The important
+change is ownership: application state drives the UI, instead of UI objects
+quietly becoming another place where state lives.
+
+**Senior follow-up:** declarative does not mean Compose rebuilds the whole screen
+for every change. The runtime tracks state reads and can recompose a small scope,
+then skip layout or drawing work that is still valid.

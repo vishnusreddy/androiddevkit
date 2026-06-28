@@ -2,6 +2,9 @@
 question: "What is CompositionLocal? When should you use it (and when not)?"
 topic: jetpack-compose
 difficulty: mid
+order: 330
+starred: false
+section: "State and recomposition"
 tags: ["compose", "compositionlocal", "theming"]
 ---
 

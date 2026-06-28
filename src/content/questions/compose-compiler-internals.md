@@ -2,6 +2,9 @@
 question: "How does the Compose compiler work? What is positional memoization and the slot table?"
 topic: jetpack-compose
 difficulty: senior
+order: 90
+starred: false
+section: "Performance and runtime"
 tags: ["compose", "internals", "compiler"]
 ---
 

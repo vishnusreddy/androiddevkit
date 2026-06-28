@@ -2,6 +2,9 @@
 question: "What are the main animation APIs in Compose, and how do you pick one?"
 topic: jetpack-compose
 difficulty: mid
+order: 310
+starred: false
+section: "Everyday UI"
 tags: ["compose", "animation"]
 ---
 

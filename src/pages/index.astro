@@ -29,22 +29,39 @@ const stats = [
 
 const features = [
   {
-    icon: '◳',
+    iconPaths: [
+      'M4 19.5A2.5 2.5 0 0 1 6.5 17H20',
+      'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z',
+    ],
     title: 'Topic-by-topic guides',
     body: 'Coroutines, Compose, Jetpack, DI, system design - organized so you can drill the exact areas you are rusty on.',
   },
   {
-    icon: '❓',
+    iconPaths: [
+      'M9.09 9a3 3 0 1 1 5.83 1c0 2-3 2-3 4',
+      'M12 17h.01',
+      'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z',
+    ],
     title: 'A real question bank',
     body: 'Every question is a standalone, reviewable entry tagged by difficulty - filter from junior warm-ups to senior deep-dives.',
   },
   {
-    icon: '◎',
+    iconPaths: [
+      'M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z',
+      'M8 9h8',
+      'M8 13h5',
+    ],
     title: 'Real interview experiences',
     body: 'First-hand write-ups of actual interviews: rounds, questions asked, and what the hiring bar looked like. Names can be withheld.',
   },
   {
-    icon: '⌥',
+    iconPaths: [
+      'M18 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+      'M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 0 6Z',
+      'M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 0 6Z',
+      'M6 9v9',
+      'M9 3h5a4 4 0 0 1 4 4v5',
+    ],
     title: 'Open source, forever',
     body: 'No paywall, no sign-up. The whole thing lives on GitHub - fix a typo or add your experience with a single pull request.',
   },
@@ -135,9 +152,15 @@ const features = [
       <div class="grid grid-2 feature-grid">
         {features.map((f) => (
           <div class="card feature-card">
-            <span class="feature-icon" aria-hidden="true">{f.icon}</span>
-            <h3>{f.title}</h3>
-            <p>{f.body}</p>
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                {f.iconPaths.map((path) => <path d={path} />)}
+              </svg>
+            </span>
+            <div class="feature-copy">
+              <h3>{f.title}</h3>
+              <p>{f.body}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -297,29 +320,59 @@ $ git push origin add-coroutines-q
     border-block: 1px solid var(--border);
   }
   .feature-grid {
-    margin-top: 2.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 1080px;
+    margin: 2.5rem auto 0;
+    gap: 1.5rem;
   }
   .feature-card {
-    padding: 1.6rem;
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    align-items: start;
+    gap: 1.15rem;
+    min-height: 176px;
+    padding: 2rem;
   }
   .feature-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
     background: var(--accent-soft);
     color: var(--accent);
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
+  }
+  .feature-icon svg {
+    width: 25px;
+    height: 25px;
   }
   .feature-card h3 {
-    margin: 0 0 0.45rem;
+    margin: 0.15rem 0 0.45rem;
   }
   .feature-card p {
     margin: 0;
     font-size: 0.94rem;
+  }
+
+  @media (max-width: 760px) {
+    .feature-grid {
+      grid-template-columns: 1fr;
+      max-width: 560px;
+    }
+    .feature-card {
+      min-height: 0;
+    }
+  }
+
+  @media (max-width: 460px) {
+    .feature-card {
+      display: block;
+      padding: 1.5rem;
+    }
+    .feature-icon {
+      margin-bottom: 1rem;
+    }
   }
 
   .empty {

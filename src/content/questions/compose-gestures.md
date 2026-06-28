@@ -2,6 +2,9 @@
 question: "How do you handle gestures and touch input in Compose?"
 topic: jetpack-compose
 difficulty: mid
+order: 340
+starred: false
+section: "Everyday UI"
 tags: ["compose", "gestures", "input"]
 ---
 

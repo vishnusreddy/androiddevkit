@@ -2,6 +2,9 @@
 question: "How do you use @Preview effectively, and what makes a composable preview-friendly?"
 topic: jetpack-compose
 difficulty: junior
+order: 70
+starred: false
+section: "Tooling"
 tags: ["compose", "preview", "tooling"]
 ---
 

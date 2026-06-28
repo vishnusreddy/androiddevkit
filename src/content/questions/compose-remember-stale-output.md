@@ -2,6 +2,9 @@
 question: "Why can remember return stale data when an input changes?"
 topic: jetpack-compose
 difficulty: mid
+order: 140
+starred: false
+section: "State and recomposition"
 tags: ["compose", "output-based", "remember", "keys"]
 ---
 

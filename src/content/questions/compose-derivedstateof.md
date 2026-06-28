@@ -2,6 +2,9 @@
 question: "What is derivedStateOf, and when should you use it instead of a plain calculation?"
 topic: jetpack-compose
 difficulty: mid
+order: 120
+starred: true
+section: "State and recomposition"
 tags: ["compose", "derivedStateOf", "performance", "state"]
 ---
 

@@ -2,6 +2,9 @@
 question: "What problem does rememberUpdatedState solve?"
 topic: jetpack-compose
 difficulty: senior
+order: 20
+starred: true
+section: "Effects and lifecycle"
 tags: ["compose", "rememberUpdatedState", "side-effects"]
 ---
 

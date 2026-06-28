@@ -1,37 +1,48 @@
 ---
-question: "What is 'stability' in Compose, and why can an unstable parameter hurt performance?"
+question: "What does stability mean in Compose, and how does strong skipping change the answer?"
 topic: jetpack-compose
 difficulty: senior
+order: 10
+starred: true
+section: "Performance and runtime"
 tags: ["compose", "stability", "performance", "recomposition"]
 ---
 
-Compose **skips** recomposing a composable if all its parameters are **stable** and unchanged since last time. A type is **stable** if Compose can trust that:
-1. `equals()` is consistent, and
-2. if a public property changes, Compose is notified.
+Stability tells the Compose compiler whether it can reliably detect changes to a
+value. A stable type has a consistent equality contract, and Compose can observe
+changes to any mutable public state it exposes.
 
-If a parameter is **unstable**, Compose can't prove it's unchanged, so it **can't skip** - the composable recomposes even when nothing meaningfully changed.
+Examples that are normally stable include primitives, `String`, function types,
+and immutable data classes whose properties are also stable. Standard `List`,
+`Set`, and `Map` interfaces are treated as unstable because the compiler cannot
+prove that an implementation is immutable.
 
-**What's stable:** primitives, `String`, function types, `@Immutable`/`@Stable`-annotated types, and `data class`es whose properties are all stable.
-
-**What's unstable (common culprits):**
-- **`List`, `Map`, `Set`** - the interface could be backed by a mutable implementation, so Compose treats them as unstable.
-- Classes from **other modules** the compiler can't analyze (unless annotated).
-- Classes with **`var`** properties (mutable, no change notification).
+Strong skipping changes an older interview answer. Since Kotlin 2.0.20 it is
+enabled by default. Restartable composables with unstable parameters can still
+be skipped. Stable parameters are compared with object equality, while unstable
+parameters are compared with instance equality.
 
 ```kotlin
-// items: List<Item> is unstable → this recomposes even when items are equal
-@Composable fun Feed(items: List<Item>) { ... }
-
-// Fix 1: use a stable collection
-@Composable fun Feed(items: ImmutableList<Item>) { ... }
-
-// Fix 2: annotate the type
-@Immutable data class FeedData(val items: List<Item>)
+@Composable
+fun Feed(items: List<FeedItem>) { /* ... */ }
 ```
 
-**Fixes:**
-- Use **`kotlinx.collections.immutable`** (`ImmutableList`/`persistentListOf`) for list params.
-- Annotate model classes with **`@Immutable`** / **`@Stable`** when you guarantee the contract.
-- Kotlin **2.x strong skipping mode** relaxes this - it can skip composables with unstable params if instances are *referentially* equal, and remembers unstable lambdas - reducing how often you need manual fixes. Still, modeling stable state is good practice.
+`List` is unstable, but with strong skipping `Feed` can be skipped when the exact
+same list instance is passed again. A newly allocated equal list is a different
+instance, so it will not be skipped on that basis.
 
-**How to diagnose:** the **Compose compiler metrics** report tells you which composables are skippable and which parameters are unstable.
+Possible improvements include:
+
+- expose truly immutable models
+- use `kotlinx.collections.immutable` when it fits the codebase
+- use a stability configuration for types whose contract you control
+- add `@Immutable` or `@Stable` only when the type really satisfies that promise
+
+Annotations are contracts with the compiler, not magic fixes. Marking a wrapper
+`@Immutable` while it exposes a list that callers can mutate can produce stale
+UI.
+
+Most importantly, diagnose a real performance issue before redesigning models.
+Use compiler reports to understand inferred stability, then confirm the cost in
+a trace or benchmark. An unstable parameter is information, not proof that the
+screen is slow.

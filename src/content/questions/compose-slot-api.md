@@ -2,6 +2,9 @@
 question: "What is the slot API pattern (content lambdas) in Compose?"
 topic: jetpack-compose
 difficulty: mid
+order: 370
+starred: false
+section: "Everyday UI"
 tags: ["compose", "slot-api", "reusability"]
 ---
 
