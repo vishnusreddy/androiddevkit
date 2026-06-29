@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Comments from '../../components/Comments.astro';
 
 export const getStaticPaths = (async () => {
   const experiences = await getCollection('experiences');
@@ -58,6 +59,8 @@ const fmt = d.date.toLocaleDateString('en-US', {
       </p>
     </footer>
   </article>
+
+  <Comments />
 </BaseLayout>
 
 <style>

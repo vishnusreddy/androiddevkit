@@ -4,6 +4,7 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CoroutinesPrimer from '../../components/CoroutinesPrimer.astro';
 import QuestionItem from '../../components/QuestionItem.astro';
+import Comments from '../../components/Comments.astro';
 import { DIFFICULTY_ORDER, DIFFICULTY_LABEL, SITE } from '../../consts';
 
 export const getStaticPaths = (async () => {
@@ -192,6 +193,8 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
       </div>
     )}
   </section>
+
+  <Comments />
 </BaseLayout>
 
 <style>
