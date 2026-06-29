@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import QuestionItem from '../../components/QuestionItem.astro';
+import Comments from '../../components/Comments.astro';
 import { DIFFICULTY_ORDER, DIFFICULTY_LABEL, SITE } from '../../consts';
 
 const topics = await getCollection('topics');
@@ -117,6 +118,8 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
       </div>
     )}
   </div>
+
+  <Comments />
 </BaseLayout>
 
 <style>

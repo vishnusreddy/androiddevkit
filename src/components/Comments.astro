@@ -1,0 +1,97 @@
+---
+// Giscus-powered comments, stored as GitHub Discussions on the project repo.
+// Config (and setup steps) live in src/consts.ts under GISCUS.
+//
+// Renders nothing until repoId + categoryId are filled in, so the site is
+// safe to ship before the GitHub side of the setup is finished.
+//
+// The giscus <script> is injected from JS rather than rendered statically so
+// its initial `data-theme` can be computed to match the site's current theme
+// (the same light/dark logic BaseLayout uses). A MutationObserver then keeps
+// giscus in sync whenever the user flips the theme toggle.
+import { GISCUS } from '../consts';
+
+const configured = GISCUS.repoId !== '' && GISCUS.categoryId !== '';
+---
+{configured && (
+  <section class="comments" aria-label="Comments">
+    <h2 class="comments-title">Discussion</h2>
+    <p class="comments-note text-faint">
+      Comments are powered by GitHub Discussions. Sign in with GitHub to join in.
+    </p>
+    <div class="giscus" id="giscus-container"></div>
+
+    <script is:inline define:vars={{ g: GISCUS }}>
+      (function () {
+        var container = document.getElementById('giscus-container');
+        if (!container) return;
+
+        // Mirror BaseLayout's theme resolution: explicit choice wins, then the
+        // saved preference, then the OS setting.
+        function siteTheme() {
+          var t = document.documentElement.getAttribute('data-theme');
+          if (t === 'dark' || t === 'light') return t;
+          try {
+            var stored = localStorage.getItem('theme');
+            if (stored === 'dark' || stored === 'light') return stored;
+          } catch (e) {
+            /* storage may be unavailable */
+          }
+          return window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+        }
+
+        var s = document.createElement('script');
+        s.src = 'https://giscus.app/client.js';
+        s.setAttribute('data-repo', g.repo);
+        s.setAttribute('data-repo-id', g.repoId);
+        s.setAttribute('data-category', g.category);
+        s.setAttribute('data-category-id', g.categoryId);
+        s.setAttribute('data-mapping', g.mapping);
+        s.setAttribute('data-strict', '0');
+        s.setAttribute('data-reactions-enabled', '1');
+        s.setAttribute('data-emit-metadata', '0');
+        s.setAttribute('data-input-position', 'bottom');
+        s.setAttribute('data-theme', siteTheme());
+        s.setAttribute('data-lang', 'en');
+        s.setAttribute('data-loading', 'lazy');
+        s.crossOrigin = 'anonymous';
+        s.async = true;
+        container.appendChild(s);
+
+        // Push the current theme to the giscus iframe (once loaded).
+        function pushTheme() {
+          var frame = document.querySelector('iframe.giscus-frame');
+          if (!frame) return;
+          frame.contentWindow.postMessage(
+            { giscus: { setConfig: { theme: siteTheme() } } },
+            'https://giscus.app'
+          );
+        }
+        // Re-push whenever the user flips the site's theme toggle.
+        new MutationObserver(pushTheme).observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['data-theme'],
+        });
+      })();
+    </script>
+  </section>
+)}
+
+<style>
+  .comments {
+    max-width: var(--maxw-prose);
+    margin: 3rem auto 0;
+    padding-top: 1.8rem;
+    border-top: 1px solid var(--border);
+  }
+  .comments-title {
+    margin: 0 0 0.4rem;
+    font-size: 1.4rem;
+  }
+  .comments-note {
+    margin: 0 0 1.4rem;
+    font-size: 0.88rem;
+  }
+</style>

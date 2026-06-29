@@ -12,6 +12,27 @@ export const SITE = {
   author: 'AndroidDevKit Community',
 };
 
+/**
+ * Giscus comments config (https://giscus.app).
+ *
+ * Comments are stored as GitHub Discussions on the repo below. To activate:
+ *   1. Enable the "Discussions" feature on the GitHub repo (Settings -> Features).
+ *   2. Install the giscus app: https://github.com/apps/giscus (grant it the repo).
+ *   3. Visit https://giscus.app, enter the repo, pick the "Comments" category,
+ *      and copy the generated `data-repo-id` and `data-category-id` values here.
+ *
+ * Until `repoId` and `categoryId` are filled in, the <Comments /> component
+ * renders nothing, so the site keeps working before setup is finished.
+ */
+export const GISCUS = {
+  repo: 'vishnusreddy/androiddevkit' as `${string}/${string}`,
+  repoId: 'R_kgDOTGrOzw',
+  category: 'Website Comments',
+  categoryId: 'DIC_kwDOTGrOz84DAKTN',
+  // 'pathname' gives each page its own discussion thread keyed by URL path.
+  mapping: 'pathname',
+} as const;
+
 export const NAV = [
   { label: 'Topics', href: '/topics/' },
   { label: 'Questions', href: '/questions/' },
