@@ -6,8 +6,11 @@ interface Props {
   category: string;
   icon: string;
   count: number;
+  /** Question ids for this topic, used to render a client-side progress bar. */
+  ids?: string[];
 }
-const { href, title, description, category, icon, count } = Astro.props;
+const { href, title, description, category, icon, count, ids = [] } =
+  Astro.props;
 ---
 <a class="card topic-card" href={href}>
   <div class="topic-top">
@@ -20,6 +23,17 @@ const { href, title, description, category, icon, count } = Astro.props;
     {count} {count === 1 ? 'question' : 'questions'}
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
   </span>
+  {ids.length > 0 && (
+    <div class="topic-progress" data-progress-ids={JSON.stringify(ids)}>
+      <div class="topic-progress-text">
+        <span data-progress-count>0</span>/<span data-progress-total>{ids.length}</span> studied
+        <span class="topic-progress-pct" data-progress-percent>0%</span>
+      </div>
+      <div class="pt-bar">
+        <div class="pt-fill" style="width:0%"></div>
+      </div>
+    </div>
+  )}
 </a>
 
 <style>
@@ -71,4 +85,45 @@ const { href, title, description, category, icon, count } = Astro.props;
     font-weight: 600;
     color: var(--accent);
   }
+  .topic-progress {
+    margin-top: 0.9rem;
+  }
+  .topic-progress-text {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    margin-bottom: 0.4rem;
+  }
+  .topic-progress-text [data-progress-count] {
+    color: var(--ink-soft);
+  }
+  .topic-progress-pct {
+    margin-left: auto;
+    color: var(--ink-soft);
+  }
+  .topic-progress.is-complete .topic-progress-pct,
+  .topic-progress.is-complete .topic-progress-text [data-progress-count] {
+    color: var(--accent);
+  }
+  .topic-progress .pt-bar {
+    position: relative;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--surface-3);
+    overflow: hidden;
+  }
+  .topic-progress .pt-fill {
+    height: 100%;
+    width: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 </style>
+
+<script>
+  import '../lib/progress';
+</script>

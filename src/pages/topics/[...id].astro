@@ -4,6 +4,7 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CoroutinesPrimer from '../../components/CoroutinesPrimer.astro';
 import QuestionItem from '../../components/QuestionItem.astro';
+import ProgressBar from '../../components/ProgressBar.astro';
 import Comments from '../../components/Comments.astro';
 import { DIFFICULTY_ORDER, DIFFICULTY_LABEL, SITE } from '../../consts';
 
@@ -39,6 +40,7 @@ const counts = DIFFICULTY_ORDER.map((d) => ({
   n: questions.filter((q) => q.data.difficulty === d).length,
 })).filter((c) => c.n > 0);
 const starredCount = questions.filter((q) => q.data.starred).length;
+const questionIds = questions.map((q) => q.id);
 
 const levelIntro: Record<string, { title: string; description: string }> = {
   junior: {
@@ -139,6 +141,11 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
           <span class="count-pill">{c.n} {c.label.toLowerCase()}</span>
         ))}
       </div>
+      {questionIds.length > 0 && (
+        <div class="t-progress">
+          <ProgressBar ids={questionIds} label={`${topic.data.title} progress`} />
+        </div>
+      )}
     </div>
   </section>
 
@@ -240,6 +247,10 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 1.2rem;
+  }
+  .t-progress {
+    margin-top: 1.4rem;
+    max-width: 640px;
   }
   .count-pill {
     font-size: 0.8rem;

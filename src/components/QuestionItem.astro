@@ -11,6 +11,8 @@ interface Props {
   topicHref?: string;
   /** When true the answer starts expanded. */
   open?: boolean;
+  /** Show the "mark as done" progress toggle. */
+  trackable?: boolean;
 }
 const {
   id,
@@ -21,6 +23,7 @@ const {
   topicTitle,
   topicHref,
   open = false,
+  trackable = true,
 } = Astro.props;
 ---
 <details class="qitem" id={id} open={open}>
@@ -48,6 +51,19 @@ const {
         <a class="q-topic" href={topicHref}>{topicTitle}</a>
       )}
       {tags.map((t) => <span class="q-tag">#{t}</span>)}
+      {trackable && (
+        <label class="q-done" title="Mark this question as studied">
+          <input
+            class="q-done-input"
+            type="checkbox"
+            data-progress-id={id}
+            aria-label={`Mark "${question}" as done`}
+          />
+          <svg class="q-done-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          <span class="q-done-text">Mark done</span>
+          <span class="q-done-text-on">Done</span>
+        </label>
+      )}
     </div>
   </summary>
   <div class="q-answer prose">
@@ -77,6 +93,13 @@ const {
   }
   .qitem:hover {
     border-color: var(--accent);
+  }
+  .qitem.is-done {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent-soft) 55%, var(--surface));
+  }
+  .qitem.is-done .q-text {
+    color: var(--ink-soft);
   }
   summary {
     list-style: none;
@@ -152,6 +175,66 @@ const {
     font-size: 0.78rem;
     color: var(--ink-faint);
   }
+
+  /* "Mark done" toggle: a real checkbox styled as a pill, pushed to the right. */
+  .q-done {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+    padding: 0.2rem 0.62rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .q-done:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .q-done-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+  }
+  .q-done-check {
+    opacity: 0.45;
+    flex-shrink: 0;
+  }
+  .q-done-text-on {
+    display: none;
+  }
+  .q-done-input:focus-visible + .q-done-check {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+  /* Checked state */
+  .q-done:has(.q-done-input:checked) {
+    color: var(--on-accent);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .q-done:has(.q-done-input:checked):hover {
+    color: var(--on-accent);
+    background: var(--accent-hover);
+  }
+  .q-done:has(.q-done-input:checked) .q-done-check {
+    opacity: 1;
+  }
+  .q-done:has(.q-done-input:checked) .q-done-text {
+    display: none;
+  }
+  .q-done:has(.q-done-input:checked) .q-done-text-on {
+    display: inline;
+  }
   .q-answer {
     padding: 0.25rem 1.25rem 1.35rem;
     border-top: 1px solid var(--border);
@@ -177,3 +260,8 @@ const {
     font-size: 0.9rem;
   }
 </style>
+
+<script>
+  // Wires up "mark done" toggles and keeps them in sync with stored progress.
+  import '../lib/progress';
+</script>
