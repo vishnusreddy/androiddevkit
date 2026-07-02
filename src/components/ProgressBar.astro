@@ -1,0 +1,177 @@
+---
+/**
+ * Progress bar driven entirely by the client-side progress store.
+ *
+ * The list of question ids is embedded as JSON; `src/lib/progress.ts` reads it
+ * on load (and on every change) to compute the completed count and fill width.
+ * Server-rendered values start at zero and get corrected on hydration, so the
+ * markup is still meaningful without JavaScript.
+ *
+ * Variants:
+ *   panel - full card with heading, count, percentage and reset (topic pages)
+ *   row   - compact icon/title row for lists (dashboard)
+ *   mini  - just a thin bar for cards
+ */
+interface Props {
+  ids: string[];
+  variant?: 'panel' | 'row' | 'mini';
+  label?: string;
+  showReset?: boolean;
+}
+const { ids, variant = 'panel', label = 'Your progress', showReset = true } =
+  Astro.props;
+const total = ids.length;
+---
+<div
+  class:list={['progress-tracker', `pt-${variant}`]}
+  data-progress-ids={JSON.stringify(ids)}
+>
+  {variant === 'panel' && (
+    <div class="pt-head">
+      <div class="pt-labels">
+        <span class="pt-title">{label}</span>
+        <span class="pt-count-text">
+          <span data-progress-count>0</span> of <span data-progress-total>{total}</span> completed
+          <span class="pt-pct">(<span data-progress-percent>0%</span>)</span>
+        </span>
+      </div>
+      {showReset && (
+        <button type="button" class="pt-reset" hidden>Reset</button>
+      )}
+    </div>
+  )}
+
+  {variant === 'row' && (
+    <div class="pt-row-meta">
+      <slot name="row-label" />
+      <span class="pt-row-pct"><span data-progress-percent>0%</span></span>
+    </div>
+  )}
+
+  <div class="pt-bar">
+    <div class="pt-fill" style="width:0%"></div>
+  </div>
+
+  <p class="pt-complete-note" hidden>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+    All done - nice work.
+  </p>
+</div>
+
+<style>
+  .progress-tracker {
+    --pt-track: var(--surface-3);
+  }
+  .pt-bar {
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--pt-track);
+    overflow: hidden;
+  }
+  .pt-fill {
+    height: 100%;
+    width: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ---- panel ---- */
+  .pt-panel {
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .pt-panel.is-complete {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent-soft) 45%, var(--surface));
+  }
+  .pt-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+  }
+  .pt-title {
+    display: block;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+  .pt-count-text {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+  .pt-count-text [data-progress-count],
+  .pt-pct {
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .pt-reset {
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .pt-reset:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .pt-complete-note {
+    display: none;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0.7rem 0 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .pt-panel.is-complete .pt-complete-note {
+    display: flex;
+  }
+
+  /* ---- row ---- */
+  .pt-row-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+  }
+  .pt-row-pct {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+  .pt-row.is-complete .pt-row-pct {
+    color: var(--accent);
+  }
+  .pt-row .pt-complete-note {
+    display: none !important;
+  }
+
+  /* ---- mini ---- */
+  .pt-mini .pt-bar {
+    height: 5px;
+  }
+  .pt-mini .pt-complete-note {
+    display: none !important;
+  }
+</style>
+
+<script>
+  import '../lib/progress';
+</script>

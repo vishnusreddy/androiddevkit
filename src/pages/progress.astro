@@ -1,0 +1,411 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProgressBar from '../components/ProgressBar.astro';
+
+const topics = await getCollection('topics');
+const questions = await getCollection('questions');
+
+const idsFor = (id: string) =>
+  questions.filter((q) => q.data.topic.id === id).map((q) => q.id);
+
+// Topics that actually have questions, in the same order as the topics index.
+const topicRows = [...topics]
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((t) => ({
+    id: t.id,
+    title: t.data.title,
+    icon: t.data.icon,
+    category: t.data.category,
+    href: `/topics/${t.id}/`,
+    ids: idsFor(t.id),
+  }))
+  .filter((t) => t.ids.length > 0);
+
+const allIds = questions.map((q) => q.id);
+// Manifest consumed by the client script for stats + "focus next" gaps.
+const manifest = topicRows.map((t) => ({
+  id: t.id,
+  title: t.title,
+  icon: t.icon,
+  href: t.href,
+  ids: t.ids,
+}));
+---
+<BaseLayout
+  title="Progress"
+  description="Track your Android interview preparation. Mark questions as studied and watch your overall readiness and per-topic progress climb."
+>
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Progress</span>
+      <h1>Your interview readiness</h1>
+      <p class="lede text-soft">
+        Mark questions as done as you study them and this dashboard fills in.
+        Progress is saved privately in this browser - no account needed. Clear
+        it any time.
+      </p>
+    </div>
+  </section>
+
+  {allIds.length === 0 ? (
+    <section class="container">
+      <div class="empty card">
+        <h3>Nothing to track yet</h3>
+        <p class="text-soft">
+          Questions get added over time. Once they land, come back here to track
+          how much you have covered.
+        </p>
+        <a class="btn btn-primary" href="/topics/">Browse topics</a>
+      </div>
+    </section>
+  ) : (
+    <section class="container dash">
+      <!-- Overall readiness -->
+      <div class="overall card">
+        <ProgressBar ids={allIds} label="Overall readiness" showReset={false} />
+        <div class="overall-stats">
+          <div class="ostat">
+            <span class="ostat-value" id="stat-questions">0</span>
+            <span class="ostat-label">of {allIds.length} questions studied</span>
+          </div>
+          <div class="ostat">
+            <span class="ostat-value" id="stat-topics">0</span>
+            <span class="ostat-label">of {topicRows.length} topics complete</span>
+          </div>
+          <button type="button" class="btn btn-ghost reset-all" data-progress-reset-all>
+            Reset all progress
+          </button>
+        </div>
+      </div>
+
+      <!-- Focus next / knowledge gaps -->
+      <div class="gaps card" id="gaps-card" hidden>
+        <h2>Focus next</h2>
+        <p class="text-soft gaps-sub">
+          The topics with the most ground left to cover. Close these before your
+          interview.
+        </p>
+        <ul class="gaps-list" id="gaps-list"></ul>
+      </div>
+
+      <div class="all-done card" id="all-done" hidden>
+        <span class="ad-check" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        <div>
+          <h2>Every question covered</h2>
+          <p class="text-soft">You have studied the whole bank. Go get the offer.</p>
+        </div>
+      </div>
+
+      <!-- Per-topic breakdown -->
+      <h2 class="section-title">By topic</h2>
+      <div class="topic-rows">
+        {topicRows.map((t) => (
+          <div class="topic-row">
+            <ProgressBar ids={t.ids} variant="row">
+              <a slot="row-label" class="tr-label" href={t.href}>
+                <span class="tr-icon" aria-hidden="true">{t.icon}</span>
+                <span class="tr-title">{t.title}</span>
+                <span class="tr-count">
+                  <span data-progress-count>0</span>/<span data-progress-total>{t.ids.length}</span>
+                </span>
+              </a>
+            </ProgressBar>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <script
+    type="application/json"
+    id="adk-topics-data"
+    set:html={JSON.stringify(manifest)}
+  />
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+  .page-head .lede {
+    max-width: 600px;
+    margin-top: 0.7rem;
+    font-size: 1.06rem;
+  }
+  .dash {
+    padding-block: 1.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .overall {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+  }
+  .overall-stats {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .ostat {
+    display: flex;
+    flex-direction: column;
+  }
+  .ostat-value {
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+  .ostat-label {
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+  }
+  .reset-all {
+    margin-left: auto;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .gaps {
+    padding: 1.5rem;
+  }
+  .gaps h2,
+  .all-done h2,
+  .section-title {
+    font-size: 1.15rem;
+    margin: 0;
+  }
+  .gaps-sub {
+    margin: 0.35rem 0 1rem;
+    font-size: 0.9rem;
+  }
+  .gaps-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .gap-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .gap-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    font-size: 1.05rem;
+    flex-shrink: 0;
+  }
+  .gap-main {
+    flex: 1;
+    min-width: 0;
+  }
+  .gap-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .gap-top a {
+    color: var(--ink);
+  }
+  .gap-top a:hover {
+    color: var(--accent);
+  }
+  .gap-remaining {
+    color: var(--ink-faint);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .gap-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--surface-3);
+    overflow: hidden;
+  }
+  .gap-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    transition: width 0.4s ease;
+  }
+
+  .all-done[hidden] {
+    display: none;
+  }
+  .all-done {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent-soft) 45%, var(--surface));
+  }
+  .ad-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--on-accent);
+    flex-shrink: 0;
+  }
+  .all-done p {
+    margin: 0.2rem 0 0;
+  }
+
+  .section-title {
+    margin-top: 0.5rem;
+  }
+  .topic-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .topic-row {
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .tr-label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .tr-label:hover .tr-title {
+    color: var(--accent);
+  }
+  .tr-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--accent-soft);
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+  .tr-count {
+    color: var(--ink-faint);
+    font-weight: 500;
+    font-size: 0.82rem;
+  }
+  .empty {
+    padding: 2.5rem 2rem;
+    text-align: center;
+    margin-block: 1rem 3rem;
+  }
+  .empty h3 {
+    margin: 0 0 0.5rem;
+  }
+  .empty p {
+    margin: 0 auto 1.4rem;
+    max-width: 440px;
+  }
+
+  @media (max-width: 560px) {
+    .overall-stats {
+      gap: 1.25rem;
+    }
+    .reset-all {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  import { getDoneSet, onChange } from '../lib/progress';
+
+  type Topic = { id: string; title: string; icon: string; href: string; ids: string[] };
+
+  const dataEl = document.getElementById('adk-topics-data');
+  const topics: Topic[] = dataEl ? JSON.parse(dataEl.textContent || '[]') : [];
+
+  const statQuestions = document.getElementById('stat-questions');
+  const statTopics = document.getElementById('stat-topics');
+  const gapsCard = document.getElementById('gaps-card');
+  const gapsList = document.getElementById('gaps-list');
+  const allDone = document.getElementById('all-done');
+
+  const allIds = new Set(topics.flatMap((t) => t.ids));
+
+  function render() {
+    const done = getDoneSet();
+
+    // Overall counts.
+    let studied = 0;
+    for (const id of allIds) if (done.has(id)) studied++;
+    let completeTopics = 0;
+
+    const withProgress = topics.map((t) => {
+      const n = t.ids.reduce((acc, id) => acc + (done.has(id) ? 1 : 0), 0);
+      const pct = t.ids.length ? Math.round((n / t.ids.length) * 100) : 0;
+      if (t.ids.length > 0 && n === t.ids.length) completeTopics++;
+      return { ...t, n, total: t.ids.length, pct, remaining: t.ids.length - n };
+    });
+
+    if (statQuestions) statQuestions.textContent = String(studied);
+    if (statTopics) statTopics.textContent = String(completeTopics);
+
+    // Knowledge gaps: least-complete topics that still have work left.
+    const gaps = withProgress
+      .filter((t) => t.remaining > 0)
+      .sort((a, b) => a.pct - b.pct || b.remaining - a.remaining)
+      .slice(0, 4);
+
+    const everythingDone = studied > 0 && studied === allIds.size;
+    if (allDone) allDone.hidden = !everythingDone;
+
+    if (gapsCard && gapsList) {
+      if (gaps.length === 0) {
+        gapsCard.hidden = true;
+      } else {
+        gapsCard.hidden = false;
+        gapsList.innerHTML = gaps
+          .map(
+            (t) => `
+          <li class="gap-item">
+            <span class="gap-icon" aria-hidden="true">${t.icon}</span>
+            <span class="gap-main">
+              <span class="gap-top">
+                <a href="${t.href}">${t.title}</a>
+                <span class="gap-remaining">${t.remaining} left</span>
+              </span>
+              <span class="gap-bar"><span class="gap-fill" style="width:${t.pct}%"></span></span>
+            </span>
+          </li>`
+          )
+          .join('');
+      }
+    }
+  }
+
+  onChange(render);
+  render();
+</script>

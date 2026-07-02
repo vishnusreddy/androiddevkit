@@ -9,8 +9,10 @@ const questions = await getCollection('questions');
 const experiences = (await getCollection('experiences')).filter((e) => !e.data.draft);
 const posts = (await getCollection('blog')).filter((p) => !p.data.draft);
 
-const countFor = (topicId: string) =>
-  questions.filter((q) => q.data.topic.id === topicId).length;
+const questionsFor = (topicId: string) =>
+  questions.filter((q) => q.data.topic.id === topicId);
+const countFor = (topicId: string) => questionsFor(topicId).length;
+const idsFor = (topicId: string) => questionsFor(topicId).map((q) => q.id);
 
 // Featured topics: most questions first, then by manual order.
 const featured = [...topics]
@@ -123,6 +125,7 @@ const features = [
               category={t.data.category}
               icon={t.data.icon}
               count={countFor(t.id)}
+              ids={idsFor(t.id)}
             />
           ))}
         </div>

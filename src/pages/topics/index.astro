@@ -2,12 +2,15 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TopicCard from '../../components/TopicCard.astro';
+import ProgressBar from '../../components/ProgressBar.astro';
 import { SITE } from '../../consts';
 
 const topics = await getCollection('topics');
 const questions = await getCollection('questions');
-const countFor = (id: string) =>
-  questions.filter((q) => q.data.topic.id === id).length;
+const questionsFor = (id: string) =>
+  questions.filter((q) => q.data.topic.id === id);
+const countFor = (id: string) => questionsFor(id).length;
+const idsFor = (id: string) => questionsFor(id).map((q) => q.id);
 
 // Group topics by category, preserving a sensible category order.
 const byCategory = new Map<string, typeof topics>();
@@ -17,6 +20,7 @@ for (const t of [...topics].sort((a, b) => a.data.order - b.data.order)) {
   byCategory.set(t.data.category, list);
 }
 const categories = [...byCategory.entries()];
+const allIds = questions.map((q) => q.id);
 ---
 <BaseLayout
   title="Topics"
@@ -32,6 +36,18 @@ const categories = [...byCategory.entries()];
       </p>
     </div>
   </section>
+
+  {allIds.length > 0 && (
+    <section class="container overall-wrap">
+      <div class="overall-panel">
+        <ProgressBar ids={allIds} label="Overall interview readiness" />
+        <a class="overall-link" href="/progress/">
+          View full progress dashboard
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </section>
+  )}
 
   <section class="container topic-sections">
     {categories.length === 0 && (
@@ -54,6 +70,7 @@ const categories = [...byCategory.entries()];
               category={t.data.category}
               icon={t.data.icon}
               count={countFor(t.id)}
+              ids={idsFor(t.id)}
             />
           ))}
         </div>
@@ -70,6 +87,22 @@ const categories = [...byCategory.entries()];
     max-width: 580px;
     margin-top: 0.8rem;
     font-size: 1.08rem;
+  }
+  .overall-wrap {
+    padding-top: 1.5rem;
+  }
+  .overall-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .overall-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    align-self: flex-start;
+    font-size: 0.88rem;
+    font-weight: 600;
   }
   .topic-sections {
     padding-block: 2rem 1rem;
