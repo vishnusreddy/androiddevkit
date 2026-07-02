@@ -1,0 +1,17 @@
+---
+import { topicIconSvg } from '../lib/topic-icons';
+
+interface Props {
+  topicId: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  class?: string;
+}
+
+const { topicId, size = 'md', class: className } = Astro.props;
+---
+
+<span
+  class:list={['topic-icon-badge', `topic-icon-badge--${size}`, className]}
+  aria-hidden="true"
+  set:html={topicIconSvg(topicId)}
+/>

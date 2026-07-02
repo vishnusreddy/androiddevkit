@@ -201,6 +201,66 @@ img {
   color: var(--accent);
 }
 
+/* ---- shared topic icon system ---- */
+.topic-icon-badge {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--border));
+  border-radius: 13px;
+  color: var(--accent);
+  background:
+    radial-gradient(circle at 24% 18%, color-mix(in srgb, var(--accent-bright) 24%, transparent), transparent 45%),
+    linear-gradient(145deg, color-mix(in srgb, var(--accent-soft) 74%, var(--surface)), var(--surface-2));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--surface) 88%, transparent),
+    0 8px 18px -12px color-mix(in srgb, var(--accent) 70%, transparent);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.topic-icon-badge::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: -35%;
+  bottom: -50%;
+  width: 80%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent-bright) 12%, transparent);
+}
+.topic-icon-badge svg {
+  width: 54%;
+  height: 54%;
+  filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--surface) 70%, transparent));
+}
+.topic-icon-badge--sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+.topic-icon-badge--lg {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+}
+.topic-icon-badge--xl {
+  width: 60px;
+  height: 60px;
+  border-radius: 17px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topic-icon-badge {
+    transition: none;
+  }
+}
+
 /* ---- buttons ---- */
 .btn {
   display: inline-flex;

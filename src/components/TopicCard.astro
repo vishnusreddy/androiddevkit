@@ -1,20 +1,22 @@
 ---
 interface Props {
   href: string;
+  topicId: string;
   title: string;
   description: string;
   category: string;
-  icon: string;
   count: number;
   /** Question ids for this topic, used to render a client-side progress bar. */
   ids?: string[];
 }
-const { href, title, description, category, icon, count, ids = [] } =
+import TopicIcon from './TopicIcon.astro';
+
+const { href, topicId, title, description, category, count, ids = [] } =
   Astro.props;
 ---
 <a class="card topic-card" href={href}>
   <div class="topic-top">
-    <span class="topic-icon" aria-hidden="true">{icon}</span>
+    <TopicIcon topicId={topicId} size="lg" />
     <span class="topic-cat">{category}</span>
   </div>
   <h3>{title}</h3>
@@ -49,16 +51,10 @@ const { href, title, description, category, icon, count, ids = [] } =
     justify-content: space-between;
     margin-bottom: 0.9rem;
   }
-  .topic-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 11px;
-    background: var(--accent-soft);
-    font-size: 1.25rem;
-    line-height: 1;
+  .topic-card:hover :global(.topic-icon-badge) {
+    transform: translateY(-2px) rotate(-2deg);
+    border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
+    box-shadow: 0 12px 24px -14px color-mix(in srgb, var(--accent) 72%, transparent);
   }
   .topic-cat {
     font-size: 0.72rem;

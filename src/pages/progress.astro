@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProgressBar from '../components/ProgressBar.astro';
+import TopicIcon from '../components/TopicIcon.astro';
 
 const topics = await getCollection('topics');
 const questions = await getCollection('questions');
@@ -15,7 +16,6 @@ const topicRows = [...topics]
   .map((t) => ({
     id: t.id,
     title: t.data.title,
-    icon: t.data.icon,
     category: t.data.category,
     href: `/topics/${t.id}/`,
     ids: idsFor(t.id),
@@ -27,7 +27,6 @@ const allIds = questions.map((q) => q.id);
 const manifest = topicRows.map((t) => ({
   id: t.id,
   title: t.title,
-  icon: t.icon,
   href: t.href,
   ids: t.ids,
 }));
@@ -106,7 +105,7 @@ const manifest = topicRows.map((t) => ({
           <div class="topic-row">
             <ProgressBar ids={t.ids} variant="row">
               <a slot="row-label" class="tr-label" href={t.href}>
-                <span class="tr-icon" aria-hidden="true">{t.icon}</span>
+                <TopicIcon topicId={t.id} />
                 <span class="tr-title">{t.title}</span>
                 <span class="tr-count">
                   <span data-progress-count>0</span>/<span data-progress-total>{t.ids.length}</span>
@@ -200,17 +199,6 @@ const manifest = topicRows.map((t) => ({
     align-items: center;
     gap: 0.8rem;
   }
-  .gap-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: var(--accent-soft);
-    font-size: 1.05rem;
-    flex-shrink: 0;
-  }
   .gap-main {
     flex: 1;
     min-width: 0;
@@ -299,16 +287,9 @@ const manifest = topicRows.map((t) => ({
   .tr-label:hover .tr-title {
     color: var(--accent);
   }
-  .tr-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    background: var(--accent-soft);
-    font-size: 0.95rem;
-    flex-shrink: 0;
+  .tr-label:hover :global(.topic-icon-badge) {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
   }
   .tr-count {
     color: var(--ink-faint);
@@ -341,8 +322,9 @@ const manifest = topicRows.map((t) => ({
 
 <script>
   import { getDoneSet, onChange } from '../lib/progress';
+  import { topicIconSvg } from '../lib/topic-icons';
 
-  type Topic = { id: string; title: string; icon: string; href: string; ids: string[] };
+  type Topic = { id: string; title: string; href: string; ids: string[] };
 
   const dataEl = document.getElementById('adk-topics-data');
   const topics: Topic[] = dataEl ? JSON.parse(dataEl.textContent || '[]') : [];
@@ -391,7 +373,7 @@ const manifest = topicRows.map((t) => ({
           .map(
             (t) => `
           <li class="gap-item">
-            <span class="gap-icon" aria-hidden="true">${t.icon}</span>
+            <span class="topic-icon-badge topic-icon-badge--sm" aria-hidden="true">${topicIconSvg(t.id)}</span>
             <span class="gap-main">
               <span class="gap-top">
                 <a href="${t.href}">${t.title}</a>

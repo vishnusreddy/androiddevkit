@@ -65,10 +65,10 @@ const allIds = questions.map((q) => q.id);
           {list.map((t) => (
             <TopicCard
               href={`/topics/${t.id}/`}
+              topicId={t.id}
               title={t.data.title}
               description={t.data.description}
               category={t.data.category}
-              icon={t.data.icon}
               count={countFor(t.id)}
               ids={idsFor(t.id)}
             />

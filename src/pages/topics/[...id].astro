@@ -6,6 +6,7 @@ import CoroutinesPrimer from '../../components/CoroutinesPrimer.astro';
 import QuestionItem from '../../components/QuestionItem.astro';
 import ProgressBar from '../../components/ProgressBar.astro';
 import Comments from '../../components/Comments.astro';
+import TopicIcon from '../../components/TopicIcon.astro';
 import { DIFFICULTY_ORDER, DIFFICULTY_LABEL, SITE } from '../../consts';
 
 export const getStaticPaths = (async () => {
@@ -127,7 +128,7 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
     <div class="container">
       <a class="back" href="/topics/">← All topics</a>
       <div class="t-head">
-        <span class="t-icon" aria-hidden="true">{topic.data.icon}</span>
+        <TopicIcon topicId={topic.id} size="xl" />
         <div>
           <span class="eyebrow">{topic.data.category}</span>
           <h1>{topic.data.title}</h1>
@@ -222,17 +223,6 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
     align-items: center;
     gap: 1rem;
     margin-top: 1rem;
-  }
-  .t-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 58px;
-    height: 58px;
-    border-radius: 14px;
-    background: var(--accent-soft);
-    font-size: 1.7rem;
-    flex-shrink: 0;
   }
   .t-head h1 {
     margin: 0.15rem 0 0;
