@@ -14,6 +14,7 @@ Cloudflare Pages.
 
 - **Topics** - Kotlin, Coroutines, Jetpack Compose, architecture, system design, and more.
 - **Question bank** - standalone, difficulty-tagged questions with answers that explain the *why*.
+- **Progress tracker** - mark questions as done and track your interview readiness per topic. Saved privately in your browser; no login required.
 - **Interview experiences** - first-hand write-ups of real interviews.
 - **Blog** - longer guides on preparing, negotiating, and growing as a mobile engineer.
 
