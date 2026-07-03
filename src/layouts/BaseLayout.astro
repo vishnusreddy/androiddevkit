@@ -88,6 +88,15 @@ const pageSchema = type === 'article'
     <meta name="generator" content={Astro.generator} />
     <meta name="author" content={SITE.author} />
 
+    <!-- Google Analytics (GA4). Kept in the shared layout so every page is measured. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LT34BZT1CE"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-LT34BZT1CE');
+    </script>
+
     <!-- Google AdSense -->
     <script
       async
