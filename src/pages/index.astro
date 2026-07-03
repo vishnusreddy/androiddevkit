@@ -6,8 +6,12 @@ import { SITE } from '../consts';
 
 const topics = await getCollection('topics');
 const questions = await getCollection('questions');
-const experiences = (await getCollection('experiences')).filter((e) => !e.data.draft);
-const posts = (await getCollection('blog')).filter((p) => !p.data.draft);
+const experiences = (await getCollection('experiences'))
+  .filter((e) => !e.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const questionsFor = (topicId: string) =>
   questions.filter((q) => q.data.topic.id === topicId);
@@ -22,12 +26,14 @@ const featured = [...topics]
   })
   .slice(0, 6);
 
-const stats = [
-  { value: questions.length, label: 'Interview questions' },
-  { value: topics.length, label: 'Curated topics' },
-  { value: experiences.length, label: 'Interview experiences' },
-  { value: posts.length, label: 'Guides & articles' },
-];
+const recentExperiences = experiences.slice(0, 3);
+const recentPosts = posts.slice(0, 3);
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+const outcomeClass = (o: string) =>
+  o === 'Offer' ? 'out-offer' : o === 'Rejected' ? 'out-reject' : 'out-neutral';
 
 const features = [
   {
@@ -36,7 +42,7 @@ const features = [
       'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z',
     ],
     title: 'Topic-by-topic guides',
-    body: 'Coroutines, Compose, Jetpack, DI, system design - organized so you can drill the exact areas you are rusty on.',
+    body: 'Coroutines, Compose, architecture, system design - drill exactly the areas you are rusty on.',
   },
   {
     iconPaths: [
@@ -45,7 +51,7 @@ const features = [
       'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z',
     ],
     title: 'A real question bank',
-    body: 'Every question is a standalone, reviewable entry tagged by difficulty - filter from junior warm-ups to senior deep-dives.',
+    body: 'Standalone questions tagged by difficulty, each with an answer that explains the why.',
   },
   {
     iconPaths: [
@@ -53,66 +59,51 @@ const features = [
       'M8 9h8',
       'M8 13h5',
     ],
-    title: 'Real interview experiences',
-    body: 'First-hand write-ups of actual interviews: rounds, questions asked, and what the hiring bar looked like. Names can be withheld.',
+    title: 'Real interview write-ups',
+    body: 'First-hand accounts of actual interviews: the rounds, the questions, the hiring bar.',
   },
   {
     iconPaths: [
-      'M18 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
-      'M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 0 6Z',
-      'M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 0 6Z',
-      'M6 9v9',
-      'M9 3h5a4 4 0 0 1 4 4v5',
+      'M20 6 9 17l-5-5',
     ],
-    title: 'Open source, forever',
-    body: 'No paywall, no sign-up. The whole thing lives on GitHub - fix a typo or add your experience with a single pull request.',
+    title: 'Progress you can see',
+    body: 'Mark questions done and save the hard ones for review - stored privately in your browser.',
   },
 ];
 ---
 <BaseLayout>
   <!-- ===== Hero ===== -->
   <section class="hero">
-    <div class="container hero-inner">
-      <span class="eyebrow">
-        <span class="dot"></span> Open-source interview prep for Android engineers
-      </span>
-      <h1>
-        Switch jobs in Android dev<br />
-        with <span class="grad">zero guesswork</span>.
-      </h1>
-      <p class="lede">
-        {SITE.name} is a community-built kit of curated questions, topic
-        deep-dives, and real interview experiences. Use it to prepare for your
-        next Android interview without piecing together a dozen sources.
-      </p>
-      <div class="hero-cta">
-        <a class="btn btn-primary" href="/topics/">
-          Browse topics
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-        <a class="btn btn-ghost" href="/experiences/">Read interview experiences</a>
-      </div>
-      <div class="hero-stats">
-        {stats.map((s) => (
-          <div class="stat">
-            <span class="stat-value">{s.value}</span>
-            <span class="stat-label">{s.label}</span>
-          </div>
-        ))}
+    <div class="container">
+      <div class="hero-copy">
+        <h1>Switch jobs in Android dev with zero guesswork.</h1>
+        <p class="lede">
+          {SITE.name} is a community-built kit of curated interview questions,
+          topic deep-dives, and real interview experiences - everything you
+          need to prepare, in one place.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="/topics/">
+            Start with topics
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="/questions/">Browse all questions</a>
+        </div>
+        <p class="hero-meta">
+          {questions.length} questions · {topics.length} topics ·
+          {experiences.length} interview {experiences.length === 1 ? 'experience' : 'experiences'} ·
+          free &amp; open source, no sign-up
+        </p>
       </div>
     </div>
-    <div class="hero-glow" aria-hidden="true"></div>
   </section>
 
   <!-- ===== Featured topics ===== -->
-  <section class="section">
+  <section class="section topics-section">
     <div class="container">
       <div class="section-head">
-        <div>
-          <span class="eyebrow">Start here</span>
-          <h2>Popular topics</h2>
-        </div>
-        <a class="see-all" href="/topics/">View all topics →</a>
+        <h2>Start with a topic</h2>
+        <a class="see-all" href="/topics/">All topics →</a>
       </div>
 
       {featured.length > 0 ? (
@@ -141,58 +132,88 @@ const features = [
     </div>
   </section>
 
-  <!-- ===== Features ===== -->
+  <!-- ===== What's inside ===== -->
   <section class="section feature-band">
     <div class="container">
-      <div class="section-head center">
-        <span class="eyebrow">Why AndroidDevKit</span>
-        <h2>Everything for the switch, in one place</h2>
-        <p class="text-soft section-sub">
-          Stop stitching together scattered blog posts and outdated Gists. This
-          is a single, maintained source of truth.
-        </p>
-      </div>
-      <div class="grid grid-2 feature-grid">
+      <div class="feature-grid">
         {features.map((f) => (
-          <div class="card feature-card">
+          <div class="feature-item">
             <span class="feature-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 {f.iconPaths.map((path) => <path d={path} />)}
               </svg>
             </span>
-            <div class="feature-copy">
-              <h3>{f.title}</h3>
-              <p>{f.body}</p>
-            </div>
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
           </div>
         ))}
       </div>
     </div>
   </section>
 
+  <!-- ===== Fresh content: experiences + blog ===== -->
+  {(recentExperiences.length > 0 || recentPosts.length > 0) && (
+    <section class="section">
+      <div class="container fresh-grid">
+        {recentExperiences.length > 0 && (
+          <div class="fresh-col">
+            <div class="section-head">
+              <h2>Recent interviews</h2>
+              <a class="see-all" href="/experiences/">All experiences →</a>
+            </div>
+            <div class="fresh-list">
+              {recentExperiences.map((e) => (
+                <a class="card fresh-row" href={`/experiences/${e.id}/`}>
+                  <span class="fresh-main">
+                    <span class="fresh-title">{e.data.company}</span>
+                    <span class="fresh-sub">{e.data.role} · {e.data.level}</span>
+                  </span>
+                  <span class="fresh-side">
+                    <span class:list={['out-badge', outcomeClass(e.data.outcome)]}>{e.data.outcome}</span>
+                    <span class="fresh-date">{fmtDate(e.data.date)}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        {recentPosts.length > 0 && (
+          <div class="fresh-col">
+            <div class="section-head">
+              <h2>Guides &amp; strategy</h2>
+              <a class="see-all" href="/blog/">All articles →</a>
+            </div>
+            <div class="fresh-list">
+              {recentPosts.map((p) => (
+                <a class="card fresh-row" href={`/blog/${p.id}/`}>
+                  <span class="fresh-main">
+                    <span class="fresh-title">{p.data.title}</span>
+                    <span class="fresh-sub">{p.data.description}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
   <!-- ===== Contribute CTA ===== -->
-  <section class="section">
+  <section class="section contrib-section">
     <div class="container">
       <div class="cta-card">
         <div class="cta-text">
-          <span class="eyebrow">Give back</span>
           <h2>Just finished an interview? Pay it forward.</h2>
           <p class="text-soft">
             The best prep material comes from people who just sat in the chair.
-            Add a question, fix an answer, or write up your interview experience
-            - it all happens through GitHub pull requests.
+            Add a question, fix an answer, or share your interview experience -
+            it is all a Markdown file and a pull request.
           </p>
-          <div class="hero-cta">
-            <a class="btn btn-primary" href="/contribute/">How to contribute</a>
-            <a class="btn btn-ghost" href={SITE.github} target="_blank" rel="noopener noreferrer">Star on GitHub</a>
-          </div>
         </div>
-        <div class="cta-deco" aria-hidden="true">
-          <pre><code>{`$ git checkout -b add-coroutines-q
-$ # add your question file
-$ git commit -m "Add: structured concurrency Q"
-$ git push origin add-coroutines-q
-# → open a Pull Request 🎉`}</code></pre>
+        <div class="cta-actions">
+          <a class="btn btn-primary" href="/contribute/">How to contribute</a>
+          <a class="btn btn-ghost" href={SITE.github} target="_blank" rel="noopener noreferrer">Star on GitHub</a>
         </div>
       </div>
     </div>
@@ -201,181 +222,209 @@ $ git push origin add-coroutines-q
 
 <style>
   .hero {
-    position: relative;
-    overflow: hidden;
-    padding-block: clamp(3.5rem, 9vw, 7rem) clamp(2.5rem, 6vw, 4rem);
+    padding-block: clamp(3rem, 8vw, 5.5rem) clamp(1rem, 3vw, 2rem);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
   }
-  .hero-inner {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  :global(:root[data-theme='dark']) .hero {
+    background: transparent;
   }
-  .hero .eyebrow {
-    display: inline-block;
-    line-height: 1.5;
-  }
-  .hero .eyebrow .dot {
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 0.5rem;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent-bright);
-    box-shadow: 0 0 0 3px var(--accent-soft);
+  .hero-copy {
+    max-width: 640px;
+    padding-bottom: clamp(2rem, 5vw, 3.5rem);
   }
   .hero h1 {
-    margin: 1.1rem 0 0;
-    font-size: clamp(2.3rem, 6vw, 4rem);
-  }
-  .grad {
-    background: linear-gradient(100deg, var(--accent) 10%, var(--accent-bright) 90%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    margin: 0;
   }
   .lede {
-    max-width: 620px;
-    margin: 1.3rem 0 0;
-    font-size: 1.12rem;
-    color: var(--ink-soft);
+    margin: 1.1rem 0 0;
+    font-size: 1.08rem;
+    max-width: 560px;
   }
   .hero-cta {
     display: flex;
-    gap: 0.8rem;
-    margin-top: 1.9rem;
+    gap: 0.7rem;
+    margin-top: 1.7rem;
     flex-wrap: wrap;
-    justify-content: center;
   }
-  .hero-stats {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: clamp(1.5rem, 5vw, 3.5rem);
-    margin-top: 3.2rem;
-    padding-top: 2.2rem;
-    border-top: 1px solid var(--border);
-    width: 100%;
-    max-width: 720px;
-  }
-  .stat {
-    display: flex;
-    flex-direction: column;
-  }
-  .stat-value {
-    font-size: clamp(1.7rem, 4vw, 2.3rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-  }
-  .stat-label {
-    font-size: 0.82rem;
+  .hero-meta {
+    margin: 1.4rem 0 0;
+    font-size: 0.85rem;
     color: var(--ink-faint);
-  }
-  .hero-glow {
-    position: absolute;
-    top: -30%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 900px;
-    height: 600px;
-    background: radial-gradient(
-      ellipse at center,
-      color-mix(in srgb, var(--accent-bright) 22%, transparent),
-      transparent 62%
-    );
-    filter: blur(20px);
-    z-index: 0;
-    pointer-events: none;
   }
 
   .section-head {
     display: flex;
-    align-items: flex-end;
+    align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.4rem;
     flex-wrap: wrap;
   }
   .section-head h2 {
-    margin: 0.4rem 0 0;
-  }
-  .section-head.center {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .section-sub {
-    max-width: 560px;
-    margin: 0.6rem 0 0;
+    margin: 0;
   }
   .see-all {
     font-weight: 600;
-    font-size: 0.92rem;
+    font-size: 0.9rem;
     white-space: nowrap;
   }
 
+  .topics-section {
+    padding-top: clamp(2.25rem, 5vw, 3.5rem);
+  }
+
   .feature-band {
-    background: var(--surface);
     border-block: 1px solid var(--border);
+    background: var(--surface);
+    padding-block: clamp(2.25rem, 5vw, 3.5rem);
+  }
+  :global(:root[data-theme='dark']) .feature-band {
+    background: transparent;
   }
   .feature-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: 1080px;
-    margin: 2.5rem auto 0;
-    gap: 1.5rem;
-  }
-  .feature-card {
     display: grid;
-    grid-template-columns: 52px minmax(0, 1fr);
-    align-items: start;
-    gap: 1.15rem;
-    min-height: 176px;
-    padding: 2rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem 2.5rem;
   }
   .feature-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     background: var(--accent-soft);
     color: var(--accent);
+    margin-bottom: 0.9rem;
   }
   .feature-icon svg {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
   }
-  .feature-card h3 {
-    margin: 0.15rem 0 0.45rem;
+  .feature-item h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1rem;
   }
-  .feature-card p {
+  .feature-item p {
     margin: 0;
-    font-size: 0.94rem;
+    font-size: 0.9rem;
   }
 
-  @media (max-width: 760px) {
-    .feature-grid {
-      grid-template-columns: 1fr;
-      max-width: 560px;
-    }
-    .feature-card {
-      min-height: 0;
-    }
+  .fresh-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    align-items: start;
+  }
+  .fresh-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .fresh-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.95rem 1.15rem;
+  }
+  .fresh-main {
+    min-width: 0;
+  }
+  .fresh-title {
+    display: block;
+    font-weight: 600;
+    font-size: 0.97rem;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .fresh-row:hover .fresh-title {
+    color: var(--accent);
+  }
+  .fresh-sub {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.84rem;
+    color: var(--ink-faint);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .fresh-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.3rem;
+    flex-shrink: 0;
+  }
+  .fresh-date {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+  .out-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.16rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+  }
+  .out-offer {
+    color: #1f7a3d;
+    background: #eaf6ef;
+    border-color: #c4e6d1;
+  }
+  .out-reject {
+    color: #9c3a2b;
+    background: #f9eae6;
+    border-color: #ecc9bf;
+  }
+  .out-neutral {
+    color: var(--ink-soft);
+    background: var(--surface-2);
+  }
+  :global(:root[data-theme='dark']) .out-offer {
+    color: #7edea6;
+    background: #1c2b21;
+    border-color: #2c4534;
+  }
+  :global(:root[data-theme='dark']) .out-reject {
+    color: #e5a494;
+    background: #2b1c18;
+    border-color: #452e27;
   }
 
-  @media (max-width: 460px) {
-    .feature-card {
-      display: block;
-      padding: 1.5rem;
-    }
-    .feature-icon {
-      margin-bottom: 1rem;
-    }
+  .contrib-section {
+    padding-top: 0;
+  }
+  .cta-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.6rem, 4vw, 2.4rem);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+  .cta-text {
+    max-width: 560px;
+  }
+  .cta-text h2 {
+    margin: 0 0 0.6rem;
+  }
+  .cta-text p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .cta-actions {
+    display: flex;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    flex-shrink: 0;
   }
 
   .empty {
@@ -386,40 +435,24 @@ $ git push origin add-coroutines-q
     margin: 0;
   }
 
-  .cta-card {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 2.5rem;
-    align-items: center;
-    padding: clamp(1.8rem, 4vw, 3rem);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background:
-      radial-gradient(circle at 0% 0%, var(--accent-soft), transparent 55%),
-      var(--surface);
+  @media (max-width: 900px) {
+    .feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
-  .cta-text h2 {
-    margin: 0.4rem 0 0.7rem;
-  }
-  .cta-text p {
-    margin: 0 0 1.4rem;
-  }
-  .cta-deco pre {
-    background: var(--bg);
-    margin: 0;
-    font-size: 0.82rem;
-  }
-  .cta-deco code {
-    color: var(--ink-soft);
-    white-space: pre-wrap;
-  }
-
   @media (max-width: 760px) {
     .cta-card {
-      grid-template-columns: 1fr;
+      flex-direction: column;
+      align-items: flex-start;
     }
-    .cta-deco {
-      display: none;
+  }
+  @media (max-width: 480px) {
+    .feature-grid {
+      grid-template-columns: 1fr;
+      gap: 1.6rem;
+    }
+    .hero-cta .btn {
+      flex: 1 1 auto;
     }
   }
 </style>
