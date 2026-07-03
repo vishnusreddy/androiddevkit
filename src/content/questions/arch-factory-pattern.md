@@ -2,6 +2,9 @@
 question: "Explain the Factory pattern and where you use it on Android."
 topic: architecture
 difficulty: mid
+order: 180
+starred: false
+section: "Design principles and patterns"
 tags: ["design-patterns", "factory"]
 ---
 

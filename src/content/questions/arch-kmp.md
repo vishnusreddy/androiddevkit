@@ -2,6 +2,9 @@
 question: "How do you architect a Kotlin Multiplatform (KMP) app? What's shared and what isn't?"
 topic: architecture
 difficulty: senior
+order: 80
+starred: false
+section: "Modularization and boundaries"
 tags: ["kmp", "multiplatform", "architecture"]
 ---
 

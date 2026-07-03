@@ -2,6 +2,9 @@
 question: "How do you choose the right dependency injection scope?"
 topic: architecture
 difficulty: senior
+order: 20
+starred: false
+section: "Dependency injection"
 tags: ["dependency-injection", "hilt", "scoping"]
 ---
 

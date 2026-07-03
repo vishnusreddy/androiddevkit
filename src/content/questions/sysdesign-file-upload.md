@@ -2,6 +2,9 @@
 question: "Design a resumable file upload/download manager."
 topic: system-design
 difficulty: senior
+order: 20
+starred: false
+section: "Client foundations"
 tags: ["system-design", "upload", "workmanager", "networking"]
 ---
 
@@ -10,13 +13,16 @@ This tests **reliability under flaky networks**: large transfers, resume after i
 **Requirements:** upload/download large files, survive app kill & network drops, **resume** (not restart), show progress, retry, respect Wi-Fi/metered preferences.
 
 **Resumable transfers - the core:**
-- **Chunked / multipart upload** - split the file into chunks (e.g. 5–10MB); upload sequentially or with bounded concurrency. Track which chunks succeeded.
+- **Chunked or multipart upload** - split the file into chunks, such as 5 to 10 MB, then upload sequentially or with bounded concurrency. Track which chunks succeeded.
 - **Resumable protocol** - use the server's resumable upload API (e.g. **tus**, Google Resumable Uploads, or S3 multipart). The client asks "how much did you receive?" and continues from there with `Content-Range`.
 - **Downloads** - use HTTP **`Range` requests** (`Range: bytes=1024-`) to resume from the last byte written to disk.
 - Persist transfer **state** (file id, upload URL/session, bytes transferred, chunk status) in **Room** so it survives process death.
 
 **Background execution & reliability:**
-- **WorkManager** with constraints (`NetworkType.UNMETERED` for "Wi-Fi only", `requiresCharging`) - guaranteed, survives app death and reboot, retries with **exponential backoff**.
+- Use **WorkManager** when transfer coordination must survive process loss and
+  reboot. Apply constraints such as unmetered network or charging only when they
+  match user intent. Work can be deferred or cancelled, so persist upload state
+  and make every chunk retryable.
 - A **foreground service** (or `setForeground` expedited work) for large active transfers so the OS doesn't kill them and the user sees progress.
 - Queue + dedup; cap concurrency to avoid saturating the radio.
 

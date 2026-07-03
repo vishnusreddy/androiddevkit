@@ -2,6 +2,9 @@
 question: "What is SavedStateHandle, and how does it fit the architecture?"
 topic: architecture
 difficulty: mid
+order: 90
+starred: false
+section: "Presentation and state"
 tags: ["savedstatehandle", "viewmodel", "state"]
 ---
 

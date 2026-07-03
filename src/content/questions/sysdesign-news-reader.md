@@ -2,6 +2,9 @@
 question: "Design a news / article reader app with offline reading."
 topic: system-design
 difficulty: mid
+order: 150
+starred: false
+section: "Product design exercises"
 tags: ["system-design", "offline", "caching", "sync"]
 ---
 

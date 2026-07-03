@@ -2,6 +2,9 @@
 question: "How does Hilt work? Explain components, scopes, modules, and bindings."
 topic: architecture
 difficulty: senior
+order: 10
+starred: true
+section: "Dependency injection"
 tags: ["hilt", "dagger", "dependency-injection"]
 ---
 

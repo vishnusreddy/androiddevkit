@@ -2,6 +2,9 @@
 question: "How do you unit-test a ViewModel?"
 topic: testing-quality
 difficulty: mid
+order: 20
+starred: true
+section: "State and asynchronous code"
 tags: ["testing", "viewmodel", "coroutines"]
 ---
 

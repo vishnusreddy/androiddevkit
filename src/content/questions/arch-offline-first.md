@@ -2,35 +2,51 @@
 question: "How do you design an app that works offline?"
 topic: architecture
 difficulty: mid
+order: 100
+starred: true
+section: "Data and offline"
 tags: ["offline-first", "caching", "single-source-of-truth", "repository"]
 ---
 
-The core principle: **the local database is the single source of truth**. The UI **always reads from the database**; the network only **updates** the database. The app works offline by default, and network is an enhancement.
+For data that must work offline, make a local source such as Room the **single
+source of truth**. The UI observes local data. Network work updates that source
+instead of returning a second competing copy directly to the screen.
 
-```
-UI ──observes──▶ Room (source of truth) ◀──writes── Repository ◀──fetches── Network
-```
+![Offline-first flow where UI observes Room and the repository refreshes it from the network](/diagrams/offline-first.svg)
 
-**The classic flow (NetworkBoundResource pattern):**
-1. UI observes a **Room `Flow`** → shows cached data immediately (even offline).
+**A common read flow:**
+1. UI observes a **Room `Flow`** and shows cached data immediately.
 2. Repository decides whether to refresh (stale? forced?).
 3. If refreshing, fetch from network → **write into Room**.
-4. Room emits the new data → UI updates automatically. The network result never goes straight to the UI.
+4. Room emits the new data and the UI updates automatically.
 
 ```kotlin
-fun observeArticles(): Flow<List<Article>> = flow {
-    emitAll(dao.observeArticles())           // 1. always from DB
-}.onStart {
-    runCatching { val fresh = api.getArticles(); dao.upsertAll(fresh.map { it.toEntity() }) }
-        .onFailure { /* offline: UI still has cached data */ }   // 2-4
+fun observeArticles(): Flow<List<Article>> =
+    dao.observeArticles().map { rows -> rows.map(ArticleEntity::toModel) }
+
+suspend fun refreshArticles() {
+    try {
+        val fresh = api.getArticles()
+        db.withTransaction { dao.replaceAll(fresh.map(ArticleDto::toEntity)) }
+    } catch (e: IOException) {
+        // Keep cached data visible and expose refresh status separately.
+    }
 }
 ```
 
 **Key design decisions interviewers probe:**
-- **Source of truth = DB**, not the network response. This is what makes it consistent and offline-capable.
+- **Source of truth** - choose it per repository. Room is the usual choice for
+  offline-capable structured data.
 - **Freshness policy** - cache-then-network, TTL-based invalidation, or pull-to-refresh forcing a fetch.
-- **Writes / sync** - queue local mutations (likes, edits) with a status flag, do **optimistic UI**, and sync to the server when online (often via **WorkManager** with a network constraint); reconcile conflicts (last-write-wins, version vectors, or server authority).
+- **Writes and sync** - commit local mutations and an outbox entry atomically,
+  update the UI optimistically, then sync durable work. Use WorkManager when the
+  work must survive the process. Define idempotency and conflict handling.
 - **Pagination** - **Paging 3 + `RemoteMediator`** implements offline-first paging: pages are written to Room, the UI pages from Room.
-- **Conflict resolution** and **partial failure** handling are the senior-level details.
+- **Cancellation and errors** - never turn `CancellationException` into a normal
+  failure. Catch expected I/O errors narrowly and expose cached-data plus refresh
+  status separately.
+- **Conflict resolution, deletion tombstones, schema migration, and partial
+  failure** are the senior details.
 
-**Why it's better than fetch-on-demand:** instant loads from cache, resilience to flaky networks, consistent UI, and less redundant fetching.
+The trade-off is additional schema, sync, and conflict complexity. Use this
+design when offline access, fast startup, or resilient writes justify that cost.

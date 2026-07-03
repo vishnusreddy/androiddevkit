@@ -2,6 +2,9 @@
 question: "What are coupling and cohesion, and why do they matter?"
 topic: architecture
 difficulty: junior
+order: 10
+starred: true
+section: "Architecture foundations"
 tags: ["design-principles", "coupling", "cohesion"]
 ---
 

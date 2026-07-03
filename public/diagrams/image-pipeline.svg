@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 145" role="img" aria-labelledby="title desc">
+  <title id="title">Image loading pipeline</title>
+  <desc id="desc">An image request checks memory and disk caches before network, then decodes to the target size and displays the result.</desc>
+  <style>
+    text{font:600 14px system-ui,sans-serif;fill:#1d2b23}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2;marker-end:url(#a)}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <rect class="accent" x="20" y="42" width="110" height="55" rx="13"/><text x="75" y="75" text-anchor="middle">Request</text>
+  <rect class="box" x="160" y="42" width="130" height="55" rx="13"/><text x="225" y="75" text-anchor="middle">Memory cache</text>
+  <rect class="box" x="320" y="42" width="115" height="55" rx="13"/><text x="377" y="75" text-anchor="middle">Disk cache</text>
+  <rect class="box" x="465" y="42" width="105" height="55" rx="13"/><text x="517" y="75" text-anchor="middle">Network</text>
+  <rect class="box" x="600" y="42" width="165" height="55" rx="13"/><text x="682" y="75" text-anchor="middle">Decode to target size</text>
+  <rect class="accent" x="795" y="42" width="145" height="55" rx="13"/><text x="867" y="75" text-anchor="middle">Display</text>
+  <path class="line" d="M130 69H160M290 69H320M435 69H465M570 69H600M765 69H795"/>
+</svg>

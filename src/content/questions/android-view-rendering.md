@@ -11,10 +11,7 @@ A `View` is rendered in **three passes**, traversing the view tree top-down:
 2. **Layout** (`onLayout`) - parents position children by calling `child.layout(l, t, r, b)`. Determines **where**.
 3. **Draw** (`onDraw`) - each view renders itself onto a `Canvas`, parents before children.
 
-```
-requestLayout → measure → layout → draw
-invalidate    → draw only
-```
+![Android View rendering paths for requestLayout and invalidate](/diagrams/view-rendering.svg)
 
 **`invalidate()` vs `requestLayout()` - the key distinction:**
 - **`invalidate()`** - "I need to **redraw**, but my size/position is unchanged." Schedules only the **draw** pass for that view. Use when only appearance changes (color, text content of same size).

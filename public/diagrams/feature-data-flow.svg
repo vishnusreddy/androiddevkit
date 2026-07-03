@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 250" role="img" aria-labelledby="title desc">
+  <title id="title">End-to-end feature data flow</title>
+  <desc id="desc">UI events move through a ViewModel, optional use case, and repository. Network refreshes Room, and observable state returns to the UI.</desc>
+  <style>
+    text{font:600 15px system-ui,sans-serif;fill:#1d2b23}.sub{font-size:12px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.2;marker-end:url(#a)}
+    @media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <rect class="accent" x="30" y="35" width="150" height="58" rx="14"/><text x="105" y="69" text-anchor="middle">SavedScreen</text>
+  <rect class="box" x="235" y="35" width="170" height="58" rx="14"/><text x="320" y="69" text-anchor="middle">SavedViewModel</text>
+  <rect class="box" x="460" y="35" width="150" height="58" rx="14"/><text x="535" y="60" text-anchor="middle">Use case</text><text class="sub" x="535" y="80" text-anchor="middle">when needed</text>
+  <rect class="accent" x="665" y="35" width="150" height="58" rx="14"/><text x="740" y="69" text-anchor="middle">Repository</text>
+  <path class="line" d="M180 64H235"/><path class="line" d="M405 64H460"/><path class="line" d="M610 64H665"/><text class="sub" x="207" y="49" text-anchor="middle">events</text>
+  <rect class="box" x="665" y="148" width="150" height="58" rx="14"/><text x="740" y="182" text-anchor="middle">Room</text>
+  <rect class="box" x="30" y="148" width="150" height="58" rx="14"/><text x="105" y="172" text-anchor="middle">UI state</text><text class="sub" x="105" y="192" text-anchor="middle">StateFlow</text>
+  <rect class="box" x="460" y="148" width="150" height="58" rx="14"/><text x="535" y="182" text-anchor="middle">Network</text>
+  <path class="line" d="M740 93V148"/><path class="line" d="M700 93V120H535V148"/><path class="line" d="M665 220H320V94"/><path class="line" d="M235 177H180"/>
+</svg>

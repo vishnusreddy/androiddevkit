@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 145" role="img" aria-labelledby="title desc">
+  <title id="title">Mobile analytics delivery pipeline</title>
+  <desc id="desc">Tracking persists an event locally, batches queued events, uploads them, and deletes only acknowledged events.</desc>
+  <style>
+    text{font:600 14px system-ui,sans-serif;fill:#1d2b23}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2;marker-end:url(#a)}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <rect class="accent" x="25" y="42" width="130" height="55" rx="13"/><text x="90" y="75" text-anchor="middle">track(event)</text>
+  <rect class="box" x="200" y="42" width="140" height="55" rx="13"/><text x="270" y="75" text-anchor="middle">Persist locally</text>
+  <rect class="box" x="385" y="42" width="120" height="55" rx="13"/><text x="445" y="75" text-anchor="middle">Build batch</text>
+  <rect class="box" x="550" y="42" width="120" height="55" rx="13"/><text x="610" y="75" text-anchor="middle">Upload</text>
+  <rect class="accent" x="715" y="42" width="160" height="55" rx="13"/><text x="795" y="66" text-anchor="middle">Acknowledge</text><text x="795" y="84" text-anchor="middle">and delete</text>
+  <path class="line" d="M155 69H200M340 69H385M505 69H550M670 69H715"/>
+</svg>

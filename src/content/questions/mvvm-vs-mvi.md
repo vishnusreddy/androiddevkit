@@ -2,6 +2,9 @@
 question: "MVVM vs MVI - when would you pick one over the other?"
 topic: architecture
 difficulty: mid
+order: 50
+starred: true
+section: "Presentation and state"
 tags: ["architecture", "mvi", "mvvm", "state"]
 ---
 

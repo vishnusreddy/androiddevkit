@@ -2,6 +2,9 @@
 question: "How do you handle request deduplication, coalescing, and client-side rate limiting?"
 topic: system-design
 difficulty: senior
+order: 40
+starred: false
+section: "Sync and real-time"
 tags: ["system-design", "networking", "deduplication", "performance"]
 ---
 
@@ -10,19 +13,23 @@ network work too often?** They save battery and data while also protecting the
 server.
 
 **Deduplication or coalescing:** if several callers request the same resource at
-the same time, make one network call and share its result.
-```kotlin
-// Coalesce identical in-flight requests
-private val inFlight = mutableMapOf<String, Deferred<User>>()
+the same time, make one network call and share its result. A production
+single-flight implementation needs more than a mutable map:
 
-suspend fun getUser(id: String): User = coroutineScope {
-    inFlight.getOrPut(id) {
-        async { api.getUser(id) }.also { it.invokeOnCompletion { inFlight.remove(id) } }
-    }.await()
-}
-```
+- Protect the in-flight map with a `Mutex` or another concurrency-safe primitive.
+- Define who owns the shared request. If it is a child of the first caller, that
+  caller's cancellation can cancel work that later callers still need.
+- Remove the entry on success, failure, and cancellation without racing a newer
+  request for the same key.
+- Decide whether to cancel when all subscribers leave or let a repository-owned
+  operation finish and populate the cache.
+
+Libraries and a shared repository `Flow` may already provide the required
+single-flight behavior. Prefer a tested abstraction over a clever map of
+`Deferred` values.
 - Common when several composables/observers request the same resource at once (e.g. a feed refresh triggered from two places).
-- A **`StateFlow` with `shareIn`/`stateIn(WhileSubscribed)`** naturally coalesces collectors onto one upstream.
+- A Flow shared with `shareIn` or `stateIn` can coalesce collectors onto one
+  upstream, with lifetime controlled by its sharing policy.
 
 **Caching:** keep a recent result for a short time so repeated reads do not need
 another request. TTL means "time to live," or how long that result is considered

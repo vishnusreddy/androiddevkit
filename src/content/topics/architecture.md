@@ -6,37 +6,49 @@ order: 30
 icon: "◳"
 ---
 
-Mid and senior interviews lean heavily on architecture. It is where interviewers see
-whether you can build something that **scales, tests, and survives change**, not
-just make one screen work. Expect open-ended "how would you structure…?"
-discussions where there's no single right answer, only well-argued trade-offs.
+Architecture rounds test whether you can make a codebase **easy to change, test,
+and operate as the product and team grow**. The names of patterns matter less
+than ownership, data flow, boundaries, and the trade-offs behind each decision.
+Expect open-ended prompts, code-review discussions, and follow-up questions that
+remove one of your original assumptions.
 
 ### A simple study path
 
-Begin with `ViewModel`, UI state, repositories, and dependency injection. Then
-practice explaining one feature from UI to database or network. Clean
-Architecture, modularization, and detailed DI scopes make more sense after that
-basic data flow is clear.
+Start with the starred questions. Learn the recommended UI and data layers,
+repositories, unidirectional data flow, and dependency injection. Then practise
+explaining one feature from user action to storage and back to rendered state.
+Add Clean Architecture, offline-first data, modularization, and detailed DI
+scopes only after that basic flow is clear.
+
+### A reliable way to answer
+
+For any architecture prompt, cover five things in order:
+
+1. **Responsibilities:** What owns UI state, business rules, and data policy?
+2. **Data flow:** Where do events enter, where is state produced, and what is the
+   single source of truth?
+3. **Boundaries:** Which details are hidden behind an interface or module?
+4. **Failure and lifetime:** What happens on process death, offline, cancellation,
+   or partial failure?
+5. **Proof:** How will you test, measure, and evolve the design?
 
 ### What gets tested
 
 - **Presentation patterns** - MVC → MVP → MVVM → MVI, and *why* the field evolved; unidirectional data flow.
-- **Clean Architecture** - layers (UI/domain/data), the dependency rule, use cases, per-layer models & mapping.
+- **Clean Architecture** - layers, dependency direction, use cases, and when separate models or interfaces earn their cost.
 - **Data layer** - repository pattern, single source of truth, offline-first (NetworkBoundResource), caching, Paging 3.
 - **Dependency injection** - DI vs service locator, Hilt/Dagger vs Koin, components & scoping, assisted injection, dispatcher injection.
 - **Design patterns** - Observer, Factory, Builder, Singleton, Strategy, Adapter/Decorator, Facade - with real Android examples.
 - **Modularization** - by feature vs layer, `api`/`impl` splits, inter-feature navigation, build-speed and encapsulation wins.
 - **State & events** - modeling immutable `UiState`, one-off events, `SavedStateHandle`, error handling across layers.
-- **Quality** - SOLID, coupling/cohesion, the test pyramid, fakes vs mocks, ViewModel testing, anti-patterns.
+- **Engineering judgment** - SOLID, coupling and cohesion, feature flags, error boundaries, and recognizing over-engineering.
 
 ### How interviewers ask
 
-Lots of **"walk me through how you'd structure this feature"**, **comparison
-questions** (MVVM vs MVI, Hilt vs Koin, fakes vs mocks), and **"what's wrong with
-this design?"** They reward two things at once: knowing the patterns, *and*
-**judgment** about when not to apply them - naming the trade-off ("I'd skip the
-domain layer here because…") is what separates senior answers.
+Common prompts include **"walk me through this feature"**, **"review this
+ViewModel"**, and comparisons such as MVVM vs MVI or Hilt vs Koin. Strong answers
+state assumptions, draw the dependency and data-flow directions, and explain
+when a simpler design is enough. A pattern without a problem is just ceremony.
 
-> **Prep tip:** be ready to design a feature end-to-end out loud - layers, data
-> flow, DI, testing - and to defend *why*. Always state the trade-off; "it
-> depends, and here's on what" is the senior signal.
+> **Prep tip:** design one feature end to end out loud, including layers, data
+> flow, DI, failures, and tests. Finish with what you deliberately did not add.

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 220" role="img" aria-labelledby="title desc">
+  <title id="title">Activity lifecycle during recreation</title>
+  <desc id="desc">An activity pauses, stops, and is destroyed. A new instance is then created, started, and resumed.</desc>
+  <style>
+    text{font:600 14px system-ui,sans-serif;fill:#1d2b23}.sub{font-size:12px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2;marker-end:url(#a)}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <text class="sub" x="25" y="32">Old Activity instance</text><rect class="box" x="25" y="48" width="115" height="50" rx="12"/><text x="82" y="78" text-anchor="middle">onPause</text><rect class="box" x="180" y="48" width="115" height="50" rx="12"/><text x="237" y="78" text-anchor="middle">onStop</text><rect class="box" x="335" y="48" width="125" height="50" rx="12"/><text x="397" y="78" text-anchor="middle">onDestroy</text><path class="line" d="M140 73H180M295 73H335"/>
+  <text class="sub" x="510" y="132">New Activity instance</text><rect class="accent" x="510" y="148" width="115" height="50" rx="12"/><text x="567" y="178" text-anchor="middle">onCreate</text><rect class="accent" x="665" y="148" width="105" height="50" rx="12"/><text x="717" y="178" text-anchor="middle">onStart</text><rect class="accent" x="810" y="148" width="105" height="50" rx="12"/><text x="862" y="178" text-anchor="middle">onResume</text><path class="line" d="M625 173H665M770 173H810M460 73C500 73 470 173 510 173"/>
+</svg>

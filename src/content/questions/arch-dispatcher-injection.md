@@ -2,6 +2,9 @@
 question: "Why should you inject coroutine dispatchers instead of hardcoding them?"
 topic: architecture
 difficulty: mid
+order: 160
+starred: false
+section: "Dependency injection"
 tags: ["coroutines", "dispatchers", "testing", "dependency-injection"]
 ---
 
@@ -10,7 +13,7 @@ Hardcoding `Dispatchers.IO`/`Default` couples your code to real threads, which m
 **The problem with hardcoding:**
 ```kotlin
 class Repo(private val api: Api) {
-    suspend fun load() = withContext(Dispatchers.IO) { api.fetch() }  // ❌ real IO in tests
+    suspend fun load() = withContext(Dispatchers.IO) { api.fetch() }  // Real I/O leaks into tests
 }
 ```
 In tests you can't control this - `runTest`'s virtual clock doesn't govern a real `Dispatchers.IO`, so timing is unpredictable and tests can be flaky.

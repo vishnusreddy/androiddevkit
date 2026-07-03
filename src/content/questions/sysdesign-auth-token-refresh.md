@@ -2,36 +2,49 @@
 question: "Design authentication and token refresh for a mobile app."
 topic: system-design
 difficulty: mid
+order: 80
+starred: true
+section: "Security and operations"
 tags: ["system-design", "auth", "security", "networking"]
 ---
 
-**The model:** OAuth2/OIDC issues a **short-lived access token** (minutes–hours) and a **long-lived refresh token** (days–months). The access token authorizes API calls; the refresh token gets a new access token when it expires.
+**The model:** OAuth2/OIDC issues a **short-lived access token** that may last minutes or hours and a **long-lived refresh token** that may last days or months. The access token authorizes API calls; the refresh token gets a new access token when it expires.
 
 **Login flow:**
-- **OAuth2 with PKCE** (Authorization Code + PKCE) for first-party and social login - avoids embedding secrets in the app.
-- Store tokens **securely** - encrypted via **Android Keystore** (EncryptedSharedPreferences / encrypted DataStore). Never plain prefs.
+- Use OAuth 2.0 Authorization Code with PKCE for a native app, normally through
+  an external user agent or a trusted identity SDK. A mobile app cannot keep a
+  client secret.
+- Keep access tokens in memory where practical. If a refresh token must persist,
+  encrypt it with a key protected by Android Keystore or use a security-reviewed
+  identity library. Keystore stores cryptographic keys, not arbitrary tokens.
+- Never put tokens in source code, logs, backups, or unencrypted preferences.
 
 **Transparent refresh (the key client design):**
-- Use OkHttp's **`Authenticator`**, which fires automatically on a **401**: refresh the token and retry the original request - invisible to the rest of the app.
-```kotlin
-class TokenAuthenticator(private val store: TokenStore, private val api: AuthApi) : Authenticator {
-    override fun authenticate(route: Route?, response: Response): Request? {
-        val newToken = runBlocking { refreshOnce() } ?: return null  // give up → log out
-        return response.request.newBuilder()
-            .header("Authorization", "Bearer $newToken").build()
-    }
-}
-```
-- **Serialize concurrent refreshes** - if 5 requests 401 at once, only **one** refresh should run (a `Mutex`); the others wait and reuse the new token. Otherwise you fire 5 refreshes and may invalidate each other.
+- An OkHttp **interceptor** attaches the current access token. An
+  **`Authenticator`** can respond to a 401 by refreshing and rebuilding the
+  request. OkHttp calls it off the main thread, but the refresh must use a client
+  that cannot recursively invoke the same authenticator.
+- **Serialize concurrent refreshes.** If five requests receive 401 together,
+  one refresh should run. Waiting callers must re-check whether another caller
+  already installed a newer token before refreshing.
+- Stop after a bounded number of authentication attempts. Return `null` from the
+  authenticator when credentials are invalid so the client does not loop.
 - An **`Interceptor`** attaches the current access token to every request.
 
 **Edge cases to handle:**
-- **Refresh token expired/revoked** → force logout, clear tokens, send to login.
-- **Refresh token rotation** - many servers issue a new refresh token each refresh; store the latest, handle reuse-detection (a replayed old token = possible theft → invalidate session).
-- **Clock skew** - refresh slightly **before** expiry (proactive) or rely on 401 (reactive); proactive avoids a failed request.
-- **Logout** - revoke server-side, clear local tokens, clear caches, cancel the device push token.
+- **Refresh token expired or revoked** - clear local credentials and move the
+  session to an unauthenticated state. Preserve unsent user work where possible.
+- **Refresh token rotation** - persist the replacement atomically. The server
+  should detect reuse of an old token and revoke the affected token family.
+- **Clock skew** - refresh shortly before expiry or react to 401. Use server
+  expiry data rather than trusting the device clock alone.
+- **Logout** - revoke server-side when possible, clear credentials and private
+  caches, and unregister account-bound push tokens.
 - **Multiple accounts** - token store keyed by account.
 
-**Security:** Keystore-backed storage, HTTPS + cert pinning, biometric gate for sensitive apps, no tokens in logs.
+Biometric authentication can gate access to a Keystore key for sensitive local
+operations, but it does not replace server authentication. Certificate pinning
+is an additional operational commitment, not a default requirement. If the
+threat model needs it, include backup pins and a safe rotation plan.
 
 **Trade-offs to name:** access-token lifetime (security vs refresh frequency), proactive vs reactive refresh (extra check vs a failed request), refresh-token rotation (security vs complexity).

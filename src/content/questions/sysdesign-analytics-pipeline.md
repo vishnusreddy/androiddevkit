@@ -2,6 +2,9 @@
 question: "Design an analytics / event tracking pipeline for a mobile app."
 topic: system-design
 difficulty: senior
+order: 50
+starred: true
+section: "SDK and library design"
 tags: ["system-design", "analytics", "batching", "workmanager"]
 ---
 
@@ -10,9 +13,7 @@ tags: ["system-design", "analytics", "batching", "workmanager"]
 **The core principle: never send one network request per event.** That would hammer the radio (battery), waste data, and add latency. Instead **persist then batch**.
 
 **Pipeline:**
-```
-track(event) → enqueue to local DB → batch → upload → clear sent
-```
+![Analytics pipeline from local persistence through batching, upload, and acknowledgement](/diagrams/analytics-pipeline.svg)
 
 1. **Capture** - `track(event)` is **fire-and-forget and fast** (no main-thread work, no network). It just writes the event to a local **queue**.
 2. **Persist** - store events in **Room** (or a file) so they **survive process death and crashes** - critical for not losing data and for capturing crash-adjacent events.
@@ -21,7 +22,9 @@ track(event) → enqueue to local DB → batch → upload → clear sent
    - a time interval elapses, **or**
    - the app goes to background, **or**
    - connectivity returns.
-   Use **WorkManager** (network constraint, backoff) so flushes are guaranteed and battery-friendly.
+   Use **WorkManager** with a network constraint and backoff when the flush must
+   survive process loss. The OS may defer work, and users or the app can cancel
+   it, so also flush opportunistically while the process is alive.
 4. **Acknowledge & clear** - on successful upload, delete sent events. Use a **batch id / idempotency** so a retried upload doesn't duplicate (server dedups).
 
 **Reliability details:**

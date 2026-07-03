@@ -2,6 +2,9 @@
 question: "Explain the Adapter and Decorator patterns with Android examples."
 topic: architecture
 difficulty: mid
+order: 200
+starred: false
+section: "Design principles and patterns"
 tags: ["design-patterns", "adapter", "decorator"]
 ---
 

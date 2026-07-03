@@ -2,6 +2,9 @@
 question: "What is the difference between local and instrumented tests on Android?"
 topic: testing-quality
 difficulty: junior
+order: 20
+starred: false
+section: "Testing foundations"
 tags: [testing, junit, instrumentation]
 ---
 

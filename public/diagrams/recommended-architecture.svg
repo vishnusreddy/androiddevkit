@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 190" role="img" aria-labelledby="title desc">
+  <title id="title">Recommended Android architecture</title>
+  <desc id="desc">User events flow from UI through optional use cases and repositories to data sources. Observable data flows back to the UI.</desc>
+  <style>
+    text{font:600 16px system-ui,sans-serif;fill:#1d2b23}.sub{font-size:13px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.2;marker-end:url(#a)}
+    @media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <rect class="accent" x="35" y="36" width="155" height="62" rx="14"/><text x="112" y="63" text-anchor="middle">UI layer</text><text class="sub" x="112" y="84" text-anchor="middle">UI + state holder</text>
+  <rect class="box" x="255" y="36" width="165" height="62" rx="14"/><text x="337" y="63" text-anchor="middle">Domain layer</text><text class="sub" x="337" y="84" text-anchor="middle">optional use cases</text>
+  <rect class="accent" x="485" y="36" width="165" height="62" rx="14"/><text x="567" y="63" text-anchor="middle">Data layer</text><text class="sub" x="567" y="84" text-anchor="middle">repositories</text>
+  <rect class="box" x="715" y="36" width="150" height="62" rx="14"/><text x="790" y="63" text-anchor="middle">Data sources</text><text class="sub" x="790" y="84" text-anchor="middle">Room, network</text>
+  <path class="line" d="M190 67H255"/><path class="line" d="M420 67H485"/><path class="line" d="M650 67H715"/>
+  <path class="line" d="M567 98V151H112V103"/><text class="sub" x="350" y="173" text-anchor="middle">observable application data</text>
+</svg>

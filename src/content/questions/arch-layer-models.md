@@ -2,6 +2,9 @@
 question: "Should the network, database, domain, and UI use separate models?"
 topic: architecture
 difficulty: senior
+order: 70
+starred: false
+section: "Modularization and boundaries"
 tags: ["models", "mapping", "clean-architecture", "layers"]
 ---
 
@@ -23,7 +26,9 @@ fun User.toUi() = UserUiModel(name = name, initials = name.take(2).uppercase())
 - **Testability & clarity** - domain logic works on clean models without server cruft.
 
 **The pragmatic counterpoint (interviewers reward this balance):**
-- For a **simple app**, 3–4 models + mappers per entity is **massive boilerplate** for little gain. It's fine to share a single model across layers when the app is small and the API maps cleanly to the UI.
+- For a **simple app**, three or four models plus mappers per entity can create
+  disproportionate boilerplate. Sharing a model across layers can be reasonable
+  when the app is small and the API maps cleanly to the UI.
 - Introduce separate models **where the friction is real** - e.g. when the API is messy, when one screen aggregates several sources, or when domain logic shouldn't see serialization details. Don't apply it dogmatically everywhere.
 
 **Where mapping lives:** typically in the **data layer** (DTO/Entity → Domain) and **presentation layer** (Domain → UI), often as extension functions or dedicated `Mapper` classes (easy to unit-test).

@@ -2,6 +2,9 @@
 question: "How do you implement a Singleton in Kotlin, and what are the pitfalls?"
 topic: architecture
 difficulty: mid
+order: 210
+starred: false
+section: "Design principles and patterns"
 tags: ["design-patterns", "singleton", "kotlin"]
 ---
 

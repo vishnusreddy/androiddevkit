@@ -2,6 +2,9 @@
 question: "Explain the Facade pattern and how it relates to the Repository."
 topic: architecture
 difficulty: junior
+order: 60
+starred: false
+section: "Design principles and patterns"
 tags: ["design-patterns", "facade", "repository"]
 ---
 

@@ -2,6 +2,9 @@
 question: "Service Locator vs Dependency Injection - what's the difference?"
 topic: architecture
 difficulty: senior
+order: 40
+starred: false
+section: "Dependency injection"
 tags: ["dependency-injection", "service-locator"]
 ---
 

@@ -2,6 +2,9 @@
 question: "How do you test Compose UI?"
 topic: testing-quality
 difficulty: mid
+order: 40
+starred: true
+section: "UI and navigation"
 tags: ["compose", "testing"]
 ---
 

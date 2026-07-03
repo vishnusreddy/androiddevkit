@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" role="img" aria-labelledby="title desc">
+  <title id="title">Paging 3 with RemoteMediator</title>
+  <desc id="desc">The UI collects PagingData from a ViewModel and Room. RemoteMediator fetches network pages and stores them in Room.</desc>
+  <style>
+    text{font:600 15px system-ui,sans-serif;fill:#1d2b23}.sub{font-size:12px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.2;marker-end:url(#a)}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <rect class="accent" x="35" y="30" width="180" height="60" rx="14"/><text x="125" y="55" text-anchor="middle">UI</text><text class="sub" x="125" y="76" text-anchor="middle">LazyColumn / adapter</text>
+  <rect class="box" x="300" y="30" width="190" height="60" rx="14"/><text x="395" y="55" text-anchor="middle">ViewModel</text><text class="sub" x="395" y="76" text-anchor="middle">Pager + PagingData</text>
+  <rect class="accent" x="575" y="30" width="190" height="60" rx="14"/><text x="670" y="55" text-anchor="middle">Room</text><text class="sub" x="670" y="76" text-anchor="middle">PagingSource</text>
+  <path class="line" d="M300 60H215"/><path class="line" d="M575 60H490"/><text class="sub" x="257" y="49" text-anchor="middle">Flow</text>
+  <rect class="box" x="300" y="157" width="190" height="60" rx="14"/><text x="395" y="182" text-anchor="middle">RemoteMediator</text><text class="sub" x="395" y="203" text-anchor="middle">load and refresh policy</text>
+  <rect class="box" x="575" y="157" width="190" height="60" rx="14"/><text x="670" y="191" text-anchor="middle">Network</text>
+  <path class="line" d="M490 187H575"/><path class="line" d="M395 157V120H670V90"/><text class="sub" x="540" y="112">stores pages</text>
+</svg>

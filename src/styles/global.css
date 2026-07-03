@@ -169,6 +169,27 @@ img {
   height: auto;
 }
 
+.prose img[src^='/diagrams/'] {
+  display: block;
+  width: 100%;
+  margin: 1.15rem 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.prose p:has(> img[src^='/diagrams/']) {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 640px) {
+  .prose img[src^='/diagrams/'] {
+    width: 700px;
+    max-width: none;
+  }
+}
+
 ::selection {
   background: var(--accent-bright);
   color: #06140d;

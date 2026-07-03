@@ -2,18 +2,25 @@
 question: "How do you design an app to handle poor or intermittent connectivity?"
 topic: system-design
 difficulty: mid
+order: 70
+starred: false
+section: "Client foundations"
 tags: ["system-design", "offline", "networking", "resilience"]
 ---
 
 Treat the network as **unreliable by default** - this is the defining constraint of mobile vs web. Design so the app stays usable on a flaky train-Wi-Fi connection.
 
 **Offline-first foundation:**
-- **Local DB (Room) as the single source of truth.** The UI reads from the DB, so it **always has data** to show - network is an *enhancement*, not a requirement.
+- Use a **local database such as Room as the source of truth** for data that must
+  be available offline. The UI can show previously loaded data immediately, but
+  a first launch may still have an honest empty or offline state.
 - **Optimistic UI** - apply user actions locally immediately (mark `PENDING`), sync in the background; reconcile on success/failure.
 
 **Queue writes, sync later:**
 - An **outbox** of pending mutations persisted in the DB.
-- Drain it with **WorkManager** (network constraint) when connectivity returns - **guaranteed**, survives app kill/reboot.
+- Drain it with **WorkManager** under a network constraint when durable retry is
+  required. It survives ordinary process loss and reboot after scheduling, but
+  the OS may defer it and the user can cancel or force-stop work.
 - Make syncs **idempotent** (client-generated IDs) so retries don't duplicate.
 
 **Smart networking:**
