@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 245" role="img" aria-labelledby="title desc">
+  <title id="title">Unidirectional data flow</title>
+  <desc id="desc">The UI sends events to the ViewModel. The ViewModel coordinates application logic and produces immutable state that flows back to the UI.</desc>
+  <style>
+    text{font:600 16px system-ui,sans-serif;fill:#1d2b23}.sub{font-size:13px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.2;marker-end:url(#a)}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <rect class="accent" x="55" y="75" width="170" height="65" rx="15"/><text x="140" y="113" text-anchor="middle">UI</text>
+  <rect class="box" x="355" y="75" width="170" height="65" rx="15"/><text x="440" y="113" text-anchor="middle">ViewModel</text>
+  <rect class="box" x="655" y="75" width="170" height="65" rx="15"/><text x="740" y="101" text-anchor="middle">Repository</text><text class="sub" x="740" y="123" text-anchor="middle">or use case</text>
+  <path class="line" d="M225 95H355"/><text class="sub" x="290" y="82" text-anchor="middle">events</text><path class="line" d="M525 107H655"/>
+  <path class="line" d="M440 140V190H140V140"/><text class="sub" x="290" y="215" text-anchor="middle">immutable UI state</text>
+</svg>

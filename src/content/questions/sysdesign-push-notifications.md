@@ -2,6 +2,9 @@
 question: "Design the push notification system for a mobile client (FCM)."
 topic: system-design
 difficulty: mid
+order: 90
+starred: false
+section: "Sync and real-time"
 tags: ["system-design", "fcm", "notifications", "push"]
 ---
 

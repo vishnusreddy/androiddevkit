@@ -2,6 +2,9 @@
 question: "What are common Android architecture anti-patterns?"
 topic: architecture
 difficulty: mid
+order: 230
+starred: false
+section: "Architecture judgment"
 tags: ["anti-patterns", "code-smells", "clean-code"]
 ---
 

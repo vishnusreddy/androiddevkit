@@ -2,19 +2,15 @@
 question: "What should an Android app's testing strategy look like?"
 topic: testing-quality
 difficulty: junior
+order: 10
+starred: true
+section: "Testing foundations"
 tags: ["testing", "test-pyramid", "quality"]
 ---
 
 The **test pyramid** guides where to invest: many fast tests at the bottom, few slow ones at the top.
 
-```
-        /\        UI / E2E tests  (few - slow, brittle, on-device)
-       /  \       Espresso / Compose UI tests, full flows
-      /----\      Integration tests (some)
-     /      \     Room DAO, repository + fakes, navigation
-    /--------\    Unit tests (many - fast, JVM)
-   /__________\   ViewModels, use cases, mappers, pure logic
-```
+![Android testing pyramid with unit, integration, and end-to-end test layers](/diagrams/testing-pyramid.svg)
 
 **Unit tests (the base, most of your tests):**
 - Run on the **JVM** (no device) → fast, run on every change.
@@ -29,7 +25,7 @@ The **test pyramid** guides where to invest: many fast tests at the bottom, few 
 - **Espresso** (Views) / **Compose UI tests** / **UI Automator** drive real screens and flows.
 - Slow and flakier, so cover **critical user journeys** (login, checkout), not every screen.
 
-**What makes the app testable (the real point):**
+**Architecture for testability:**
 - **Architecture enables testing** - DI + interfaces let you inject fakes; UDF makes ViewModels pure functions of input you can assert on; separating layers keeps logic Android-free.
 - **Inject dispatchers** and clocks so time/threading is controllable.
 - Prefer **fakes over heavy mocking**, and test **behavior, not implementation**.

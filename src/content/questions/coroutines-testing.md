@@ -2,6 +2,9 @@
 question: "How do you test coroutines and flows?"
 topic: testing-quality
 difficulty: senior
+order: 10
+starred: true
+section: "State and asynchronous code"
 tags: ["coroutines", "testing", "runTest"]
 ---
 

@@ -2,6 +2,9 @@
 question: "How do you approach a mobile system design interview?"
 topic: system-design
 difficulty: mid
+order: 10
+starred: true
+section: "Interview framework"
 tags: ["system-design", "framework", "interview"]
 ---
 
@@ -22,14 +25,15 @@ Drive the conversation with a structured framework - interviewers grade your **p
 - Data (repository, **single source of truth**, local DB + network + cache)
 - Draw the data flow: **UI ↔ ViewModel ↔ Repository ↔ {Room, Network}**.
 
-**4. Deep-dive the hard parts (15 min).** Pick the spicy bits and go deep:
+**4. Deep-dive the highest-risk parts (15 min).** Choose the decisions that
+dominate the design and examine them closely:
 - **Caching & offline** - DB as source of truth, freshness policy.
 - **Pagination** - cursor-based, prefetch.
 - **Sync & conflicts** - optimistic updates, reconciliation.
 - **Images/media** - downsampling, prefetch, cancellation.
 - **Real-time** - WebSocket vs FCM vs polling.
 
-**5. Trade-offs & wrap-up (5–10 min).** Name the tensions explicitly: memory vs smoothness, freshness vs data usage, consistency vs latency, battery vs real-timeness. Mention failure modes, error handling, and what you'd measure.
+**5. Trade-offs and wrap-up (5 to 10 min).** Name the tensions explicitly: memory vs smoothness, freshness vs data usage, consistency vs latency, battery vs real-time behavior. Mention failure modes, error handling, and what you would measure.
 
 **Cross-cutting concerns to weave in:** offline behavior, error/retry, security (token storage), performance (jank, startup), battery/data, testing, observability.
 

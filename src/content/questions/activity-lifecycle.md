@@ -18,10 +18,7 @@ it visible? Can the user interact with it?** The main callbacks are:
 **On rotation**, Android normally destroys the current Activity instance and
 creates a new one. You will usually see a sequence like this:
 
-```
-onPause → onStop → onDestroy
-→ onCreate → onStart → onResume
-```
+![Activity recreation from pause and destruction to creation and resume](/diagrams/activity-lifecycle.svg)
 
 The exact timing of state-saving callbacks can vary, so do not write logic that
 depends on one precise callback order. The important point is that Activity

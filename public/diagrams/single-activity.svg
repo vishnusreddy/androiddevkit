@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" role="img" aria-labelledby="title desc">
+  <title id="title">Single-Activity navigation structure</title>
+  <desc id="desc">MainActivity hosts one navigation container with feed, detail, and profile destinations.</desc>
+  <style>
+    text{font:600 15px system-ui,sans-serif;fill:#1d2b23}.sub{font-size:12px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style>
+  <rect class="accent" x="325" y="18" width="170" height="52" rx="13"/><text x="410" y="49" text-anchor="middle">MainActivity</text><rect class="box" x="325" y="98" width="170" height="52" rx="13"/><text x="410" y="129" text-anchor="middle">NavHost</text><path class="line" d="M410 70V98M410 150V178M130 178H690M130 178V195M410 178V195M690 178V195"/>
+  <rect class="box" x="45" y="195" width="170" height="42" rx="12"/><text x="130" y="221" text-anchor="middle">Feed destination</text><rect class="box" x="325" y="195" width="170" height="42" rx="12"/><text x="410" y="221" text-anchor="middle">Detail destination</text><rect class="box" x="605" y="195" width="170" height="42" rx="12"/><text x="690" y="221" text-anchor="middle">Profile destination</text>
+</svg>

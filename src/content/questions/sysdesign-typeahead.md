@@ -2,6 +2,9 @@
 question: "Design a search / typeahead (autocomplete) feature."
 topic: system-design
 difficulty: mid
+order: 160
+starred: false
+section: "Product design exercises"
 tags: ["system-design", "search", "flow", "debounce"]
 ---
 
@@ -34,7 +37,7 @@ queryFlow
 **Ranking & UX:**
 - Merge **local** (recent/history) + **remote** suggestions; rank by relevance/recency.
 - Highlight the matched substring; show recent searches when the box is empty.
-- Debounce-tuned for feel (200–400ms); show a subtle loading state, not a blocking spinner.
+- Tune debounce for responsiveness, often starting around 200 to 400 ms. Show a subtle loading state, not a blocking spinner.
 
 **Backend-ish considerations (mention briefly):** server-side prefix index (trie/Elasticsearch) - but the **client** focus is debounce, cancellation, caching, and merging local+remote.
 

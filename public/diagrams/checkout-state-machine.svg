@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 205" role="img" aria-labelledby="title desc">
+  <title id="title">Checkout state machine</title>
+  <desc id="desc">A cart moves to placing order, may wait for payment, and finishes in confirmed or failed state.</desc>
+  <style>
+    text{font:600 14px system-ui,sans-serif;fill:#1d2b23}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.danger{fill:#fff4ef;stroke:#c65b35;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.2;marker-end:url(#a)}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.danger{fill:#351b14;stroke:#e38b68}.line{stroke:#a8b9af}}
+  </style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <rect class="box" x="25" y="63" width="105" height="55" rx="13"/><text x="77" y="96" text-anchor="middle">Cart</text>
+  <rect class="box" x="180" y="63" width="150" height="55" rx="13"/><text x="255" y="96" text-anchor="middle">Placing order</text>
+  <rect class="box" x="380" y="63" width="165" height="55" rx="13"/><text x="462" y="96" text-anchor="middle">Payment pending</text>
+  <rect class="accent" x="635" y="24" width="130" height="55" rx="13"/><text x="700" y="57" text-anchor="middle">Confirmed</text>
+  <rect class="danger" x="635" y="128" width="130" height="55" rx="13"/><text x="700" y="161" text-anchor="middle">Failed</text>
+  <path class="line" d="M130 90H180M330 90H380M545 82 635 54M545 100 635 150"/>
+</svg>

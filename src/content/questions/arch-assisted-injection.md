@@ -2,6 +2,9 @@
 question: "What is assisted injection, and when do you need it?"
 topic: architecture
 difficulty: senior
+order: 30
+starred: false
+section: "Dependency injection"
 tags: ["hilt", "dagger", "assisted-injection", "dependency-injection"]
 ---
 

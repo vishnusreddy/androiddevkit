@@ -2,6 +2,9 @@
 question: "How do you use prefetching and predictive loading to make an app feel instant?"
 topic: system-design
 difficulty: mid
+order: 100
+starred: false
+section: "Media and device resources"
 tags: ["system-design", "prefetch", "performance", "ux"]
 ---
 

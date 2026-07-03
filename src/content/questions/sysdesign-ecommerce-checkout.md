@@ -2,6 +2,9 @@
 question: "Design an e-commerce checkout / payment flow."
 topic: system-design
 difficulty: senior
+order: 110
+starred: false
+section: "Product design exercises"
 tags: ["system-design", "payments", "reliability", "security"]
 ---
 
@@ -14,16 +17,17 @@ Checkout is about **correctness, reliability, and security** - you must never do
 - If the response is lost (network drop after the server charged), the client **retries with the same key**; the server recognizes it and returns the **existing** order instead of charging again. This single mechanism prevents the classic double-charge.
 
 **State machine for the order:**
-```
-CART → PLACING_ORDER → (PAYMENT_PENDING) → CONFIRMED | FAILED
-```
+![Checkout state machine from cart through payment to confirmed or failed](/diagrams/checkout-state-machine.svg)
 - Persist the in-progress order **locally** so a crash/kill mid-checkout can resume or reconcile.
 - On uncertain outcome (timeout), **poll order status** rather than re-submitting blindly.
 
 **Payment security:**
-- **Never handle raw card data** - use a PCI-compliant SDK (Stripe, Braintree, Google Pay). The card is tokenized by the provider; your app/backend only sees a **token**, keeping you out of PCI scope.
+- Avoid handling raw card data. Use a payment-provider SDK or Google Pay so
+  sensitive details are tokenized by the provider. This can reduce PCI scope,
+  but the exact compliance obligation depends on the integration and business.
 - **Google Pay / payment sheets** for a native, secure UX.
-- HTTPS + cert pinning; no card data in logs/local storage.
+- Use TLS, keep payment data out of logs and local storage, and add certificate
+  pinning only when the threat model and operational plan justify it.
 
 **Reliability & UX:**
 - **Disable the pay button** after tap and show progress to prevent duplicate taps (belt-and-suspenders with idempotency).

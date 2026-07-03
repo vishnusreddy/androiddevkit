@@ -2,6 +2,9 @@
 question: "How do you minimize battery and data usage in a mobile app?"
 topic: system-design
 difficulty: mid
+order: 110
+starred: false
+section: "Media and device resources"
 tags: ["system-design", "battery", "performance", "data"]
 ---
 

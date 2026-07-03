@@ -2,6 +2,9 @@
 question: "Design a music streaming client (like Spotify) with offline support."
 topic: system-design
 difficulty: senior
+order: 80
+starred: false
+section: "Media and device resources"
 tags: ["system-design", "audio", "streaming", "offline", "media"]
 ---
 

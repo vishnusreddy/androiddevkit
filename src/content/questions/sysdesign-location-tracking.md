@@ -2,6 +2,9 @@
 question: "Design a location-tracking / ride-sharing client (like Uber). What are the client concerns?"
 topic: system-design
 difficulty: senior
+order: 120
+starred: false
+section: "Product design exercises"
 tags: ["system-design", "location", "realtime", "battery"]
 ---
 

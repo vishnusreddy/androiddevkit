@@ -2,37 +2,45 @@
 question: "Explain Clean Architecture on Android. What are the layers and the dependency rule?"
 topic: architecture
 difficulty: mid
+order: 30
+starred: true
+section: "Architecture foundations"
 tags: ["clean-architecture", "layers", "separation"]
 ---
 
-Clean Architecture separates code by responsibility. The useful part is not the
-diagram or the number of layers. It is keeping business rules independent from
-Android UI and storage details.
+Clean Architecture protects high-level policy from volatile details. The useful
+idea is the **dependency rule**: source-code dependencies point toward stable
+business rules, while UI, database, and network code remain replaceable details.
 
-On Android this typically maps to three layers (Google's recommended architecture):
+A strict Android interpretation often uses:
 
-- **Data layer** - repositories and their data sources (network, database, cache). Owns *how* data is fetched/stored. Exposes data to the domain/UI.
-- **Domain layer** (optional) - pure business logic: **use cases** and domain models. **No Android dependencies** - plain Kotlin, fully testable. Defines repository **interfaces**.
-- **UI (presentation) layer** - ViewModels + Compose/Views. Holds UI state, reacts to user input, observes data.
+- **Domain** - business entities, use cases, and ports such as repository
+  interfaces. It is plain Kotlin and does not know about Android, Retrofit, or
+  Room.
+- **Data** - implements domain ports using network, database, cache, and mappers.
+- **Presentation** - ViewModels and UI translate user actions and domain results
+  into UI state.
 
-```
-UI  ──depends on──▶  Domain  ◀──depends on──  Data
-(ViewModel)          (UseCase,                (Repository impl,
-                      interfaces)              network, db)
-```
+![Clean Architecture dependency rule with presentation and data depending on domain policy](/diagrams/clean-architecture.svg)
 
-**The dependency rule in practice:** a domain layer can define a
-`UserRepository` interface and the data layer can implement it. Business logic
-then knows it can load a user, but does not know whether the data came from Room,
-Retrofit, or a fake used in a test.
+For example, the domain can define `UserRepository`, and the data module can
+implement it. Business logic knows that users can be loaded but does not know
+whether the implementation uses Room, HTTP, or a test fake. DI wires the
+implementation at the application boundary.
 
 **Why teams use it:**
-- **Testability** - domain logic is pure Kotlin, tested without Android.
-- **Replaceability** - change a data source without rewriting the UI.
-- **Separation of concerns** - each layer has one reason to change.
+- **Testability** - business rules can run without Android or I/O.
+- **Replaceability** - volatile details can change behind stable ports.
+- **Independent evolution** - teams can enforce boundaries with Gradle modules.
 
 **Keep it practical:**
-- The **domain layer is optional** - for simple screens, ViewModel → Repository is fine; add use cases when business logic is **reused** across ViewModels or gets complex.
-- Don't over-engineer: mapping models across three layers and a use case per call can be **overkill** for a CRUD app. Match the architecture to the app's complexity.
-- Separate models can protect layers from each other's changes, but mapping every
-  small object through four representations is not automatically better.
+- Google's recommended layered architecture and strict Clean Architecture are
+  compatible in goals, but they are not identical dependency diagrams. Google's
+  guidance does not require repository interfaces to live in a domain module.
+- For a simple app, ViewModel to repository is often enough. A use case that only
+  forwards one call adds a name but no policy.
+- Separate models when they protect a meaningful boundary. Mapping every field
+  through several identical models is not automatically cleaner.
+
+A strong answer names which business rules need protection, which details are
+likely to change, and why the extra boundaries are worth their maintenance cost.

@@ -2,6 +2,9 @@
 question: "Walk me through how you'd structure a new feature end to end."
 topic: architecture
 difficulty: mid
+order: 20
+starred: true
+section: "Architecture foundations"
 tags: ["architecture", "practical", "design"]
 ---
 
@@ -16,7 +19,9 @@ A common open-ended interview question. Structure the answer by **layers + data 
 - `ToggleSaveArticleUseCase`, `GetSavedArticlesUseCase` - only if logic is reused/complex; otherwise the ViewModel calls the repository directly.
 
 **3. UI layer**
-- `SavedViewModel` exposes `StateFlow<SavedUiState>` (immutable state: loading/items/error) via `stateIn(WhileSubscribed(5000))`; handles events (`onToggleSave`); emits one-off events (snackbar) on a `Channel`.
+- `SavedViewModel` exposes immutable `StateFlow<SavedUiState>`, handles user
+  actions such as `onToggleSave`, and represents user-visible outcomes in state.
+  The UI can acknowledge a handled message or navigation result.
 - `SavedScreen` (Compose) collects state with `collectAsStateWithLifecycle()`, renders, sends events up (UDF).
 
 **4. Wiring**
@@ -30,10 +35,7 @@ A common open-ended interview question. Structure the answer by **layers + data 
 
 **Then state the trade-offs:** "I'd skip the domain layer and separate models if it's simple, and add them if logic is shared or the API is messy - matching the architecture to the feature's complexity."
 
-```
-SavedScreen ──events──▶ SavedViewModel ──▶ UseCase(opt) ──▶ Repository
-   ▲ state                                                    │
-   └──────────────── StateFlow<UiState> ◀── Room (SoT) ◀── Network
-```
+![End-to-end Android feature data flow from UI events to repository and back through observable state](/diagrams/feature-data-flow.svg)
 
-**Why this answer lands:** it shows you think in **layers, UDF, single source of truth, DI, and testing**, *and* that you apply judgment about how much architecture the feature actually needs.
+This answer demonstrates layers, UDF, a single source of truth, DI, testing, and
+judgment about how much architecture the feature actually needs.

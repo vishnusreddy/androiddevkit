@@ -2,6 +2,9 @@
 question: "How do you design observability for a production mobile app? (crashes, ANRs, performance, logs)"
 topic: system-design
 difficulty: mid
+order: 130
+starred: false
+section: "Security and operations"
 tags: ["system-design", "observability", "monitoring", "quality"]
 ---
 

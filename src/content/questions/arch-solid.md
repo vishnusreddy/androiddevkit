@@ -2,6 +2,9 @@
 question: "Explain the SOLID principles with Android examples."
 topic: architecture
 difficulty: mid
+order: 170
+starred: false
+section: "Design principles and patterns"
 tags: ["solid", "design-principles", "clean-code"]
 ---
 

@@ -2,6 +2,9 @@
 question: "Fakes vs mocks vs stubs - which should you prefer and why?"
 topic: testing-quality
 difficulty: mid
+order: 10
+starred: true
+section: "Testing foundations"
 tags: ["testing", "fakes", "mocks"]
 ---
 

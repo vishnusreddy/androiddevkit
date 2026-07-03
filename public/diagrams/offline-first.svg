@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 200" role="img" aria-labelledby="title desc">
+  <title id="title">Offline-first read and refresh flow</title>
+  <desc id="desc">The UI observes Room. The repository refreshes from the network and writes updates into Room.</desc>
+  <style>
+    text{font:600 16px system-ui,sans-serif;fill:#1d2b23}.sub{font-size:13px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.2;marker-end:url(#a)}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <rect class="accent" x="35" y="55" width="150" height="60" rx="14"/><text x="110" y="90" text-anchor="middle">UI</text>
+  <rect class="box" x="255" y="55" width="150" height="60" rx="14"/><text x="330" y="90" text-anchor="middle">Room</text>
+  <rect class="accent" x="475" y="55" width="150" height="60" rx="14"/><text x="550" y="90" text-anchor="middle">Repository</text>
+  <rect class="box" x="695" y="55" width="110" height="60" rx="14"/><text x="750" y="90" text-anchor="middle">Network</text>
+  <path class="line" d="M255 75H185"/><text class="sub" x="220" y="58" text-anchor="middle">observes</text><path class="line" d="M475 95H405"/><text class="sub" x="440" y="128" text-anchor="middle">writes</text><path class="line" d="M695 85H625"/><text class="sub" x="660" y="68" text-anchor="middle">fetches</text>
+  <text class="sub" x="420" y="166" text-anchor="middle">Room remains the source of truth for offline-capable data</text>
+</svg>
