@@ -33,15 +33,48 @@ export const GISCUS = {
   mapping: 'pathname',
 } as const;
 
-export const NAV = [
-  { label: 'Topics', href: '/topics/' },
-  { label: 'Questions', href: '/questions/' },
+export type NavLink = {
+  label: string;
+  href: string;
+  /** Short description shown in the header dropdown menus. */
+  desc?: string;
+};
+
+export type NavGroup =
+  | (NavLink & { items?: undefined })
+  | { label: string; href?: undefined; items: NavLink[] };
+
+/**
+ * Grouped navigation is the source of truth for the header. Related
+ * destinations live under a single dropdown so the top bar stays lean as the
+ * site grows. To add a new section (e.g. "Practice"), drop it into the right
+ * group's `items` array — the header, mobile menu, and footer all derive from
+ * this list automatically.
+ */
+export const NAV_GROUPS: NavGroup[] = [
+  {
+    label: 'Learn',
+    items: [
+      { label: 'Topics', href: '/topics/', desc: 'Concept guides, topic by topic' },
+      { label: 'Questions', href: '/questions/', desc: 'Curated interview questions' },
+    ],
+  },
   { label: 'Practice', href: '/practice/' },
   { label: 'Progress', href: '/progress/' },
-  { label: 'Experiences', href: '/experiences/' },
-  { label: 'Blog', href: '/blog/' },
-  { label: 'Contribute', href: '/contribute/' },
+  {
+    label: 'Community',
+    items: [
+      { label: 'Experiences', href: '/experiences/', desc: 'Real interview stories' },
+      { label: 'Blog', href: '/blog/', desc: 'Articles & deep dives' },
+      { label: 'Contribute', href: '/contribute/', desc: 'Add a question or share yours' },
+    ],
+  },
 ];
+
+/** Flat list (footer, mobile fallback), derived from NAV_GROUPS. */
+export const NAV: NavLink[] = NAV_GROUPS.flatMap((g) =>
+  g.items ? g.items : [{ label: g.label, href: g.href }],
+);
 
 export const DIFFICULTY_ORDER = ['junior', 'mid', 'senior'] as const;
 export const DIFFICULTY_LABEL: Record<string, string> = {
