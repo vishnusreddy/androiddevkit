@@ -12,7 +12,9 @@ Structured concurrency means **every coroutine runs inside a scope, and a scope 
 
 This gives you three guarantees:
 
-1. **No leaks.** A coroutine can't outlive its scope. When the scope is cancelled, all children are cancelled.
+1. **Bounded lifetime.** A child cannot outlive the scope that owns it. This
+   prevents detached work when the owning scope itself is correctly tied to the
+   application component.
 2. **Cancellation propagates.** Cancelling a parent cancels its children; a failing child (by default) cancels its siblings and parent.
 3. **Errors aren't lost.** Exceptions surface to the scope rather than vanishing on some detached thread.
 

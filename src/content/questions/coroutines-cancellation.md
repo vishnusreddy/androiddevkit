@@ -21,7 +21,7 @@ launch {
 // ✅ Cooperates
 launch {
     while (i < 1_000_000) {
-        ensureActive()        // throws if cancelled
+        ensureActive()        // throws CancellationException if the Job is cancelled
         heavyStep(i++)
     }
 }

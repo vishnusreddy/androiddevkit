@@ -13,9 +13,14 @@ Both defer initialization, but they're for different situations.
 **`lateinit var`**
 - A `var` you promise to set before first use. No initial value.
 - Only for **non-null, non-primitive** types (`var x: Int` won't work).
-- Accessing it before assignment throws `UninitializedPropertyException`.
+- Accessing it before assignment throws
+  `UninitializedPropertyAccessException`, which names the property that was
+  read too early.
 - You can reassign it and check `::x.isInitialized`.
-- Use when something injects/sets the value later - Dagger fields, `onCreate` views/binding, test setup.
+- Use when a framework or setup phase must assign the value later—for example,
+  field injection or test setup. For Activity/Fragment view binding, also clear
+  any Fragment view reference in `onDestroyView()` so it cannot outlive the
+  view lifecycle.
 
 ```kotlin
 private lateinit var binding: ActivityMainBinding

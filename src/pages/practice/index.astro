@@ -1,0 +1,805 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { PRACTICE_MCQS } from '../../data/practice-mcqs';
+
+const topics = (await getCollection('topics')).sort((a, b) => a.data.order - b.data.order);
+const questions = await getCollection('questions');
+const renderedQuestions = await Promise.all(
+  questions.map(async (question) => ({ question, Content: (await render(question)).Content })),
+);
+
+const writtenManifest = questions.map((question) => ({
+  id: question.id,
+  topic: question.data.topic.id,
+  difficulty: question.data.difficulty,
+  prompt: question.data.question,
+  starred: question.data.starred,
+}));
+
+const topicManifest = topics.map((topic) => ({
+  id: topic.id,
+  title: topic.data.title,
+  writtenCount: writtenManifest.filter((item) => item.topic === topic.id).length,
+  mcqCount: PRACTICE_MCQS.filter((item) => item.topic === topic.id).length,
+}));
+---
+
+<BaseLayout
+  title="Interview Practice"
+  description="Build a timed Android interview practice session by topic, format, difficulty, and length. Answer MCQs, rehearse written responses, and score your run."
+>
+  <div class="practice-shell container">
+    <section class="setup-view" id="setup-view">
+      <div class="practice-hero">
+        <div>
+          <span class="eyebrow">Interview practice</span>
+          <h1>Enter focus mode.</h1>
+          <p>
+            Build a 10–20 question run, answer under pressure, and leave with a
+            score—not another open tab you meant to study later.
+          </p>
+        </div>
+        <div class="best-card" aria-live="polite">
+          <span class="best-label">Personal best</span>
+          <strong id="personal-best">—</strong>
+          <span id="best-detail">Complete a run to set it</span>
+        </div>
+      </div>
+
+      <div class="setup-grid">
+        <form class="session-builder card" id="session-builder">
+          <div class="builder-head">
+            <div class="step-number">01</div>
+            <div>
+              <h2>Build your session</h2>
+              <p>Choose the shape of today’s interview.</p>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <label class="field">
+              <span>Topic</span>
+              <select id="practice-topic" name="topic">
+                <option value="all">All topics</option>
+                {topicManifest.map((topic) => (
+                  <option value={topic.id}>{topic.title}</option>
+                ))}
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Answer format</span>
+              <select id="practice-format" name="format">
+                <option value="mixed">Mixed · MCQ + written</option>
+                <option value="mcq">Multiple choice</option>
+                <option value="written">Written rehearsal</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Difficulty</span>
+              <select id="practice-difficulty" name="difficulty">
+                <option value="all">All levels</option>
+                <option value="junior">Junior</option>
+                <option value="mid">Mid</option>
+                <option value="senior">Senior</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Timer</span>
+              <select id="practice-duration" name="duration">
+                <option value="600">10 minutes</option>
+                <option value="1200" selected>20 minutes</option>
+                <option value="1800">30 minutes</option>
+                <option value="0">No timer</option>
+              </select>
+            </label>
+          </div>
+
+          <fieldset class="length-field">
+            <legend>Questions</legend>
+            <div class="length-options">
+              <label><input type="radio" name="length" value="10" /><span>10 <small>Quick</small></span></label>
+              <label><input type="radio" name="length" value="15" checked /><span>15 <small>Standard</small></span></label>
+              <label><input type="radio" name="length" value="20" /><span>20 <small>Deep run</small></span></label>
+            </div>
+          </fieldset>
+
+          <p class="pool-note" id="pool-note" aria-live="polite"></p>
+
+          <button class="btn btn-primary start-btn" type="submit">
+            Start practice
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+          </button>
+        </form>
+
+        <aside class="rules card">
+          <div class="builder-head">
+            <div class="step-number">02</div>
+            <div>
+              <h2>Know the rules</h2>
+              <p>Small stakes. Useful pressure.</p>
+            </div>
+          </div>
+          <ul class="rule-list">
+            <li>
+              <span class="rule-index">01</span>
+              <div><strong>Build a streak</strong><small>Correct answers earn XP; consecutive wins add a bonus.</small></div>
+            </li>
+            <li>
+              <span class="rule-index">02</span>
+              <div><strong>Grade written answers</strong><small>Reveal the reference answer, then mark yours missed, close, or solid.</small></div>
+            </li>
+            <li>
+              <span class="rule-index">03</span>
+              <div><strong>Stay in the room</strong><small>Leaving the tab costs 50 XP and 15 seconds. Focus mode remembers.</small></div>
+            </li>
+          </ul>
+          <div class="pool-stat">
+            <span>{writtenManifest.length + PRACTICE_MCQS.length}</span>
+            <small>questions in the practice pool</small>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="game-view" id="game-view" hidden aria-live="polite">
+      <div class="game-topbar">
+        <button type="button" class="quit-btn" id="quit-session" aria-label="End session">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6" /></svg>
+          End session
+        </button>
+        <div class="live-stats">
+          <div><span>Streak</span><strong id="live-streak">0</strong></div>
+          <div><span>XP</span><strong id="live-xp">0</strong></div>
+          <div class="timer-stat"><span>Time</span><strong id="live-time">20:00</strong></div>
+        </div>
+      </div>
+
+      <div class="game-progress" aria-hidden="true"><span id="game-progress-fill"></span></div>
+
+      <div class="question-layout">
+        <aside class="question-rail">
+          <span class="rail-label">Question</span>
+          <strong><span id="question-number">1</span><small id="question-total">/15</small></strong>
+          <div class="rail-divider"></div>
+          <span class="rail-label">Score</span>
+          <strong><span id="live-score">0</span><small>%</small></strong>
+        </aside>
+
+        <article class="question-card card">
+          <div class="question-meta">
+            <span class="badge" id="question-topic"></span>
+            <span class="badge" id="question-difficulty"></span>
+            <span class="format-label" id="question-format"></span>
+          </div>
+          <h2 id="question-prompt"></h2>
+
+          <div class="mcq-options" id="mcq-options"></div>
+
+          <div class="written-answer" id="written-answer" hidden>
+            <label for="written-response">Rehearse your answer</label>
+            <textarea id="written-response" rows="7" placeholder="Explain it as if the interviewer is across the table…"></textarea>
+            <div class="writing-hint"><span id="word-count">0 words</span><span>Structure → trade-off → example</span></div>
+          </div>
+
+          <button type="button" class="btn btn-primary answer-btn" id="answer-action" disabled>Check answer</button>
+
+          <section class="answer-panel" id="answer-panel" hidden>
+            <div class="answer-verdict" id="answer-verdict"></div>
+            <div class="reference-answer prose" id="reference-answer"></div>
+            <div class="self-grade" id="self-grade" hidden>
+              <p>How close was your answer?</p>
+              <div>
+                <button type="button" data-grade="0"><strong>Missed it</strong><span>0 pts</span></button>
+                <button type="button" data-grade="0.5"><strong>Close</strong><span>½ pt</span></button>
+                <button type="button" data-grade="1"><strong>Solid</strong><span>1 pt</span></button>
+              </div>
+            </div>
+          </section>
+
+          <div class="question-footer">
+            <span id="question-status">Choose an answer to continue</span>
+            <button type="button" class="btn btn-primary next-btn" id="next-question" hidden>
+              Next question
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="results-view" id="results-view" hidden>
+      <div class="results-card card">
+        <span class="eyebrow">Session complete</span>
+        <div class="score-ring" id="score-ring"><strong id="final-score">0%</strong><span>final score</span></div>
+        <h1 id="result-title">Run complete.</h1>
+        <p id="result-copy"></p>
+
+        <div class="result-stats">
+          <div><strong id="result-correct">0</strong><span>points earned</span></div>
+          <div><strong id="result-xp">0</strong><span>XP</span></div>
+          <div><strong id="result-streak">0</strong><span>best streak</span></div>
+          <div><strong id="result-focus">0</strong><span>focus breaks</span></div>
+        </div>
+
+        <div class="result-actions">
+          <button type="button" class="btn btn-primary" id="retry-session">Run it again</button>
+          <button type="button" class="btn btn-ghost" id="new-session">Change setup</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="focus-toast" id="focus-toast" role="status" hidden>
+    <strong>Focus break recorded</strong>
+    <span>−50 XP · −15 seconds</span>
+  </div>
+
+  <div class="answer-templates" hidden>
+    {renderedQuestions.map(({ question, Content }) => (
+      <template id={`answer-${question.id}`}><Content /></template>
+    ))}
+  </div>
+
+  <script type="application/json" id="practice-written-data" set:html={JSON.stringify(writtenManifest)} />
+  <script type="application/json" id="practice-mcq-data" set:html={JSON.stringify(PRACTICE_MCQS)} />
+  <script type="application/json" id="practice-topic-data" set:html={JSON.stringify(topicManifest)} />
+</BaseLayout>
+
+<style is:global>
+  .practice-shell [hidden] { display: none !important; }
+  .practice-shell { padding-block: clamp(2rem, 5vw, 4rem) 4rem; }
+  .practice-hero { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2rem; margin-bottom: 2rem; }
+  .practice-hero h1 { margin: .35rem 0 .65rem; font-size: clamp(2.4rem, 6vw, 4.6rem); letter-spacing: -.055em; }
+  .practice-hero p { max-width: 650px; margin: 0; font-size: 1.08rem; }
+  .best-card { min-width: 180px; padding: 1rem 1.1rem; border-left: 2px solid var(--accent); display: grid; }
+  .best-label, .best-card span:last-child { color: var(--ink-faint); font-size: .73rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+  .best-card strong { font-size: 2rem; line-height: 1.1; color: var(--ink); }
+  .best-card span:last-child { text-transform: none; letter-spacing: 0; font-weight: 500; margin-top: .25rem; }
+  .setup-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, .75fr); gap: 1rem; }
+  .session-builder, .rules { padding: clamp(1.25rem, 3vw, 2rem); }
+  .builder-head { display: flex; align-items: flex-start; gap: .9rem; margin-bottom: 1.6rem; }
+  .builder-head h2 { margin: 0 0 .2rem; font-size: 1.2rem; }
+  .builder-head p { margin: 0; font-size: .88rem; }
+  .step-number { display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); font: 700 .76rem var(--font-mono); }
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .field { display: grid; gap: .4rem; }
+  .field > span, .length-field legend { color: var(--ink-soft); font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+  .field select { width: 100%; min-height: 46px; padding: .72rem 2.6rem .72rem .8rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background-color: var(--surface); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23707872' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 8 4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right .85rem center; background-size: 18px; color: var(--ink); font: 500 .94rem var(--font-sans); -webkit-appearance: none; appearance: none; }
+  .field select:hover, .field select:focus { border-color: var(--accent); outline: none; }
+  .length-field { border: 0; margin: 1.35rem 0 0; padding: 0; }
+  .length-field legend { margin-bottom: .5rem; }
+  .length-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: .65rem; }
+  .length-options input { position: absolute; opacity: 0; pointer-events: none; }
+  .length-options label > span { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; padding: .75rem .85rem; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; color: var(--ink); font-weight: 750; }
+  .length-options small { color: var(--ink-faint); font-size: .72rem; font-weight: 500; }
+  .length-options input:checked + span { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .length-options input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .pool-note { min-height: 1.4em; margin: .85rem 0 .5rem; font-size: .8rem; color: var(--ink-faint); }
+  .start-btn { width: 100%; margin-top: .35rem; }
+  .rule-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 1.15rem; }
+  .rule-list li { display: flex; gap: .8rem; align-items: flex-start; }
+  .rule-index { width: 26px; flex: 0 0 26px; padding-top: .15rem; color: var(--ink-faint); font: 650 .7rem var(--font-mono); letter-spacing: .04em; }
+  .rule-list strong, .rule-list small { display: block; }
+  .rule-list strong { font-size: .9rem; }
+  .rule-list small { color: var(--ink-faint); line-height: 1.45; margin-top: .15rem; }
+  .pool-stat { border-top: 1px solid var(--border); margin-top: 1.5rem; padding-top: 1.15rem; display: flex; align-items: baseline; gap: .5rem; }
+  .pool-stat span { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+  .pool-stat small { color: var(--ink-faint); }
+
+  .game-view[hidden], .results-view[hidden], .setup-view[hidden] { display: none; }
+  .game-topbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+  .quit-btn { display: inline-flex; align-items: center; gap: .4rem; border: 0; background: transparent; color: var(--ink-faint); padding: .5rem 0; cursor: pointer; font: 600 .85rem var(--font-sans); }
+  .quit-btn:hover { color: #c53e38; }
+  .live-stats { display: flex; align-items: center; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); overflow: hidden; }
+  .live-stats > div { min-width: 82px; padding: .5rem .8rem; border-left: 1px solid var(--border); display: flex; justify-content: space-between; align-items: baseline; gap: .55rem; }
+  .live-stats > div:first-child { border-left: 0; }
+  .live-stats span { color: var(--ink-faint); font-size: .69rem; text-transform: uppercase; letter-spacing: .05em; }
+  .live-stats strong { font: 800 .95rem var(--font-mono); }
+  .timer-stat strong { color: var(--accent); }
+  .timer-stat.danger strong { color: #c53e38; }
+  .game-progress { height: 3px; background: var(--surface-3); border-radius: 99px; margin-bottom: clamp(1.5rem, 4vw, 3rem); overflow: hidden; }
+  .game-progress span { display: block; width: 0; height: 100%; background: var(--accent); transition: width .25s ease; }
+  .question-layout { display: grid; grid-template-columns: 100px minmax(0, 780px); justify-content: center; gap: 1.5rem; }
+  .question-rail { padding-top: 1.25rem; display: flex; flex-direction: column; }
+  .rail-label { color: var(--ink-faint); font-size: .67rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+  .question-rail strong { display: flex; align-items: baseline; margin-top: .2rem; font: 800 2.5rem/1 var(--font-mono); color: var(--ink); }
+  .question-rail small { color: var(--ink-faint); font-size: .78rem; }
+  .rail-divider { width: 28px; border-top: 1px solid var(--border-strong); margin: 1.3rem 0; }
+  .question-card { padding: clamp(1.3rem, 4vw, 2.3rem); min-height: 520px; display: flex; flex-direction: column; }
+  .question-meta { display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; }
+  .format-label { color: var(--ink-faint); font-size: .75rem; margin-left: auto; font-weight: 600; }
+  .question-card h2 { font-size: clamp(1.35rem, 3vw, 1.9rem); margin: 1.2rem 0 1.5rem; max-width: 680px; }
+  .mcq-options { display: grid; gap: .65rem; }
+  .option-btn { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; align-items: center; text-align: left; gap: .8rem; padding: .85rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); cursor: pointer; font: 500 .94rem/1.45 var(--font-sans); }
+  .option-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+  .option-key { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 7px; background: var(--surface-2); color: var(--ink-faint); font: 700 .75rem var(--font-mono); }
+  .option-btn.selected { border-color: var(--accent); background: var(--accent-soft); }
+  .option-btn.selected .option-key { background: var(--accent); color: var(--on-accent); }
+  .option-btn.correct { border-color: var(--accent); background: var(--accent-soft); }
+  .option-btn.correct::after { content: '✓'; color: var(--accent); font-weight: 800; }
+  .option-btn.incorrect { border-color: #c53e38; background: color-mix(in srgb, #d64b45 8%, var(--surface)); }
+  .option-btn.incorrect::after { content: '×'; color: #c53e38; font-weight: 800; }
+  .written-answer { display: grid; gap: .45rem; }
+  .written-answer label { font-size: .8rem; font-weight: 700; color: var(--ink-soft); }
+  .written-answer textarea { width: 100%; resize: vertical; min-height: 150px; padding: .9rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--ink); font: 500 .94rem/1.6 var(--font-sans); }
+  .written-answer textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .writing-hint { display: flex; justify-content: space-between; color: var(--ink-faint); font-size: .72rem; }
+  .answer-btn { align-self: flex-start; margin-top: 1.2rem; }
+  .answer-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .answer-panel { margin-top: 1.5rem; }
+  .answer-verdict { margin-bottom: .85rem; font-weight: 800; color: var(--accent); }
+  .answer-verdict.wrong { color: #c53e38; }
+  .reference-answer { color: var(--ink-soft); font-size: .92rem; }
+  .reference-answer > :first-child { margin-top: 0; }
+  .reference-answer > :last-child { margin-bottom: 0; }
+  .self-grade { margin-top: 1.35rem; }
+  .self-grade p { margin: 0 0 .65rem; font-size: .82rem; font-weight: 700; }
+  .self-grade > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+  .self-grade button { display: flex; justify-content: space-between; align-items: center; gap: .4rem; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .65rem .7rem; background: var(--surface); color: var(--ink); cursor: pointer; }
+  .self-grade button:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .self-grade button.selected { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .self-grade button:disabled { cursor: default; opacity: .55; }
+  .self-grade button.selected:disabled { opacity: 1; }
+  .self-grade button span { color: var(--ink-faint); font-size: .72rem; }
+  .self-grade button.selected span { color: var(--accent); }
+  .question-footer { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: auto; padding-top: 1.2rem; }
+  .question-footer > span { color: var(--ink-faint); font-size: .78rem; }
+  .next-btn { margin-left: auto; }
+
+  .results-view { max-width: 760px; margin: 1rem auto; }
+  .results-card { padding: clamp(1.5rem, 5vw, 3.2rem); text-align: center; }
+  .score-ring { --score: 0%; width: 170px; height: 170px; margin: 1.3rem auto; border-radius: 50%; display: grid; place-content: center; background: radial-gradient(circle at center, var(--surface) 62%, transparent 63%), conic-gradient(var(--accent) var(--score), var(--surface-3) 0); }
+  .score-ring strong, .score-ring span { display: block; }
+  .score-ring strong { font: 850 2.4rem/1 var(--font-mono); color: var(--ink); }
+  .score-ring span { margin-top: .35rem; color: var(--ink-faint); font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; }
+  .results-card h1 { margin: .5rem 0; }
+  .results-card > p { max-width: 500px; margin: 0 auto 1.6rem; }
+  .result-stats { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--border); margin: 1.5rem 0; }
+  .result-stats div { padding: 1rem .5rem; border-left: 1px solid var(--border); }
+  .result-stats div:first-child { border-left: 0; }
+  .result-stats strong, .result-stats span { display: block; }
+  .result-stats strong { font: 800 1.2rem var(--font-mono); }
+  .result-stats span { color: var(--ink-faint); font-size: .7rem; }
+  .result-actions { display: flex; justify-content: center; gap: .7rem; flex-wrap: wrap; }
+  .focus-toast { position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 100; display: grid; padding: .85rem 1rem; border: 1px solid #c53e38; border-radius: var(--radius-sm); background: var(--surface); box-shadow: var(--shadow-lg); }
+  .focus-toast[hidden] { display: none; }
+  .focus-toast strong { font-size: .85rem; color: #c53e38; }
+  .focus-toast span { color: var(--ink-faint); font-size: .75rem; }
+
+  @media (max-width: 820px) {
+    .practice-hero { grid-template-columns: 1fr; align-items: start; gap: 1rem; }
+    .best-card { max-width: 220px; }
+    .setup-grid { grid-template-columns: 1fr; }
+    .question-layout { grid-template-columns: 1fr; }
+    .question-rail { padding: 0; flex-direction: row; gap: .55rem; align-items: baseline; }
+    .question-rail strong { font-size: 1.25rem; }
+    .question-rail .rail-divider, .question-rail .rail-label:nth-of-type(2), .question-rail strong:last-child { display: none; }
+  }
+  @media (max-width: 560px) {
+    .practice-shell { padding-inline: .8rem; }
+    .field-grid { grid-template-columns: 1fr; }
+    .length-options { gap: .35rem; }
+    .length-options label > span { display: grid; padding: .65rem; }
+    .game-topbar { align-items: flex-start; }
+    .live-stats > div { min-width: auto; padding: .45rem .6rem; display: grid; gap: 0; }
+    .live-stats span { font-size: .6rem; }
+    .question-card { min-height: 580px; }
+    .writing-hint span:last-child { display: none; }
+    .self-grade > div, .result-stats { grid-template-columns: 1fr; }
+    .self-grade > div { grid-template-columns: repeat(3, 1fr); }
+    .self-grade button { display: grid; justify-items: center; }
+    .result-stats { grid-template-columns: 1fr 1fr; }
+    .result-stats div:nth-child(3) { border-left: 0; border-top: 1px solid var(--border); }
+    .result-stats div:nth-child(4) { border-top: 1px solid var(--border); }
+  }
+</style>
+
+<script>
+  type Difficulty = 'junior' | 'mid' | 'senior';
+  type WrittenQuestion = { id: string; topic: string; difficulty: Difficulty; prompt: string; starred: boolean };
+  type McqQuestion = { id: string; topic: string; difficulty: Difficulty; prompt: string; options: string[]; correct: number; explanation: string };
+  type SessionQuestion = (WrittenQuestion & { type: 'written' }) | (McqQuestion & { type: 'mcq' });
+  type TopicInfo = { id: string; title: string; writtenCount: number; mcqCount: number };
+
+  const parseData = <T,>(id: string): T => JSON.parse(document.getElementById(id)?.textContent || '[]') as T;
+  const written = parseData<WrittenQuestion[]>('practice-written-data');
+  const mcqs = parseData<McqQuestion[]>('practice-mcq-data');
+  const topics = parseData<TopicInfo[]>('practice-topic-data');
+  const topicNames = new Map(topics.map((topic) => [topic.id, topic.title]));
+  const difficultyLabels: Record<Difficulty, string> = { junior: 'Junior', mid: 'Mid', senior: 'Senior' };
+
+  const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector);
+  const setupView = $('#setup-view')!;
+  const gameView = $('#game-view')!;
+  const resultsView = $('#results-view')!;
+  const form = $('#session-builder') as HTMLFormElement;
+  const topicSelect = $('#practice-topic') as HTMLSelectElement;
+  const formatSelect = $('#practice-format') as HTMLSelectElement;
+  const difficultySelect = $('#practice-difficulty') as HTMLSelectElement;
+  const durationSelect = $('#practice-duration') as HTMLSelectElement;
+  const poolNote = $('#pool-note')!;
+  const mcqOptions = $('#mcq-options')!;
+  const writtenAnswer = $('#written-answer')!;
+  const writtenResponse = $('#written-response') as HTMLTextAreaElement;
+  const answerAction = $('#answer-action') as HTMLButtonElement;
+  const answerPanel = $('#answer-panel')!;
+  const selfGrade = $('#self-grade')!;
+  const nextButton = $('#next-question') as HTMLButtonElement;
+  const focusToast = $('#focus-toast')!;
+
+  let session: SessionQuestion[] = [];
+  let sessionConfig = { topic: 'all', format: 'mixed', difficulty: 'all', length: 15, duration: 1200 };
+  let current = 0;
+  let selectedOption: number | null = null;
+  let points = 0;
+  let xp = 0;
+  let streak = 0;
+  let bestStreak = 0;
+  let answered = 0;
+  let focusBreaks = 0;
+  let secondsLeft = 0;
+  let timer: number | undefined;
+  let active = false;
+  let hiddenDuringSession = false;
+
+  const shuffle = <T,>(items: T[]): T[] => {
+    const copy = [...items];
+    for (let i = copy.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  };
+
+  function eligible<T extends WrittenQuestion | McqQuestion>(items: T[], relaxDifficulty = false): T[] {
+    return items.filter((item) =>
+      (sessionConfig.topic === 'all' || item.topic === sessionConfig.topic) &&
+      (relaxDifficulty || sessionConfig.difficulty === 'all' || item.difficulty === sessionConfig.difficulty));
+  }
+
+  function availableCount() {
+    const w = eligible(written).length;
+    const m = eligible(mcqs).length;
+    if (sessionConfig.format === 'written') return w;
+    if (sessionConfig.format === 'mcq') return m;
+    return w + m;
+  }
+
+  function readConfig() {
+    sessionConfig.topic = topicSelect.value;
+    sessionConfig.format = formatSelect.value;
+    sessionConfig.difficulty = difficultySelect.value;
+    sessionConfig.duration = Number(durationSelect.value);
+    sessionConfig.length = Number((form.elements.namedItem('length') as RadioNodeList).value || 15);
+  }
+
+  function updatePoolNote() {
+    readConfig();
+    const exact = availableCount();
+    const relaxedDifficulty = sessionConfig.difficulty !== 'all'
+      ? (() => {
+          const old = sessionConfig.difficulty;
+          sessionConfig.difficulty = 'all';
+          const count = availableCount();
+          sessionConfig.difficulty = old;
+          return count;
+        })()
+      : exact;
+    if (exact >= sessionConfig.length) {
+      poolNote.textContent = `${exact} matching questions available. Answers stay hidden until you commit.`;
+    } else if (relaxedDifficulty >= sessionConfig.length) {
+      poolNote.textContent = `${exact} exact matches. We’ll use nearby difficulty levels in the same topic to complete the run.`;
+    } else {
+      poolNote.textContent = `${relaxedDifficulty} unique questions are available for this narrow setup; the run will use all of them.`;
+    }
+  }
+
+  function buildSession(): SessionQuestion[] {
+    let writtenPool = shuffle(eligible(written));
+    let mcqPool = shuffle(eligible(mcqs));
+    const exactTotal = sessionConfig.format === 'written' ? writtenPool.length : sessionConfig.format === 'mcq' ? mcqPool.length : writtenPool.length + mcqPool.length;
+
+    if (exactTotal < sessionConfig.length && sessionConfig.difficulty !== 'all') {
+      writtenPool = shuffle(eligible(written, true));
+      mcqPool = shuffle(eligible(mcqs, true));
+    }
+
+    if (sessionConfig.format === 'written') {
+      return writtenPool.slice(0, sessionConfig.length).map((item) => ({ ...item, type: 'written' as const }));
+    }
+    if (sessionConfig.format === 'mcq') {
+      return mcqPool.slice(0, sessionConfig.length).map((item) => ({ ...item, type: 'mcq' as const }));
+    }
+
+    const mcqTarget = Math.min(Math.ceil(sessionConfig.length / 2), mcqPool.length);
+    const writtenTarget = Math.min(sessionConfig.length - mcqTarget, writtenPool.length);
+    const picks: SessionQuestion[] = [
+      ...mcqPool.slice(0, mcqTarget).map((item) => ({ ...item, type: 'mcq' as const })),
+      ...writtenPool.slice(0, writtenTarget).map((item) => ({ ...item, type: 'written' as const })),
+    ];
+    const stillNeeded = sessionConfig.length - picks.length;
+    if (stillNeeded > 0) {
+      const moreMcq = mcqPool.slice(mcqTarget).map((item) => ({ ...item, type: 'mcq' as const }));
+      const moreWritten = writtenPool.slice(writtenTarget).map((item) => ({ ...item, type: 'written' as const }));
+      picks.push(...shuffle<SessionQuestion>([...moreMcq, ...moreWritten]).slice(0, stillNeeded));
+    }
+    return shuffle(picks);
+  }
+
+  function formatTime(seconds: number) {
+    const safe = Math.max(0, seconds);
+    return `${Math.floor(safe / 60)}:${String(safe % 60).padStart(2, '0')}`;
+  }
+
+  function updateLiveStats() {
+    $('#live-streak')!.textContent = String(streak);
+    $('#live-xp')!.textContent = String(Math.max(0, xp));
+    const score = answered ? Math.round((points / answered) * 100) : 0;
+    $('#live-score')!.textContent = String(score);
+  }
+
+  function updateTimer() {
+    const time = $('#live-time')!;
+    time.textContent = sessionConfig.duration ? formatTime(secondsLeft) : '∞';
+    time.parentElement?.classList.toggle('danger', sessionConfig.duration > 0 && secondsLeft <= 60);
+  }
+
+  function startTimer() {
+    window.clearInterval(timer);
+    secondsLeft = sessionConfig.duration;
+    updateTimer();
+    if (!sessionConfig.duration) return;
+    timer = window.setInterval(() => {
+      secondsLeft -= 1;
+      updateTimer();
+      if (secondsLeft <= 0) finishSession(true);
+    }, 1000);
+  }
+
+  function startSession() {
+    readConfig();
+    session = buildSession();
+    if (!session.length) {
+      poolNote.textContent = 'No questions match this setup yet. Try all levels or a mixed format.';
+      return;
+    }
+    current = 0;
+    points = 0;
+    xp = 0;
+    streak = 0;
+    bestStreak = 0;
+    answered = 0;
+    focusBreaks = 0;
+    active = true;
+    hiddenDuringSession = false;
+    setupView.hidden = true;
+    resultsView.hidden = true;
+    gameView.hidden = false;
+    document.body.classList.add('practice-active');
+    updateLiveStats();
+    startTimer();
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderQuestion() {
+    const question = session[current];
+    selectedOption = null;
+    $('#question-number')!.textContent = String(current + 1);
+    $('#question-total')!.textContent = `/${session.length}`;
+    $('#game-progress-fill')!.style.width = `${(current / session.length) * 100}%`;
+    $('#question-topic')!.textContent = topicNames.get(question.topic) || question.topic;
+    $('#question-difficulty')!.textContent = difficultyLabels[question.difficulty];
+    $('#question-format')!.textContent = question.type === 'mcq' ? 'Multiple choice' : 'Written · self-scored';
+    $('#question-prompt')!.textContent = question.prompt;
+    answerPanel.hidden = true;
+    selfGrade.hidden = true;
+    selfGrade.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
+      button.disabled = false;
+      button.classList.remove('selected');
+      button.setAttribute('aria-pressed', 'false');
+    });
+    nextButton.hidden = true;
+    answerAction.hidden = false;
+    answerAction.disabled = true;
+    answerAction.textContent = question.type === 'mcq' ? 'Check answer' : 'Reveal reference answer';
+    $('#question-status')!.textContent = question.type === 'mcq' ? 'Choose an answer to continue' : 'Write a few honest lines before revealing';
+    $('#reference-answer')!.replaceChildren();
+    $('#answer-verdict')!.className = 'answer-verdict';
+    writtenResponse.value = '';
+    $('#word-count')!.textContent = '0 words';
+
+    mcqOptions.replaceChildren();
+    mcqOptions.hidden = question.type !== 'mcq';
+    writtenAnswer.hidden = question.type !== 'written';
+    if (question.type === 'mcq') {
+      question.options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'option-btn';
+        button.innerHTML = `<span class="option-key">${String.fromCharCode(65 + index)}</span><span></span>`;
+        button.querySelector('span:nth-child(2)')!.textContent = option;
+        button.addEventListener('click', () => {
+          selectedOption = index;
+          mcqOptions.querySelectorAll('.option-btn').forEach((item) => item.classList.remove('selected'));
+          button.classList.add('selected');
+          answerAction.disabled = false;
+        });
+        mcqOptions.append(button);
+      });
+    }
+  }
+
+  function award(result: number) {
+    points += result;
+    answered += 1;
+    if (result >= 1) {
+      streak += 1;
+      bestStreak = Math.max(bestStreak, streak);
+      xp += 100 + Math.min(streak - 1, 5) * 10;
+    } else if (result > 0) {
+      streak = 0;
+      xp += 60;
+    } else {
+      streak = 0;
+      xp += 20;
+    }
+    updateLiveStats();
+  }
+
+  function checkAnswer() {
+    const question = session[current];
+    answerAction.hidden = true;
+    answerPanel.hidden = false;
+    const verdict = $('#answer-verdict')!;
+    const reference = $('#reference-answer')!;
+
+    if (question.type === 'mcq') {
+      const isCorrect = selectedOption === question.correct;
+      mcqOptions.querySelectorAll<HTMLButtonElement>('.option-btn').forEach((button, index) => {
+        button.disabled = true;
+        if (index === question.correct) button.classList.add('correct');
+        if (index === selectedOption && !isCorrect) button.classList.add('incorrect');
+      });
+      verdict.textContent = isCorrect ? 'Correct. Keep the line moving.' : 'Not quite. Bank the correction.';
+      verdict.classList.toggle('wrong', !isCorrect);
+      reference.textContent = question.explanation;
+      award(isCorrect ? 1 : 0);
+      $('#question-status')!.textContent = isCorrect ? `+${100 + Math.min(streak - 1, 5) * 10} XP` : '+20 XP for the rep';
+      nextButton.hidden = false;
+      return;
+    }
+
+    verdict.textContent = 'Reference answer unlocked';
+    const template = document.getElementById(`answer-${question.id}`) as HTMLTemplateElement | null;
+    if (template) reference.append(template.content.cloneNode(true));
+    selfGrade.hidden = false;
+    $('#question-status')!.textContent = 'Compare substance, not wording. Then grade the answer.';
+  }
+
+  function submitGrade(value: number, selectedButton: HTMLButtonElement) {
+    award(value);
+    selfGrade.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
+      const selected = button === selectedButton;
+      button.disabled = true;
+      button.classList.toggle('selected', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+    $('#answer-verdict')!.textContent = value === 1 ? 'Solid answer. That would play well.' : value === .5 ? 'Close. Tighten the gaps you spotted.' : 'Good miss. Now you know what to rebuild.';
+    $('#question-status')!.textContent = value === 1 ? '+100 XP' : value === .5 ? '+60 XP' : '+20 XP for the rep';
+    nextButton.hidden = false;
+  }
+
+  function advance() {
+    if (current >= session.length - 1) {
+      finishSession(false);
+      return;
+    }
+    current += 1;
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function finishSession(timedOut: boolean) {
+    if (!active) return;
+    active = false;
+    window.clearInterval(timer);
+    document.body.classList.remove('practice-active');
+    gameView.hidden = true;
+    resultsView.hidden = false;
+    const percent = Math.round((points / session.length) * 100);
+    $('#final-score')!.textContent = `${percent}%`;
+    $('#score-ring')!.style.setProperty('--score', `${percent}%`);
+    $('#result-correct')!.textContent = `${points % 1 ? points.toFixed(1) : points}/${session.length}`;
+    $('#result-xp')!.textContent = String(Math.max(0, xp));
+    $('#result-streak')!.textContent = String(bestStreak);
+    $('#result-focus')!.textContent = String(focusBreaks);
+    $('#result-title')!.textContent = timedOut ? 'Time called.' : percent >= 85 ? 'Interview-ready energy.' : percent >= 65 ? 'A strong working set.' : 'Useful gaps, now visible.';
+    $('#result-copy')!.textContent = timedOut
+      ? `You answered ${answered} of ${session.length} before the clock ran out. Pressure exposed the next thing to sharpen.`
+      : percent >= 85 ? 'The fundamentals held under pressure. Raise the difficulty or cut the timer next.'
+      : percent >= 65 ? 'You have a dependable base. Review the misses, then run the same setup once more.'
+      : 'No shame in a diagnostic run. The score is a map, not a verdict.';
+    saveBest(percent);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function saveBest(percent: number) {
+    try {
+      const previous = Number(localStorage.getItem('adk-practice-best') || 0);
+      if (percent > previous) localStorage.setItem('adk-practice-best', String(percent));
+      localStorage.setItem('adk-practice-last', JSON.stringify({ percent, xp: Math.max(0, xp), date: Date.now() }));
+      showBest();
+    } catch { /* Storage is optional. */ }
+  }
+
+  function showBest() {
+    try {
+      const best = Number(localStorage.getItem('adk-practice-best') || 0);
+      const last = JSON.parse(localStorage.getItem('adk-practice-last') || 'null');
+      $('#personal-best')!.textContent = best ? `${best}%` : '—';
+      $('#best-detail')!.textContent = last ? `Last run ${last.percent}% · ${last.xp} XP` : 'Complete a run to set it';
+    } catch { /* Keep the empty state. */ }
+  }
+
+  function resetToSetup() {
+    active = false;
+    window.clearInterval(timer);
+    resultsView.hidden = true;
+    gameView.hidden = true;
+    setupView.hidden = false;
+    document.body.classList.remove('practice-active');
+    updatePoolNote();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function recordFocusBreak() {
+    focusBreaks += 1;
+    xp = Math.max(0, xp - 50);
+    if (sessionConfig.duration) secondsLeft = Math.max(0, secondsLeft - 15);
+    updateLiveStats();
+    updateTimer();
+    focusToast.hidden = false;
+    window.setTimeout(() => { focusToast.hidden = true; }, 3200);
+    if (secondsLeft <= 0 && sessionConfig.duration) finishSession(true);
+  }
+
+  form.addEventListener('submit', (event) => { event.preventDefault(); startSession(); });
+  form.addEventListener('change', updatePoolNote);
+  writtenResponse.addEventListener('input', () => {
+    const words = writtenResponse.value.trim() ? writtenResponse.value.trim().split(/\s+/).length : 0;
+    $('#word-count')!.textContent = `${words} word${words === 1 ? '' : 's'}`;
+    answerAction.disabled = words < 3;
+  });
+  answerAction.addEventListener('click', checkAnswer);
+  nextButton.addEventListener('click', advance);
+  selfGrade.querySelectorAll<HTMLButtonElement>('[data-grade]').forEach((button) => {
+    button.addEventListener('click', () => submitGrade(Number(button.dataset.grade), button));
+  });
+  $('#quit-session')!.addEventListener('click', () => {
+    if (confirm('End this run now? Unanswered questions will count against the score.')) finishSession(false);
+  });
+  $('#retry-session')!.addEventListener('click', startSession);
+  $('#new-session')!.addEventListener('click', resetToSetup);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!active) return;
+    if (document.hidden) hiddenDuringSession = true;
+    else if (hiddenDuringSession) {
+      hiddenDuringSession = false;
+      recordFocusBreak();
+    }
+  });
+  window.addEventListener('beforeunload', (event) => {
+    if (!active) return;
+    event.preventDefault();
+    event.returnValue = '';
+  });
+
+  showBest();
+  updatePoolNote();
+</script>

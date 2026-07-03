@@ -12,7 +12,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "content:check": "node scripts/check-content-quality.mjs",
+    "build": "npm run content:check && astro build",
     "preview": "npm run build && wrangler dev",
     "astro": "astro",
     "deploy": "npm run build && wrangler deploy",

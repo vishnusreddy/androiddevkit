@@ -18,7 +18,7 @@ Modifier
     .draggable(state = rememberDraggableState { delta -> offset += delta },
                orientation = Orientation.Horizontal)
     .scrollable(...)
-    .swipeable(...) // or anchoredDraggable in newer APIs
+    .anchoredDraggable(...) // state-driven drag between defined anchors
     .transformable(...) // pinch/zoom/rotate
 ```
 

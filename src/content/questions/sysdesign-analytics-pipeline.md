@@ -8,15 +8,25 @@ section: "SDK and library design"
 tags: ["system-design", "analytics", "batching", "workmanager"]
 ---
 
-**Requirements:** track user events reliably, don't drop events (even offline / on crash), minimal battery/data/perf impact, no jank from logging.
+**Requirements:** capture events with a defined reliability target, retain them
+through offline periods and ordinary process restarts, and keep logging off the
+UI's critical path. Absolute zero loss is not realistic: the process can die
+before an asynchronous write completes, storage can fail, and a bounded queue
+must eventually evict data.
 
 **The core principle: never send one network request per event.** That would hammer the radio (battery), waste data, and add latency. Instead **persist then batch**.
 
 **Pipeline:**
 ![Analytics pipeline from local persistence through batching, upload, and acknowledgement](/diagrams/analytics-pipeline.svg)
 
-1. **Capture** - `track(event)` is **fire-and-forget and fast** (no main-thread work, no network). It just writes the event to a local **queue**.
-2. **Persist** - store events in **Room** (or a file) so they **survive process death and crashes** - critical for not losing data and for capturing crash-adjacent events.
+1. **Capture** - `track(event)` validates a small immutable payload and enqueues
+   it to a single writer without network or blocking I/O on the main thread.
+   Define what happens if the in-memory handoff is full rather than silently
+   allocating forever.
+2. **Persist** - the writer stores events in **Room** or an append-only file so
+   completed writes survive process death. Events still in memory at the exact
+   instant of a crash may be lost; truly critical business actions belong in a
+   transactional product database, not only analytics.
 3. **Batch & flush** - upload events in **batches** when:
    - the batch reaches a size threshold (e.g. 50 events), **or**
    - a time interval elapses, **or**
@@ -31,7 +41,8 @@ tags: ["system-design", "analytics", "batching", "workmanager"]
 - **Offline** - events accumulate locally and flush on reconnect.
 - **At-least-once** delivery with **server-side dedup** (event UUIDs) - simpler and safer than exactly-once.
 - **Bounded queue** - cap size / drop oldest low-priority events if the queue grows unbounded (offline for days).
-- **Crash safety** - because events are persisted immediately, a crash doesn't lose the trail; flush on next launch.
+- **Crash recovery** - flush persisted events on the next launch and accept the
+  documented loss window between API call and durable write.
 
 **Other concerns:** **enrich** events with common context (session, app version, device) once; **sampling** for high-volume events; **privacy/consent** (don't log PII; respect opt-out); **schema/versioning** of event payloads; **compression** of batches.
 

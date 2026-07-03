@@ -1,5 +1,5 @@
 ---
-question: "What is a backing field, and when is one generated? (the `field` keyword)"
+question: "What is a Kotlin backing field, when is one generated, and what does the `field` keyword reference?"
 topic: kotlin
 difficulty: mid
 order: 90

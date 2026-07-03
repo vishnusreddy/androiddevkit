@@ -1,5 +1,5 @@
 ---
-question: "How does the View rendering pipeline work? (measure, layout, draw - and invalidate vs requestLayout)"
+question: "How does the View rendering pipeline handle measure, layout, and draw, and when should you use invalidate or requestLayout?"
 topic: android-fundamentals
 difficulty: senior
 tags: ["views", "rendering", "performance"]

@@ -20,7 +20,7 @@ A robust networking layer is built on **Retrofit + OkHttp + a serializer**, with
 OkHttpClient.Builder()
     .addInterceptor(AuthInterceptor(tokenProvider))      // add auth header
     .addInterceptor(HttpLoggingInterceptor())            // logging (debug only)
-    .addInterceptor(RetryInterceptor())                  // retry transient failures
+    .addInterceptor(BoundedRetryInterceptor())           // only safe transient requests
     .addNetworkInterceptor(CacheControlInterceptor())    // tune caching
     .authenticator(TokenAuthenticator(refresher))        // 401 → refresh token & retry
     .certificatePinner(pinner)                            // pin certs
@@ -30,13 +30,18 @@ OkHttpClient.Builder()
 **Key concerns to cover:**
 - **Auth & token refresh** - an `Authenticator` transparently refreshes the access token on `401` and retries; serialize concurrent refreshes (mutex) so you refresh once.
 - **Error handling** - map HTTP/`IOException`/timeouts to **typed domain results** at the repository boundary; expose retry/error to the UI.
-- **Retries & backoff** - exponential backoff with jitter for transient failures; **don't** retry non-idempotent writes blindly; consider a **circuit breaker** for a failing host.
+- **Retries & backoff** - understand OkHttp's built-in connection retry before
+  adding another layer. Retry only bounded, transient failures with jitter, and
+  never replay a non-idempotent write without an idempotency key.
 - **Caching** - OkHttp disk cache + `Cache-Control`/`ETag`; offline-first via Room.
 - **Request dedup / coalescing** - collapse identical in-flight requests; cancel on screen leave (coroutine cancellation cancels the call).
 - **Security** - require HTTPS, keep secrets out of the app and logs, protect
   persistent credentials with a Keystore-backed design, and add certificate
   pinning only when the threat model and rotation plan justify it.
 - **Observability** - logging (debug), metrics, and correlation IDs.
-- **Threading** - Retrofit `suspend` functions run on a background dispatcher; cancellation via structured concurrency.
+- **Threading** - Retrofit's suspend adapter enqueues the network call without
+  blocking the caller thread and resumes the continuation when the response is
+  ready. Keep any heavy mapping or independent blocking I/O on an appropriate
+  dispatcher, and rely on structured cancellation to cancel the HTTP call.
 
 **REST vs GraphQL** - Retrofit for REST; **Apollo** for GraphQL (one query fetches exactly what the screen needs, reducing over/under-fetching). Mention based on the API.

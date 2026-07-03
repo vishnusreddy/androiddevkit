@@ -30,13 +30,21 @@ init 2
 
 **Why:** property initializers and `init` blocks run **in the order they're written**, top to bottom, interleaved - not "all properties, then all inits." The constructor effectively executes them as a single sequence.
 
-**The classic trap** is referencing a property declared *below*:
+**The classic trap** is indirectly reading a property before its initializer
+runs:
 ```kotlin
 class Broken {
-    init { println(x.length) }  // x not initialized yet → NullPointerException
+    init { printLength() }
     val x = "hi"
+
+    private fun printLength() {
+        println(x.length) // x's backing field is still null here
+    }
 }
 ```
-Even though `x` is a non-null `val`, at the time the `init` block runs it still holds its default (`null`), so this throws. The compiler warns you ("accessing non-initialized property").
+The direct forward reference `init { println(x.length) }` is rejected by the
+compiler, but an indirect call can bypass that definite-initialization check.
+At runtime the backing field still contains the JVM default `null`, so
+`x.length` throws a `NullPointerException`.
 
 **Lesson:** declaration order is execution order. Don't reference a property before its initializer has run.

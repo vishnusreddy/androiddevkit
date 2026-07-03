@@ -1,5 +1,5 @@
 ---
-question: "What is CompositionLocal? When should you use it (and when not)?"
+question: "What is CompositionLocal, and when should or shouldn't you use it?"
 topic: jetpack-compose
 difficulty: mid
 order: 330

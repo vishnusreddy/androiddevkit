@@ -8,7 +8,11 @@ section: "Flow sharing and reliability"
 tags: ["flow", "error-handling", "catch"]
 ---
 
-Handle flow errors with the **`catch`** operator, not a `try/catch` wrapped around the chain - and never `try/catch` *inside* the `flow { }` builder around `emit`.
+Handle failures produced by a Flow's upstream work with the **`catch`**
+operator. Use a normal `try/catch` around `collect` when the collector itself
+can fail. Inside a `flow {}` builder, catch a specific upstream operation if
+you can recover from it, but do not wrap `emit()` in a broad catch that could
+intercept downstream failures or cancellation.
 
 ```kotlin
 repository.observe()
@@ -34,4 +38,7 @@ Why this rule exists: it keeps error handling **local and predictable**. An oper
 - **`onCompletion { cause -> }`** - runs on success *and* failure (cause is non-null on error) - use for cleanup, not recovery.
 - For the **collector's** errors, use a normal `try/catch` around `collect`, or handle them in the coroutine's scope.
 
-**Anti-pattern:** wrapping `emit()` in a `try/catch` inside `flow { }` - it can swallow `CancellationException` and breaks transparency. Use the `catch` operator instead.
+**Anti-pattern:** wrapping `emit()` in a broad `try/catch` inside `flow { }`.
+It can intercept exceptions thrown downstream and can swallow
+`CancellationException`, violating exception transparency. Catch the operation
+that can fail, or use the `catch` operator at the intended pipeline boundary.

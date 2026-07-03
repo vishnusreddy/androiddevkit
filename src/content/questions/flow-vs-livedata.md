@@ -39,4 +39,8 @@ lifecycleScope.launch {
 }
 ```
 
-**Reach for `SharedFlow` instead** for one-off events (navigation, snackbars) where you don't want a "current value" replayed on rotation.
+**Do not choose `SharedFlow` merely because something is called an event.** A
+`SharedFlow(replay = 0)` does not replay to a collector that was absent, so it
+can drop navigation or message signals while the UI is stopped. Model outcomes
+that must be observed as durable state; use SharedFlow only when best-effort
+broadcast delivery matches the requirement.

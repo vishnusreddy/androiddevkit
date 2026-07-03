@@ -1,5 +1,5 @@
 ---
-question: "How do you do custom drawing in Compose? (Canvas, drawBehind, drawWithCache)"
+question: "How do you choose between Canvas, drawBehind, and drawWithCache for custom drawing in Compose?"
 topic: jetpack-compose
 difficulty: mid
 order: 320

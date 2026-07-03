@@ -24,6 +24,9 @@ Worth knowing:
 - **Trailing lambda syntax** - if the last parameter is a function, you can move the lambda outside the parentheses: `customFilter { it > 0 }`.
 - **`it`** is the implicit name for a single-parameter lambda.
 - **Function references** - pass an existing function with `::`: `list.filter(::isValid)`.
-- A lambda is compiled to a **`Function` object** (allocation) unless the function is `inline`.
+- A lambda is represented as a **function object** on the JVM. Capturing lambdas
+  generally allocate; the compiler can reuse some non-capturing lambdas. An
+  `inline` higher-order function can remove the call and allocation overhead at
+  its call site, subject to `noinline` parameters.
 
 This is the backbone of the Kotlin stdlib (`map`, `filter`, `forEach`) and of idiomatic APIs like Compose and coroutine builders.

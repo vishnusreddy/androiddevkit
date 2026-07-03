@@ -8,7 +8,11 @@ section: "Language essentials"
 tags: ["kotlin", "null-safety"]
 ---
 
-Kotlin encodes nullability in the **type system**. `String` can never be null; `String?` can. The compiler forces you to handle the nullable case before you can dereference it, which eliminates most `NullPointerException`s at compile time.
+Kotlin encodes nullability in the **type system**. A value declared as `String`
+cannot normally be assigned null, while `String?` can. The compiler forces you
+to handle the nullable case before dereferencing it, eliminating many—but not
+all—`NullPointerException`s. Platform types from Java, `!!`, initialization
+order, and code running outside Kotlin's checks remain escape hatches.
 
 The main tools:
 
@@ -19,7 +23,7 @@ The main tools:
 
 ```kotlin
 val length = name?.length ?: 0   // safe
-val forcedLength = name!!.length // throws if name is null
+val forcedLength = name!!.length // throws NullPointerException if name is null
 ```
 
 **Practical guidance:** `!!` is a code smell - reserve it for genuine impossibilities, and prefer `?.`, `?:`, `requireNotNull()` (which throws a *meaningful* message), or restructuring so the value can't be null. Also mention **platform types** (`String!`) from Java interop: the compiler can't verify them, so annotate Java APIs or null-check at the boundary.

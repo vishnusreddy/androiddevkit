@@ -36,6 +36,7 @@ export const GISCUS = {
 export const NAV = [
   { label: 'Topics', href: '/topics/' },
   { label: 'Questions', href: '/questions/' },
+  { label: 'Practice', href: '/practice/' },
   { label: 'Progress', href: '/progress/' },
   { label: 'Experiences', href: '/experiences/' },
   { label: 'Blog', href: '/blog/' },

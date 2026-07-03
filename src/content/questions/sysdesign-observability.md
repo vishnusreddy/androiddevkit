@@ -1,5 +1,5 @@
 ---
-question: "How do you design observability for a production mobile app? (crashes, ANRs, performance, logs)"
+question: "How do you design observability for crashes, ANRs, performance, and logs in a production mobile app?"
 topic: system-design
 difficulty: mid
 order: 130

@@ -8,36 +8,55 @@ section: "State and lifecycle"
 tags: ["coroutines", "flow", "practical", "viewmodel", "udf"]
 ---
 
-The standard pattern: a **private mutable** state holder exposed as a **public read-only** flow, with one-off events on a separate `SharedFlow`.
+The standard pattern is a **private mutable** state holder exposed as a
+**public read-only** flow. The UI sends input events to ViewModel methods; the
+ViewModel reduces data and outcomes into immutable UI state.
 
 ```kotlin
 class FeedViewModel(private val repo: FeedRepository) : ViewModel() {
-
-    // State: private mutable, public read-only
     private val _state = MutableStateFlow(FeedUiState())
     val state: StateFlow<FeedUiState> = _state.asStateFlow()
-
-    // One-off events: SharedFlow with replay = 0 (don't replay on rotation)
-    private val _events = MutableSharedFlow<FeedEvent>()
-    val events: SharedFlow<FeedEvent> = _events.asSharedFlow()
 
     init {
         repo.observeFeed()
             .onStart { _state.update { it.copy(loading = true) } }
             .onEach { items -> _state.update { it.copy(loading = false, items = items) } }
-            .catch { _state.update { it.copy(loading = false, error = it.message) } }
+            .catch { error ->
+                if (error is CancellationException) throw error
+                _state.update {
+                    it.copy(loading = false, userMessage = error.toUserMessage())
+                }
+            }
             .launchIn(viewModelScope)
     }
 
-    fun onItemClick(id: String) = viewModelScope.launch {
-        _events.emit(FeedEvent.OpenDetail(id))   // navigation = event, not state
+    fun onRetry() {
+        // Start or signal the retry operation owned by this ViewModel.
+    }
+
+    fun onMessageShown(messageId: String) {
+        _state.update { current ->
+            if (current.userMessage?.id == messageId) {
+                current.copy(userMessage = null)
+            } else {
+                current
+            }
+        }
     }
 }
 ```
 
 Why each choice:
-- **`asStateFlow()` / `asSharedFlow()`** expose read-only views so the UI can't mutate state - enforcing **unidirectional data flow**.
+- **`asStateFlow()`** prevents the UI from mutating the source and enforces
+  **unidirectional data flow**.
 - **`_state.update { it.copy(...) }`** is atomic and works on immutable `data class` state.
-- **State vs event split** - render-able state goes in `StateFlow` (survives rotation, has a current value); transient actions like navigation/snackbars go in `SharedFlow(replay = 0)` so they fire **once** and don't replay on configuration change.
+- **Expected failures become state**, not uncaught exceptions. Cancellation must
+  still be rethrown rather than mapped to an error message.
+- **Acknowledgement includes an ID**, so handling an old message cannot clear a
+  newer one that arrived first.
 
-The UI collects `state` with `collectAsStateWithLifecycle()` (Compose) or `repeatOnLifecycle` (Views), and collects `events` to trigger navigation/toasts.
+The UI collects state with `collectAsStateWithLifecycle()` in Compose or
+`repeatOnLifecycle` in Views. Navigation caused directly by a click can stay in
+the UI. If navigation depends on a business result, expose that result as
+acknowledgeable state. A zero-replay SharedFlow remains suitable only for
+best-effort signals that are allowed to disappear while no collector is active.

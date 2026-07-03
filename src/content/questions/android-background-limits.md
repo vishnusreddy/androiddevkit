@@ -1,5 +1,5 @@
 ---
-question: "How does Doze mode and background execution limits affect your app?"
+question: "How do Doze mode and background execution limits affect your app?"
 topic: android-fundamentals
 difficulty: mid
 tags: ["doze", "background", "battery"]
@@ -20,8 +20,11 @@ Android has steadily tightened **background execution** to save battery. The maj
 
 **How to work *with* the system (not fight it):**
 - **WorkManager** for deferrable background work - it respects Doze/buckets and runs in maintenance windows.
-- **FCM high-priority messages** to wake the app for genuinely time-sensitive pushes (temporarily exempt from Doze).
-- **`setExactAndAllowWhileIdle`** for true alarms (calendar) - used sparingly.
+- **FCM high-priority messages** only for genuinely urgent, user-visible pushes;
+  misuse can cause delivery to be deprioritized.
+- **Exact alarms** only for user-intentioned actions that truly require precise
+  timing. Check `canScheduleExactAlarms()` before calling exact APIs and provide
+  an inexact fallback when special access is unavailable.
 - **Foreground service** (with notification) for ongoing user-visible work that must run now.
 
 **What to avoid:** holding wakelocks, polling, or expecting precise background timing - the OS will defer or kill it. Requesting **battery-optimization exemption** is heavily restricted by Play and should be a last resort.
