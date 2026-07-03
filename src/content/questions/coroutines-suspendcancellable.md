@@ -26,7 +26,10 @@ suspend fun FusedLocationProviderClient.awaitLocation(): Location =
 ```
 
 The contract:
-- Call **`resume(value)`** exactly once on success, or **`resumeWithException(e)`** on failure. Calling twice throws.
+- Complete the continuation exactly once with `resume(value)` or
+  `resumeWithException(e)`. A second completion attempt throws an
+  `IllegalStateException` (typically reported as "Already resumed") and usually
+  signals a race between callback paths.
 - **`invokeOnCancellation { }`** lets you cancel the underlying operation if the coroutine is cancelled while suspended - this is why you use the **`Cancellable`** variant over plain `suspendCoroutine`.
 
 **`suspendCancellableCoroutine` vs `callbackFlow`:**

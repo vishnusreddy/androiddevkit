@@ -10,8 +10,17 @@ Two different ways your UI state can be destroyed - and they need different tool
 **Configuration change** (rotation, locale, dark mode, multi-window): the system **destroys and recreates the Activity** immediately, but the **process stays alive**. So in-memory objects that survive recreation are intact.
 - **Handled by `ViewModel`** - it survives config changes (it's retained across the recreate), so your data and in-flight coroutines aren't lost.
 
-**Process death** (system reclaims your app's memory while it's in the background): the **entire process is killed**. The ViewModel, static fields, singletons - **everything in memory is gone**. When the user returns, the OS recreates the Activity (and process) and expects you to **restore** the prior UI state.
-- **Handled by saved instance state** - `onSaveInstanceState(Bundle)` / `rememberSaveable` / **`SavedStateHandle`**. This is the *only* state that survives process death, because it's serialized to disk by the system.
+**Process death** (the system reclaims your app's memory while it is in the
+background): the **entire process is killed**. The ViewModel, static fields,
+singletons—**everything in memory is gone**. When the user returns through the
+retained task, Android creates a new process and Activity and can restore saved
+UI state.
+- Use **saved state**—`onSaveInstanceState`, `rememberSaveable`, or
+  `SavedStateHandle`—for small transient values needed to reconstruct the
+  screen. Android keeps that serialized state outside your process; it is not a
+  durable database and is cleared when the user fully dismisses the task.
+- Use **local persistence** such as Room or DataStore for application data that
+  must survive process death, task dismissal, and later app launches.
 
 ```kotlin
 class SearchViewModel(private val handle: SavedStateHandle) : ViewModel() {
@@ -26,10 +35,13 @@ class SearchViewModel(private val handle: SavedStateHandle) : ViewModel() {
 |---|---|---|
 | Process | survives | killed |
 | ViewModel | survives | **lost** |
-| `SavedStateHandle` / `Bundle` | survives | **survives** |
+| `SavedStateHandle` / saved-state `Bundle` | survives | **restored after system-initiated death** |
 
 **Rules:**
 - Put **screen data and ongoing work** in the ViewModel (handles config changes for free).
 - Put **small, essential UI state** (a query, scroll position, selected tab) in `SavedStateHandle`/`rememberSaveable` so it survives process death too.
 - Keep saved state **small** - the Bundle is for identifiers and UI state, not large data. Re-fetch big data from a repository on restore.
-- **Test it** with the "Don't keep activities" developer option or `adb shell am kill`.
+- **Test configuration recreation** with "Don't keep activities." Test actual
+  process death separately—for example, background the app and use
+  `adb shell am kill <package>`—because destroying Activities is not the same
+  event as killing the process.

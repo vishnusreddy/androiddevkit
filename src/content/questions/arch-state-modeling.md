@@ -1,5 +1,5 @@
 ---
-question: "How do you model UI state well? (single state object vs multiple flows, sealed vs data class)"
+question: "How do you model UI state well, including single-state versus multiple flows and sealed versus data classes?"
 topic: architecture
 difficulty: mid
 order: 70

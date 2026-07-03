@@ -11,7 +11,11 @@ tags: ["coroutines", "scopes", "lifecycle", "android"]
 These are pre-built `CoroutineScope`s tied to Android lifecycles, so your coroutines are cancelled automatically.
 
 - **`viewModelScope`** - an extension on `ViewModel`. Cancelled in **`onCleared()`**, i.e. when the ViewModel is destroyed for good (the screen is finished, not just rotated). Uses `Dispatchers.Main.immediate` + a `SupervisorJob`. This is where most app coroutines live, since the ViewModel survives configuration changes.
-- **`lifecycleScope`** - an extension on a `LifecycleOwner` (Activity/Fragment). Cancelled when the lifecycle reaches **`DESTROYED`**. Use sparingly - for UI-only work that genuinely must follow the view, not the data.
+- **`lifecycleScope`** - an extension on a `LifecycleOwner`. It is cancelled
+  when that lifecycle reaches **`DESTROYED`**. Use it for UI-owned work. In a
+  Fragment, use `viewLifecycleOwner.lifecycleScope` when the coroutine touches
+  Views so the work ends in `onDestroyView`, not only when the Fragment itself
+  is destroyed.
 
 ```kotlin
 class FeedViewModel : ViewModel() {
@@ -25,5 +29,7 @@ class FeedViewModel : ViewModel() {
 
 **Gotchas:**
 - Don't run **data** work in `lifecycleScope` - on rotation the Activity is destroyed and the work is cancelled and restarted. Put it in the ViewModel.
-- **`GlobalScope`** is *not* lifecycle-aware - coroutines launched there outlive everything and leak. Avoid it.
+- **`GlobalScope`** is *not* lifecycle-aware. Its work can outlive the request
+  and continue with stale dependencies; reserve it for rare process-lifetime
+  work with an explicit ownership strategy.
 - For collecting flows in the UI, pair `lifecycleScope` with **`repeatOnLifecycle(STARTED)`** so collection pauses in the background.

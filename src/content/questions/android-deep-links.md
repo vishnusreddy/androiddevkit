@@ -18,9 +18,18 @@ A **deep link** is a URI that opens a specific screen in your app. There are tie
 ```
 Problem: for a plain web link, Android may show a **disambiguation chooser** ("open with browser or app?").
 
-**2. Android App Links** (verified http(s) links) - the upgrade. Add `android:autoVerify="true"` and host a **`assetlinks.json`** Digital Asset Links file at `https://example.com/.well-known/assetlinks.json` listing your app's package and signing fingerprint. Android verifies ownership, so the link opens your app **directly, no chooser**.
+**2. Android App Links** (verified http(s) links) - the upgrade. Add
+`android:autoVerify="true"` and host an **`assetlinks.json`** Digital Asset Links
+file at `https://example.com/.well-known/assetlinks.json` listing your app's
+package and signing fingerprint. Android verifies the domain-to-app
+association, allowing your app to become the default handler without the
+generic chooser. Verification can fail, and users can change supported-link
+preferences, so the website must remain a valid fallback.
 
-**3. Custom scheme** (`myapp://`) - works but isn't web-clickable and any app can claim the scheme; fine for internal/OAuth redirects, not for sharing.
+**3. Custom scheme** (`myapp://`) - works, but any installed app can claim the
+same scheme. Prefer claimed HTTPS redirects (App Links) for security-sensitive
+flows such as OAuth when the provider supports them; otherwise use a
+high-entropy redirect and validate the returned state.
 
 **Handling them:**
 - Read the `Intent.data` URI in the target Activity (and handle **`onNewIntent`** for `singleTop`).

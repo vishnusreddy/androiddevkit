@@ -27,7 +27,10 @@ val n = NotificationCompat.Builder(context, "messages")
 NotificationManagerCompat.from(context).notify(id, n)
 ```
 
-**3. Runtime permission (Android 13+).** `POST_NOTIFICATIONS` is now a **runtime permission** - request it like any dangerous permission; without it, your notifications are silently dropped.
+**3. Runtime permission (Android 13+).** `POST_NOTIFICATIONS` is a **runtime
+permission** for non-exempt notifications. Ask at a moment where the benefit is
+clear, handle denial as a normal product state, and do not assume that creating
+a channel means the app may post.
 
 **What to remember:**
 - **Importance** is set on the **channel**, not the notification, and the **user has final say**. `IMPORTANCE_HIGH` = heads-up; `LOW`/`MIN` = quiet.

@@ -1,5 +1,5 @@
 ---
-question: "How do you convert a callback-based API into a Flow? (callbackFlow / channelFlow)"
+question: "How do you convert a callback-based API into a Flow with callbackFlow or channelFlow?"
 topic: coroutines
 difficulty: senior
 order: 60

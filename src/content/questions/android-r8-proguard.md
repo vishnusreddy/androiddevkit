@@ -1,5 +1,5 @@
 ---
-question: "What does R8 do? (shrinking, obfuscation, optimization) and what are keep rules?"
+question: "How does R8 shrink, optimize, and obfuscate an Android app, and when are keep rules required?"
 topic: android-fundamentals
 difficulty: mid
 tags: ["r8", "proguard", "build"]

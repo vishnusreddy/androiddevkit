@@ -8,7 +8,9 @@ tags: ["anr", "performance", "main-thread"]
 An **ANR (Application Not Responding)** happens when the **main thread is blocked** too long and can't process input or draw. The system thresholds:
 - **~5 seconds** - input event (touch/key) not handled.
 - **~10 seconds** - `BroadcastReceiver.onReceive` not finished (foreground).
-- **Service / `ContentProvider`** timeouts and (Android 11+) `onStartForeground` not called in time.
+- **Service / `ContentProvider`** timeouts, including a foreground service that
+  fails to call `startForeground()` within the system deadline after
+  `startForegroundService()`.
 
 **Common causes:**
 - Heavy work on the main thread - **network, disk/database I/O, big JSON parsing, bitmap decoding**.

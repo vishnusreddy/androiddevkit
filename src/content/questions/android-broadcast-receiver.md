@@ -20,8 +20,14 @@ registerReceiver(receiver, IntentFilter(ACTION), RECEIVER_NOT_EXPORTED)
 ```
 
 **Key constraints interviewers probe:**
-- **`onReceive` runs on the main thread** and must return **quickly** (~10s limit) - no heavy work. Hand off long tasks to **WorkManager** or a `goAsync()` + coroutine, not a raw thread.
+- **`onReceive` runs on the main thread** and must return **quickly**—no heavy
+  work. Enqueue durable work in WorkManager. For a brief asynchronous handoff,
+  `goAsync()` returns a `PendingResult`, but you must call `finish()` within the
+  receiver's limited execution window; it is not a way to run indefinitely.
 - **Android 8+ background limits** - prefer **WorkManager/JobScheduler** over receivers for background reactions; manifest receivers for implicit broadcasts are mostly disallowed.
-- **Security** - declare `exported` correctly (required flag on API 33+), use permissions on sensitive broadcasts, and prefer **`LocalBroadcastManager` is deprecated** → use a `SharedFlow`/observer pattern for in-app events instead of broadcasts.
+- **Security** - choose exported or not-exported registration deliberately and
+  require permissions for sensitive broadcasts. `LocalBroadcastManager` is
+  deprecated; use explicit state holders, callbacks, or Flows for in-process
+  communication.
 
 **Modern guidance:** for in-app eventing use Flows; for reacting to system conditions (network, charging) prefer **WorkManager constraints**; reserve receivers for the few cases that genuinely need them (e.g. `BOOT_COMPLETED` to reschedule work).

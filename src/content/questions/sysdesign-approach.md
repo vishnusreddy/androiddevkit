@@ -8,7 +8,11 @@ section: "Interview framework"
 tags: ["system-design", "framework", "interview"]
 ---
 
-Drive the conversation with a structured framework - interviewers grade your **process and trade-off reasoning**, not a memorized answer. Mobile system design is **client-focused**: don't draw a backend; design the app.
+Drive the conversation with a structured framework—interviewers grade your
+**process and trade-off reasoning**, not a memorized answer. Keep the design
+client-focused, but define the minimum server contracts the client depends on:
+pagination, synchronization, idempotency, authentication, and real-time
+delivery semantics.
 
 **A repeatable structure (~45 min):**
 

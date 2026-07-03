@@ -33,6 +33,9 @@ startActivity(Intent(Intent.ACTION_SEND).apply {
 
 **What to remember:**
 - **Always verify** an implicit intent resolves (`resolveActivity` / wrap in try-catch) or no app may handle it.
-- Modern Android requires **`<queries>`** in the manifest (package visibility) to query/launch other apps' intents on API 30+.
+- On API 30+, package visibility can filter results from discovery APIs such as
+  `queryIntentActivities()`. Add a narrow `<queries>` declaration when your app
+  must discover matching handlers; do not request broad package visibility just
+  to call `startActivity()` for a known implicit action.
 - **Deep links / App Links** are implicit `ACTION_VIEW` intents with a `<data>` URL filter; verified App Links open your app directly without a chooser.
 - Extras pass data via `putExtra`/`getXxxExtra`; complex objects need `Parcelable`.

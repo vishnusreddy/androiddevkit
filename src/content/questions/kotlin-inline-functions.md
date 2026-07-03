@@ -8,12 +8,15 @@ section: "Functions and idioms"
 tags: ["kotlin", "inline", "performance", "lambdas"]
 ---
 
-`inline` tells the compiler to **copy the function body - and its lambda arguments - into the call site** instead of creating a function object for each lambda. For higher-order functions this removes the per-call lambda allocation and the extra `invoke()` call.
+`inline` asks the compiler to **copy the function body—and inlinable lambda
+arguments—into the call site**. For a small higher-order function this can
+remove a virtual `invoke()` call and avoid allocating a capturing lambda object;
+the compiler may already reuse some non-capturing lambdas.
 
 ```kotlin
 inline fun measure(block: () -> Unit) {
     val start = System.nanoTime()
-    block()                       // body inlined, no Function object created
+    block()                       // body and inlinable call are expanded here
     Log.d("perf", "${System.nanoTime() - start}ns")
 }
 ```

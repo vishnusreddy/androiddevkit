@@ -8,9 +8,16 @@ section: "Functions and idioms"
 tags: ["kotlin", "generics", "reified", "inline"]
 ---
 
-On the JVM generics are **erased** - at runtime `List<String>` and `List<Int>` are both just `List`, and a normal generic function can't ask `T::class` or do `is T`. A **`reified`** type parameter keeps the concrete type available at runtime.
+On the JVM, generic arguments are normally **erased**: at runtime
+`List<String>` and `List<Int>` are both `List`, and a regular generic function
+cannot use `T::class` or test `value is T`. A **`reified`** parameter lets the
+body of an inline function use the concrete call-site type in supported
+operations.
 
-It only works with `inline` functions: because the function is inlined at the call site, the compiler substitutes the *real* type there, so the type information survives.
+It only works on inline functions because the compiler substitutes the
+concrete type while expanding each call. It does not disable JVM type erasure
+for `T` everywhere—for example, `is List<T>` still cannot verify a list's erased
+element type.
 
 ```kotlin
 inline fun <reified T> Gson.fromJson(json: String): T =

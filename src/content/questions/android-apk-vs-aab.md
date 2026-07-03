@@ -5,7 +5,10 @@ difficulty: junior
 tags: ["aab", "apk", "distribution"]
 ---
 
-- **APK** - the installable package that lands on a device. It contains **all** code and resources for **every** density, ABI, and language.
+- **APK** - an installable package. A traditional **universal APK** contains
+  code and resources for every supported density, ABI, and language; modern
+  installs can instead consist of a base APK plus configuration and feature
+  split APKs selected for that device.
 - **AAB (Android App Bundle)** - a **publishing format** (`.aab`) you upload to Play. It's **not installed directly**; Play uses it to generate and serve **optimized APKs per device** via **Play Feature/Dynamic Delivery**.
 
 **The win - smaller downloads.** With an AAB, Play's **split APKs** ship only what a given device needs:
