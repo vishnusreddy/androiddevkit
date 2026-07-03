@@ -155,7 +155,7 @@ const features = [
       <div class="grid grid-2 feature-grid">
         {features.map((f) => (
           <div class="card feature-card">
-            <span class="feature-icon" aria-hidden="true">
+            <span class="feature-icon topic-icon-badge topic-icon-badge--lg" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 {f.iconPaths.map((path) => <path d={path} />)}
               </svg>
@@ -330,25 +330,14 @@ $ git push origin add-coroutines-q
   }
   .feature-card {
     display: grid;
-    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-columns: 48px minmax(0, 1fr);
     align-items: start;
-    gap: 1.15rem;
+    gap: 1.25rem;
     min-height: 176px;
     padding: 2rem;
   }
   .feature-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    background: var(--accent-soft);
-    color: var(--accent);
-  }
-  .feature-icon svg {
-    width: 25px;
-    height: 25px;
+    margin-top: 0.05rem;
   }
   .feature-card h3 {
     margin: 0.15rem 0 0.45rem;
