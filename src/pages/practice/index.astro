@@ -313,6 +313,7 @@ const topicManifest = topics.map((topic) => ({
   .question-meta { display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; }
   .format-label { color: var(--ink-faint); font-size: .75rem; margin-left: auto; font-weight: 600; }
   .question-card h2 { font-size: clamp(1.35rem, 3vw, 1.9rem); margin: 1.2rem 0 1.5rem; max-width: 680px; }
+  .question-card h2 code, .option-btn code, .reference-answer code { font: 600 .88em var(--font-mono); background: var(--surface-2); border: 1px solid var(--border); border-radius: 5px; padding: .06em .36em; overflow-wrap: anywhere; }
   .mcq-options { display: grid; gap: .65rem; }
   .option-btn { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; align-items: center; text-align: left; gap: .8rem; padding: .85rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); cursor: pointer; font: 500 .94rem/1.45 var(--font-sans); }
   .option-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
@@ -411,6 +412,14 @@ const topicManifest = topics.map((topic) => ({
   const topics = parseData<TopicInfo[]>('practice-topic-data');
   const topicNames = new Map(topics.map((topic) => [topic.id, topic.title]));
   const difficultyLabels: Record<Difficulty, string> = { junior: 'Junior', mid: 'Mid', senior: 'Senior' };
+
+  const escapeHtml = (text: string) =>
+    text.replace(/[&<>"']/g, (ch) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch] as string
+    ));
+  // Render authored inline `code` spans as <code>, escaping everything else.
+  const inlineMarkup = (text: string) =>
+    escapeHtml(text).replace(/`([^`]+)`/g, '<code>$1</code>');
 
   const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector);
   const setupView = $('#setup-view')!;
@@ -595,7 +604,7 @@ const topicManifest = topics.map((topic) => ({
     $('#question-topic')!.textContent = topicNames.get(question.topic) || question.topic;
     $('#question-difficulty')!.textContent = difficultyLabels[question.difficulty];
     $('#question-format')!.textContent = question.type === 'mcq' ? 'Multiple choice' : 'Written · self-scored';
-    $('#question-prompt')!.textContent = question.prompt;
+    $('#question-prompt')!.innerHTML = inlineMarkup(question.prompt);
     answerPanel.hidden = true;
     selfGrade.hidden = true;
     selfGrade.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
@@ -621,8 +630,7 @@ const topicManifest = topics.map((topic) => ({
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'option-btn';
-        button.innerHTML = `<span class="option-key">${String.fromCharCode(65 + index)}</span><span></span>`;
-        button.querySelector('span:nth-child(2)')!.textContent = option;
+        button.innerHTML = `<span class="option-key">${String.fromCharCode(65 + index)}</span><span>${inlineMarkup(option)}</span>`;
         button.addEventListener('click', () => {
           selectedOption = index;
           mcqOptions.querySelectorAll('.option-btn').forEach((item) => item.classList.remove('selected'));
@@ -667,7 +675,7 @@ const topicManifest = topics.map((topic) => ({
       });
       verdict.textContent = isCorrect ? 'Correct. Keep the line moving.' : 'Not quite. Bank the correction.';
       verdict.classList.toggle('wrong', !isCorrect);
-      reference.textContent = question.explanation;
+      reference.innerHTML = inlineMarkup(question.explanation);
       award(isCorrect ? 1 : 0);
       $('#question-status')!.textContent = isCorrect ? `+${100 + Math.min(streak - 1, 5) * 10} XP` : '+20 XP for the rep';
       nextButton.hidden = false;
