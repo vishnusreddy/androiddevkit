@@ -52,9 +52,7 @@ const { href, topicId, title, description, category, count, ids = [] } =
     margin-bottom: 0.9rem;
   }
   .topic-card:hover :global(.topic-icon-badge) {
-    transform: translateY(-2px) rotate(-2deg);
-    border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
-    box-shadow: 0 12px 24px -14px color-mix(in srgb, var(--accent) 72%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 38%, var(--border));
   }
   .topic-cat {
     font-size: 0.72rem;
@@ -115,7 +113,7 @@ const { href, topicId, title, description, category, count, ids = [] } =
     height: 100%;
     width: 0;
     border-radius: 999px;
-    background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    background: var(--accent);
     transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
 </style>

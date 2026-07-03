@@ -52,6 +52,20 @@ const {
       )}
       {tags.map((t) => <span class="q-tag">#{t}</span>)}
       {trackable && (
+        <button
+          class="q-save"
+          type="button"
+          data-bookmark-id={id}
+          aria-pressed="false"
+          title="Save this question to revisit before your interview"
+          aria-label={`Save "${question}" for review`}
+        >
+          <svg class="q-save-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <span class="q-save-text">Save</span>
+          <span class="q-save-text-on">Saved</span>
+        </button>
+      )}
+      {trackable && (
         <label class="q-done" title="Mark this question as studied">
           <input
             class="q-done-input"
@@ -176,12 +190,58 @@ const {
     color: var(--ink-faint);
   }
 
-  /* "Mark done" toggle: a real checkbox styled as a pill, pushed to the right. */
-  .q-done {
+  /* "Save for review" toggle: a pill button, grouped with "mark done" on the right. */
+  .q-save {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
     margin-left: auto;
+    padding: 0.2rem 0.62rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: inherit;
+    /* Buttons don't inherit line-height; match the "Mark done" label pill. */
+    line-height: 1.65;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .q-save:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .q-save-icon {
+    opacity: 0.55;
+    flex-shrink: 0;
+  }
+  .q-save-text-on {
+    display: none;
+  }
+  .q-save.is-saved {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  }
+  .q-save.is-saved .q-save-icon {
+    opacity: 1;
+    fill: currentColor;
+  }
+  .q-save.is-saved .q-save-text {
+    display: none;
+  }
+  .q-save.is-saved .q-save-text-on {
+    display: inline;
+  }
+
+  /* "Mark done" toggle: a real checkbox styled as a pill. */
+  .q-done {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     padding: 0.2rem 0.62rem;
     font-size: 0.78rem;
     font-weight: 600;
@@ -262,6 +322,7 @@ const {
 </style>
 
 <script>
-  // Wires up "mark done" toggles and keeps them in sync with stored progress.
+  // Wires up "mark done" + "save for review" toggles and keeps them in sync.
   import '../lib/progress';
+  import '../lib/bookmarks';
 </script>

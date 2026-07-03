@@ -65,12 +65,25 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
           ))}
         </div>
 
-        <select id="q-topic" aria-label="Filter by topic">
-          <option value="all">All topics</option>
-          {usedTopics.map((t) => (
-            <option value={t.id}>{t.data.title}</option>
-          ))}
-        </select>
+        <div class="filter-right">
+          <button
+            id="q-saved"
+            class="saved-toggle"
+            type="button"
+            aria-pressed="false"
+            title="Show only questions you saved for review"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            Saved
+            <span class="saved-count" data-bookmark-count>0</span>
+          </button>
+          <select id="q-topic" aria-label="Filter by topic">
+            <option value="all">All topics</option>
+            {usedTopics.map((t) => (
+              <option value={t.id}>{t.data.title}</option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
 
@@ -86,6 +99,7 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
           return (
             <div
               class="q-wrap"
+              data-id={q.id}
               data-diff={q.data.difficulty}
               data-topic={q.data.topic.id}
               data-search={haystack}
@@ -201,6 +215,48 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
     color: var(--accent);
     box-shadow: var(--shadow-sm);
   }
+  .filter-right {
+    display: flex;
+    gap: 0.7rem;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  .saved-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 0.8rem;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .saved-toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .saved-toggle .saved-count {
+    font-size: 0.74rem;
+    font-weight: 700;
+    background: var(--surface-2);
+    border-radius: 999px;
+    padding: 0.05rem 0.45rem;
+    color: var(--ink-faint);
+  }
+  .saved-toggle[aria-pressed='true'] {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  }
+  .saved-toggle[aria-pressed='true'] .saved-count {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
   #q-topic {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -244,18 +300,28 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
 </style>
 
 <script>
+  import { getSavedSet, onChange as onBookmarksChange } from '../../lib/bookmarks';
+
   const search = document.getElementById('q-search') as HTMLInputElement | null;
   const topicSel = document.getElementById('q-topic') as HTMLSelectElement | null;
+  const savedBtn = document.getElementById('q-saved') as HTMLButtonElement | null;
   const segBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.seg-btn'));
   const items = Array.from(document.querySelectorAll<HTMLElement>('.q-wrap'));
   const countEl = document.getElementById('result-count');
   const noResults = document.getElementById('no-results');
 
   let diff = 'core';
+  let savedOnly = new URLSearchParams(location.search).get('saved') === '1';
+  if (savedOnly) {
+    // Saved questions cut across difficulty; start from the widest view.
+    diff = 'all';
+    segBtns.forEach((b) => b.classList.toggle('active', b.dataset.diff === 'all'));
+  }
 
   function apply() {
     const term = (search?.value ?? '').trim().toLowerCase();
     const topic = topicSel?.value ?? 'all';
+    const saved = savedOnly ? getSavedSet() : null;
     let shown = 0;
 
     for (const el of items) {
@@ -265,19 +331,37 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
         el.dataset.diff === diff;
       const okTopic = topic === 'all' || el.dataset.topic === topic;
       const okTerm = term === '' || (el.dataset.search ?? '').includes(term);
-      const visible = okDiff && okTopic && okTerm;
+      const okSaved = !saved || saved.has(el.dataset.id ?? '');
+      const visible = okDiff && okTopic && okTerm && okSaved;
       el.hidden = !visible;
       if (visible) shown++;
     }
 
+    savedBtn?.setAttribute('aria-pressed', String(savedOnly));
     if (countEl) {
-      countEl.textContent = `Showing ${shown} of ${items.length} questions`;
+      countEl.textContent = savedOnly
+        ? `Showing ${shown} of ${items.length} questions (saved for review)`
+        : `Showing ${shown} of ${items.length} questions`;
     }
     if (noResults) noResults.hidden = shown !== 0;
   }
 
   search?.addEventListener('input', apply);
   topicSel?.addEventListener('change', apply);
+  savedBtn?.addEventListener('click', () => {
+    savedOnly = !savedOnly;
+    // The saved filter cuts across difficulty; widen so results aren't
+    // silently hidden by the default "Core" view.
+    if (savedOnly) {
+      diff = 'all';
+      segBtns.forEach((b) => b.classList.toggle('active', b.dataset.diff === 'all'));
+    }
+    apply();
+  });
+  // Re-filter live when a question is saved/unsaved while the filter is on.
+  onBookmarksChange(() => {
+    if (savedOnly) apply();
+  });
   segBtns.forEach((btn) =>
     btn.addEventListener('click', () => {
       segBtns.forEach((b) => b.classList.remove('active'));
@@ -295,6 +379,7 @@ const usedTopics = [...new Set(questions.map((q) => q.data.topic.id))]
     const target = document.getElementById(id);
     if (!target) return;
     diff = 'all';
+    savedOnly = false;
     segBtns.forEach((b) => b.classList.toggle('active', b.dataset.diff === 'all'));
     if (topicSel) topicSel.value = 'all';
     if (search) search.value = '';
