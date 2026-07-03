@@ -2,6 +2,9 @@
 question: "What makes an Android test flaky, and how do you fix it?"
 topic: testing-quality
 difficulty: mid
+order: 50
+starred: false
+section: "Reliability and CI"
 tags: [testing, reliability, concurrency, ci]
 ---
 

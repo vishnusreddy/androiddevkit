@@ -2,6 +2,9 @@
 question: "How do you model UI state well? (single state object vs multiple flows, sealed vs data class)"
 topic: architecture
 difficulty: mid
+order: 70
+starred: true
+section: "Presentation and state"
 tags: ["state", "ui-state", "sealed-class"]
 ---
 
@@ -35,4 +38,6 @@ sealed interface FeedUiState {
 - **Immutable** - expose a single `StateFlow<UiState>`; update with `copy()` / `update {}`. Never let the UI mutate it.
 - **Single source of truth** - one state object the UI renders, not five separate `StateFlow`s that can drift out of sync.
 - **Derive, don't duplicate** - compute `showEmptyState` from existing fields rather than storing a redundant flag that can desync.
-- **Separate one-off events** (navigation, snackbars) from state so they don't replay on rotation.
+- **Model business outcomes as state** and let the UI react with navigation or a
+  message. Acknowledge handled effects when needed instead of relying on an
+  untracked fire-and-forget event.

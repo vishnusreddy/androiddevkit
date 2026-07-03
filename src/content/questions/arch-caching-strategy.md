@@ -2,6 +2,9 @@
 question: "What caching strategies would you use in an Android app?"
 topic: architecture
 difficulty: mid
+order: 110
+starred: false
+section: "Data and offline"
 tags: ["caching", "performance", "data-layer"]
 ---
 

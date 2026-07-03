@@ -2,15 +2,16 @@
 question: "Design the image loading and caching pipeline for an image-heavy app."
 topic: system-design
 difficulty: senior
+order: 60
+starred: false
+section: "Media and device resources"
 tags: ["system-design", "images", "caching", "performance"]
 ---
 
 Images dominate memory and bandwidth in feed/gallery apps, so the pipeline is a frequent deep-dive. In practice you'd use **Coil** (Compose) or **Glide** - and explaining *what they do* is the answer.
 
 **The pipeline stages:**
-```
-request → memory cache → disk cache → network → decode/downsample → display
-```
+![Image request pipeline through memory cache, disk cache, network, decode, and display](/diagrams/image-pipeline.svg)
 
 **Caching (multi-level):**
 - **Memory cache** - `LruCache` of decoded bitmaps keyed by URL+size. Instant re-display; bounded by a fraction of app memory.

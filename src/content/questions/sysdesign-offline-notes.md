@@ -2,6 +2,9 @@
 question: "Design an offline-first notes app with sync across devices."
 topic: system-design
 difficulty: senior
+order: 100
+starred: true
+section: "Product design exercises"
 tags: ["system-design", "offline", "sync", "conflict-resolution"]
 ---
 
@@ -22,7 +25,7 @@ syncStatus: SYNCED | PENDING | CONFLICT
 - Triggered on app open, on a timer, on connectivity regained (**WorkManager** with a network constraint), and optionally on a push ("you have changes").
 - **Optimistic UI** - edits apply locally immediately (`PENDING`), sync in the background.
 
-**Conflict resolution (the heart of it):**
+**Conflict resolution:**
 - **Last-Write-Wins (LWW)** - simplest: compare `updatedAt`/version, newest wins. Risks silent data loss.
 - **Version vectors / `version` counter** - detect that both sides changed since the common ancestor → a real conflict.
 - **Field-level / 3-way merge** - merge non-overlapping changes; only truly conflicting fields need resolution.

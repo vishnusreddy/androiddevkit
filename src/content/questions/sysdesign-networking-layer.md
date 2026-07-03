@@ -2,6 +2,9 @@
 question: "How would you design the networking layer of an Android app?"
 topic: system-design
 difficulty: mid
+order: 20
+starred: true
+section: "Client foundations"
 tags: ["system-design", "networking", "retrofit", "okhttp"]
 ---
 
@@ -30,7 +33,9 @@ OkHttpClient.Builder()
 - **Retries & backoff** - exponential backoff with jitter for transient failures; **don't** retry non-idempotent writes blindly; consider a **circuit breaker** for a failing host.
 - **Caching** - OkHttp disk cache + `Cache-Control`/`ETag`; offline-first via Room.
 - **Request dedup / coalescing** - collapse identical in-flight requests; cancel on screen leave (coroutine cancellation cancels the call).
-- **Security** - **certificate pinning**, HTTPS only, no secrets in code, secure token storage (Keystore/EncryptedSharedPreferences).
+- **Security** - require HTTPS, keep secrets out of the app and logs, protect
+  persistent credentials with a Keystore-backed design, and add certificate
+  pinning only when the threat model and rotation plan justify it.
 - **Observability** - logging (debug), metrics, and correlation IDs.
 - **Threading** - Retrofit `suspend` functions run on a background dispatcher; cancellation via structured concurrency.
 

@@ -2,6 +2,9 @@
 question: "Explain the Strategy pattern with an Android example."
 topic: architecture
 difficulty: mid
+order: 190
+starred: false
+section: "Design principles and patterns"
 tags: ["design-patterns", "strategy"]
 ---
 

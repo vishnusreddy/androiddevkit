@@ -2,6 +2,9 @@
 question: "Design a video streaming client (like YouTube/Netflix). What are the key client decisions?"
 topic: system-design
 difficulty: senior
+order: 70
+starred: false
+section: "Media and device resources"
 tags: ["system-design", "video", "streaming", "media"]
 ---
 
@@ -10,12 +13,12 @@ The client cares about **smooth playback under variable networks**, not transcod
 **Requirements:** play video, minimal buffering, adapt to changing bandwidth, scrubbing, prefetch, maybe offline downloads.
 
 **Adaptive Bitrate Streaming (ABR) - the core concept:**
-- Video is encoded server-side at **multiple bitrates/resolutions**, split into small **segments** (2–10s), described by a **manifest** (**HLS** `.m3u8` or **DASH** `.mpd`).
+- Video is encoded server-side at **multiple bitrates and resolutions**, split into small **segments** of 2 to 10 seconds, and described by a **manifest** such as **HLS** `.m3u8` or **DASH** `.mpd`.
 - The client **measures available bandwidth** and **buffer level**, then picks the segment quality for the *next* chunk - stepping down on a slow network to avoid stalls, up when bandwidth allows.
 - Use **ExoPlayer (Media3)**, which implements ABR, buffering, and HLS/DASH out of the box - don't reinvent it.
 
 **Buffering strategy:**
-- Maintain a **buffer ahead** (e.g. 10–30s). Start playback once enough is buffered (fast start = lower initial quality, then ramp up).
+- Maintain a **buffer ahead**, such as 10 to 30 seconds. Start playback once enough is buffered. A fast start can use lower initial quality and then ramp up.
 - Balance buffer size: **bigger** = fewer stalls but more wasted data if the user abandons; **smaller** = less waste but more rebuffer risk.
 
 **Performance & UX:**

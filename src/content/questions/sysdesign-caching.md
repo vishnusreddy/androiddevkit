@@ -2,6 +2,9 @@
 question: "What caching strategies and layers would you use in a mobile client?"
 topic: system-design
 difficulty: mid
+order: 40
+starred: true
+section: "Client foundations"
 tags: ["system-design", "caching", "performance", "offline"]
 ---
 

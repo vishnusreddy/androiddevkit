@@ -2,18 +2,15 @@
 question: "What is Unidirectional Data Flow (UDF), and why is it the foundation of modern Android architecture?"
 topic: architecture
 difficulty: mid
+order: 60
+starred: true
+section: "Presentation and state"
 tags: ["udf", "state", "mvi", "architecture"]
 ---
 
 **Unidirectional Data Flow** means **state flows down** and **events flow up** - in one direction, forming a loop:
 
-```
-        ┌──────────── state ────────────┐
-        ▼                               │
-       UI  ──── events/intents ──▶  ViewModel ──▶ (repository / use case)
-                                        │
-                                  produces new state
-```
+![Unidirectional data flow loop between UI, ViewModel, and repository](/diagrams/udf-loop.svg)
 
 - The **ViewModel owns the state** (a single, immutable `UiState`) and exposes it as a read-only `StateFlow`.
 - The **UI is a function of that state** - it renders whatever the state says.
@@ -36,4 +33,6 @@ fun onRefresh() {                                       // up (event)
 - **Thread-safe updates** via immutable `copy()` + atomic `update {}`.
 - It's the principle behind **MVI**, Compose (`UI = f(state)`), and Google's recommended architecture - the acronym matters less than the **one-directional** discipline.
 
-**Related practices:** model **one-off events** (navigation, snackbars) separately (e.g. `SharedFlow`) so they don't replay on rotation; keep `UiState` immutable.
+**Related practices:** keep `UiState` immutable. Model business outcomes as
+state and let the UI react with navigation or messages. Use an ephemeral stream
+only when its best-effort delivery semantics are acceptable.

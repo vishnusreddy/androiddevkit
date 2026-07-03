@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 310" role="img" aria-labelledby="title desc">
+  <title id="title">Android testing pyramid</title>
+  <desc id="desc">Many fast unit tests form the base, integration tests cover boundaries, and a small number of end-to-end tests cover critical journeys.</desc>
+  <style>
+    text{font:600 15px system-ui,sans-serif;fill:#1d2b23}.sub{font-size:13px;font-weight:500;fill:#52645a}.base{fill:#e9f7ed;stroke:#169447;stroke-width:2}.mid{fill:#f4f8f5;stroke:#8eaa99;stroke-width:2}.top{fill:#fff;stroke:#b9cec1;stroke-width:2}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.base{fill:#12351f;stroke:#55cc7a}.mid{fill:#1b2921;stroke:#698071}.top{fill:#17211b;stroke:#405247}}
+  </style>
+  <path class="top" d="M410 25 500 105H320Z"/><text x="410" y="73" text-anchor="middle">UI / E2E</text><text class="sub" x="410" y="94" text-anchor="middle">few critical journeys</text>
+  <path class="mid" d="M320 112H500L610 210H210Z"/><text x="410" y="153" text-anchor="middle">Integration and feature tests</text><text class="sub" x="410" y="177" text-anchor="middle">Room, repository, navigation, device boundaries</text>
+  <path class="base" d="M202 218H618L705 292H115Z"/><text x="410" y="252" text-anchor="middle">Unit and component tests</text><text class="sub" x="410" y="275" text-anchor="middle">many fast tests for state, rules, mappers, and use cases</text>
+</svg>

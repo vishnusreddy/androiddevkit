@@ -2,18 +2,21 @@
 question: "What is dependency injection, and why use it on Android?"
 topic: architecture
 difficulty: junior
+order: 30
+starred: true
+section: "Architecture foundations"
 tags: ["dependency-injection", "testability"]
 ---
 
 **Dependency injection (DI)** means a class **receives** its dependencies from outside rather than **creating** them itself. "Inversion of control" - something else (a framework or the caller) is responsible for constructing and wiring objects.
 
 ```kotlin
-// ❌ Without DI: class creates and is coupled to concrete dependencies
+// Without DI: the class creates and is coupled to concrete dependencies
 class UserViewModel {
     private val repo = UserRepository(RetrofitClient.create(), AppDatabase.dao())
 }
 
-// ✅ With DI: dependencies injected; class depends on abstractions
+// With DI: dependencies are injected and the class depends on abstractions
 class UserViewModel(private val repo: UserRepository)
 ```
 

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 210" role="img" aria-labelledby="title desc">
+  <title id="title">Android View rendering invalidation paths</title>
+  <desc id="desc">requestLayout triggers measure, layout, and draw. invalidate schedules drawing without remeasuring or relaying out.</desc>
+  <style>
+    text{font:600 15px system-ui,sans-serif;fill:#1d2b23}.sub{font-size:13px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.2;marker-end:url(#a)}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <text class="sub" x="25" y="58">requestLayout()</text><rect class="box" x="170" y="28" width="120" height="50" rx="12"/><text x="230" y="59" text-anchor="middle">Measure</text><rect class="box" x="365" y="28" width="110" height="50" rx="12"/><text x="420" y="59" text-anchor="middle">Layout</text><rect class="accent" x="555" y="28" width="110" height="50" rx="12"/><text x="610" y="59" text-anchor="middle">Draw</text><path class="line" d="M130 53H170M290 53H365M475 53H555"/>
+  <text class="sub" x="25" y="162">invalidate()</text><path class="line" d="M115 157H555"/><rect class="accent" x="555" y="132" width="110" height="50" rx="12"/><text x="610" y="163" text-anchor="middle">Draw</text>
+</svg>

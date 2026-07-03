@@ -5,7 +5,7 @@
 // Renders nothing until repoId + categoryId are filled in, so the site is
 // safe to ship before the GitHub side of the setup is finished.
 //
-// The giscus <script> is injected from JS rather than rendered statically so
+// The giscus script element is injected from JS rather than rendered statically so
 // its initial `data-theme` can be computed to match the site's current theme
 // (the same light/dark logic BaseLayout uses). A MutationObserver then keeps
 // giscus in sync whenever the user flips the theme toggle.
@@ -81,9 +81,10 @@ const configured = GISCUS.repoId !== '' && GISCUS.categoryId !== '';
 
 <style>
   .comments {
+    width: 100%;
     max-width: var(--maxw-prose);
     margin: 3rem auto 0;
-    padding-top: 1.8rem;
+    padding: 1.8rem 1.25rem 0;
     border-top: 1px solid var(--border);
   }
   .comments-title {

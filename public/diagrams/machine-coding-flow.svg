@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 140" role="img" aria-labelledby="title desc">
+  <title id="title">Machine-coding vertical slice</title>
+  <desc id="desc">A simple vertical slice connects UI, ViewModel, repository, and controlled data sources.</desc>
+  <style>
+    text{font:600 16px system-ui,sans-serif;fill:#1d2b23}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.2;marker-end:url(#a)}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <rect class="accent" x="30" y="40" width="130" height="55" rx="14"/><text x="95" y="74" text-anchor="middle">UI</text>
+  <rect class="box" x="230" y="40" width="140" height="55" rx="14"/><text x="300" y="74" text-anchor="middle">ViewModel</text>
+  <rect class="accent" x="440" y="40" width="140" height="55" rx="14"/><text x="510" y="74" text-anchor="middle">Repository</text>
+  <rect class="box" x="650" y="40" width="140" height="55" rx="14"/><text x="720" y="74" text-anchor="middle">Data source</text>
+  <path class="line" d="M160 67H230M370 67H440M580 67H650"/>
+</svg>

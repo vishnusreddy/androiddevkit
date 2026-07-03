@@ -2,20 +2,24 @@
 question: "Compare pagination strategies for a mobile client. Why cursor over offset?"
 topic: system-design
 difficulty: mid
+order: 50
+starred: true
+section: "Client foundations"
 tags: ["system-design", "pagination", "api-design"]
 ---
 
 Pagination loads a large list in chunks. The main strategies:
 
 **Offset/limit (page-based)** - `?offset=40&limit=20` (or `?page=3`).
-- ✅ Simple, can jump to arbitrary pages, shows total count.
-- ❌ **Breaks on inserts/deletes** - if items are added at the top while you scroll, offset 40 now points at a shifted position → **duplicates or skipped items**.
-- ❌ Slow on large datasets (DB `OFFSET` scans rows).
+- **Advantages:** simple, supports arbitrary page access, and can show a total count.
+- **Costs:** inserts and deletes can shift an offset and cause duplicates or
+  skipped items. Large database offsets may also require scanning many rows.
 
 **Cursor/keyset-based** - `?after=<cursor>&limit=20`, where the cursor encodes the last item's stable position (e.g. `createdAt` + `id`).
-- ✅ **Stable under inserts/deletes** - you ask for "items after *this specific item*," so shifting doesn't cause dupes/gaps.
-- ✅ Efficient (`WHERE id < cursor LIMIT n` uses an index, no offset scan).
-- ❌ No random page access, harder to show a total count or "page 5."
+- **Advantages:** stable under inserts and deletes when the cursor represents a
+  deterministic sort position, and efficient with a matching index.
+- **Costs:** no arbitrary page access, and total count or "page 5" is harder to
+  expose.
 
 **Why cursor wins for feeds:** social/chat/activity feeds change constantly at the head. Cursor pagination is the standard because it's **consistent during live updates** - exactly the mobile reality.
 

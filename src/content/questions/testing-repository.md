@@ -2,6 +2,9 @@
 question: "How would you test a repository that combines a network API and Room?"
 topic: testing-quality
 difficulty: mid
+order: 30
+starred: false
+section: "Data and network boundaries"
 tags: [testing, repository, room, fake]
 ---
 

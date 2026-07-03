@@ -2,6 +2,9 @@
 question: "How should errors move through an app's layers?"
 topic: architecture
 difficulty: mid
+order: 130
+starred: false
+section: "Data and offline"
 tags: ["error-handling", "result", "sealed-class"]
 ---
 

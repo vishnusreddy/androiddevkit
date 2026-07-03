@@ -2,6 +2,9 @@
 question: "How do you design the local database schema for a mobile client?"
 topic: system-design
 difficulty: mid
+order: 30
+starred: false
+section: "Client foundations"
 tags: ["system-design", "database", "room", "schema"]
 ---
 

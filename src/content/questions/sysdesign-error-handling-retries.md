@@ -2,6 +2,9 @@
 question: "When should a mobile app retry a failed network request?"
 topic: system-design
 difficulty: mid
+order: 60
+starred: false
+section: "Client foundations"
 tags: ["system-design", "resilience", "retry", "networking"]
 ---
 

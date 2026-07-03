@@ -2,6 +2,9 @@
 question: "What is a UseCase (Interactor), and when do you actually need one?"
 topic: architecture
 difficulty: mid
+order: 140
+starred: false
+section: "Architecture foundations"
 tags: ["usecase", "domain-layer", "clean-architecture"]
 ---
 

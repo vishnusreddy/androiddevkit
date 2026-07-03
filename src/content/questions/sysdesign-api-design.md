@@ -2,17 +2,23 @@
 question: "REST vs GraphQL for a mobile client, and what API design choices matter for mobile?"
 topic: system-design
 difficulty: senior
+order: 10
+starred: false
+section: "Client foundations"
 tags: ["system-design", "api-design", "graphql", "rest"]
 ---
 
 **REST** - resource-oriented endpoints (`GET /users/1`, `GET /users/1/posts`).
-- ✅ Simple, cacheable (HTTP caching/ETags), familiar, great tooling (Retrofit).
-- ❌ **Over-fetching** (endpoint returns more than the screen needs) and **under-fetching** (N+1 round trips to assemble a screen - fetch user, then posts, then comments).
+- **Advantages:** simple, familiar, compatible with HTTP caching and ETags, and
+  supported by mature tooling such as Retrofit.
+- **Costs:** an endpoint can over-fetch fields or require several round trips to
+  assemble one screen.
 
 **GraphQL** - a single endpoint; the client **queries exactly the fields it needs** in one request.
-- ✅ **No over/under-fetching** - one round trip builds a whole screen; the client controls the shape; strongly typed (Apollo codegen).
-- ✅ Great when **different screens need different slices** of the same data and you want to minimize round trips on mobile networks.
-- ❌ HTTP caching is harder (usually POST to one URL - needs client-side normalized cache like Apollo's), more server complexity, query cost/abuse concerns.
+- **Advantages:** the client selects the fields it needs, generated models can be
+  strongly typed, and one query can assemble data for a screen.
+- **Costs:** ordinary HTTP caching is harder, normalized client caching is more
+  complex, and the server must control query cost and abuse.
 
 **For mobile specifically**, the deciding factors:
 - **Round trips are expensive** on high-latency mobile networks → GraphQL's "one query per screen" is attractive; with REST, design **screen-shaped/aggregated endpoints** (BFF - Backend-for-Frontend) to avoid N+1.

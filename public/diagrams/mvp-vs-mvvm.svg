@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 230" role="img" aria-labelledby="title desc">
+  <title id="title">MVP and MVVM interaction</title>
+  <desc id="desc">MVP presenters call a view interface. In MVVM, the UI sends actions to a ViewModel and observes immutable state.</desc>
+  <style>
+    text{font:600 15px system-ui,sans-serif;fill:#1d2b23}.label{font-size:18px}.sub{font-size:12px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.2;marker-end:url(#a)}@media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <text class="label" x="35" y="58">MVP</text><rect class="accent" x="140" y="25" width="175" height="55" rx="14"/><text x="227" y="58" text-anchor="middle">Presenter</text><rect class="box" x="430" y="25" width="190" height="55" rx="14"/><text x="525" y="49" text-anchor="middle">View interface</text><text class="sub" x="525" y="68" text-anchor="middle">imperative calls</text><path class="line" d="M315 52H430"/>
+  <text class="label" x="35" y="166">MVVM</text><rect class="box" x="140" y="133" width="175" height="55" rx="14"/><text x="227" y="166" text-anchor="middle">UI</text><rect class="accent" x="430" y="133" width="190" height="55" rx="14"/><text x="525" y="157" text-anchor="middle">ViewModel</text><text class="sub" x="525" y="176" text-anchor="middle">immutable UI state</text><path class="line" d="M315 150H430"/><text class="sub" x="371" y="140" text-anchor="middle">actions</text><path class="line" d="M430 178H315"/><text class="sub" x="371" y="204" text-anchor="middle">observable state</text>
+</svg>

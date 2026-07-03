@@ -2,6 +2,9 @@
 question: "Design an Instagram/WhatsApp Stories feature."
 topic: system-design
 difficulty: senior
+order: 140
+starred: false
+section: "Product design exercises"
 tags: ["system-design", "media", "prefetch", "ui"]
 ---
 

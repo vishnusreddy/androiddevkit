@@ -2,6 +2,9 @@
 question: "Design a chat / messaging app (like WhatsApp) - the client side."
 topic: system-design
 difficulty: mid
+order: 140
+starred: true
+section: "Product design exercises"
 tags: ["system-design", "chat", "realtime", "offline"]
 ---
 
@@ -35,7 +38,7 @@ status: SENDING | SENT | DELIVERED | READ | FAILED
 - The server assigns a **monotonic sequence per chat** (`serverSeq`); the client orders by it, not by device time (clocks drift).
 - Reusing the client UUID makes a retry safe: the server can recognize the same
   message instead of creating a duplicate. This is called **idempotency**.
-- **Gap detection** - if you receive seq 5 then 8, fetch the missing 6–7 (sync by "last seen seq").
+- **Gap detection** - if you receive seq 5 then 8, fetch the missing sequence numbers 6 and 7 (sync by "last seen seq").
 
 **Receipts:** delivered = stored on device; read = user opened the chat. Send these back over the socket; update local status.
 

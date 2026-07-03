@@ -2,6 +2,9 @@
 question: "Explain the Builder pattern. Is it still needed in Kotlin?"
 topic: architecture
 difficulty: junior
+order: 50
+starred: false
+section: "Design principles and patterns"
 tags: ["design-patterns", "builder", "kotlin"]
 ---
 

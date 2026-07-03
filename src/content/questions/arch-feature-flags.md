@@ -2,6 +2,9 @@
 question: "How would you architect feature flags / remote config?"
 topic: architecture
 difficulty: mid
+order: 220
+starred: false
+section: "Architecture judgment"
 tags: ["feature-flags", "remote-config", "architecture"]
 ---
 

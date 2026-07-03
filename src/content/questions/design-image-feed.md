@@ -2,6 +2,9 @@
 question: "Design an infinite, image-heavy feed (like Instagram). What are the key client-side decisions?"
 topic: system-design
 difficulty: senior
+order: 90
+starred: true
+section: "Product design exercises"
 tags: ["system-design", "pagination", "caching", "offline"]
 ---
 

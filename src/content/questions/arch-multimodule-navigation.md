@@ -2,6 +2,9 @@
 question: "How do you handle navigation between feature modules without coupling them?"
 topic: architecture
 difficulty: senior
+order: 60
+starred: false
+section: "Modularization and boundaries"
 tags: ["modularization", "navigation", "decoupling"]
 ---
 

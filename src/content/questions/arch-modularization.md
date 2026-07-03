@@ -2,6 +2,9 @@
 question: "Why modularize an Android app, and how do you structure modules?"
 topic: architecture
 difficulty: senior
+order: 50
+starred: true
+section: "Modularization and boundaries"
 tags: ["modularization", "gradle", "scalability"]
 ---
 
@@ -19,11 +22,7 @@ Splitting a single `:app` module into many Gradle modules pays off as a codebase
 - **By feature** (`:feature:feed`, `:feature:profile`) - preferred for larger apps; each feature is independent and can itself be layered internally.
 - **Hybrid (recommended)** - feature modules + shared **`:core`** modules (`:core:network`, `:core:database`, `:core:designsystem`, `:core:common`). This is the **Now in Android** sample's approach.
 
-```
-:app                      (wires features together, DI setup)
-:feature:feed   :feature:profile   :feature:settings
-:core:data   :core:domain   :core:network   :core:database   :core:designsystem
-```
+![Feature and core module hierarchy for a modular Android application](/diagrams/modularization.svg)
 
 **Useful design rules:**
 - **`api` vs `implementation`** - use `implementation` to keep a dependency **off** the consuming module's compile classpath (faster builds, real encapsulation); use `api` only when a type leaks into your public API.

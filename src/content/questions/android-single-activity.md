@@ -7,13 +7,7 @@ tags: ["architecture", "navigation", "fragments"]
 
 **Single-Activity architecture** means the app has **one Activity** that hosts all screens as **fragments** (or **composables**), with the **Navigation component** managing movement between them - instead of one Activity per screen.
 
-```
-MainActivity
-└── NavHost
-    ├── FeedFragment / FeedScreen
-    ├── DetailFragment / DetailScreen
-    └── ProfileFragment / ProfileScreen
-```
+![Single-Activity app with a NavHost and three destinations](/diagrams/single-activity.svg)
 
 **Why it's recommended (Google's guidance since ~2018, and the default with Compose):**
 - **Simpler, centralized navigation** - one back stack managed by the Nav controller, with type-safe args, deep-link support, and animated transitions, instead of juggling Activity intents and flags.

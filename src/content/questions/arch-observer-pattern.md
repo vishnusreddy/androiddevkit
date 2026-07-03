@@ -2,6 +2,9 @@
 question: "Explain the Observer pattern and where it appears in Android."
 topic: architecture
 difficulty: junior
+order: 40
+starred: false
+section: "Design principles and patterns"
 tags: ["design-patterns", "observer", "reactive"]
 ---
 

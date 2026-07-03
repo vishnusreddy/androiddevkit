@@ -2,6 +2,9 @@
 question: "Design a photo gallery app (like Google Photos) with backup."
 topic: system-design
 difficulty: senior
+order: 130
+starred: false
+section: "Product design exercises"
 tags: ["system-design", "media", "upload", "performance"]
 ---
 
