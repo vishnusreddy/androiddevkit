@@ -6,7 +6,7 @@
  * `.dev.vars` (local). See `.dev.vars.example`.
  */
 interface Env {
-  /** Fine-grained GitHub token with Contents + Pull requests write on the repo. */
+  /** Fine-grained GitHub token with Contents + Pull requests + Issues write on the repo. */
   GITHUB_TOKEN: string;
   /** Repo owner. Defaults to the value in src/consts.ts when unset. */
   GITHUB_OWNER?: string;

@@ -10,8 +10,8 @@ tags: ["kotlin", "null-safety"]
 
 Kotlin encodes nullability in the **type system**. A value declared as `String`
 cannot normally be assigned null, while `String?` can. The compiler forces you
-to handle the nullable case before dereferencing it, eliminating many—but not
-all—`NullPointerException`s. Platform types from Java, `!!`, initialization
+to handle the nullable case before dereferencing it, eliminating many - but not
+all - `NullPointerException`s. Platform types from Java, `!!`, initialization
 order, and code running outside Kotlin's checks remain escape hatches.
 
 The main tools:

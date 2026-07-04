@@ -96,17 +96,24 @@ frontmatter. Markdown and MDX are both supported.
 
 ## On-site submission form (maintainers)
 
-Visitors can submit an interview experience without GitHub via the form at
-`/contribute/experience/`. It POSTs to `src/pages/api/experiences.ts` (a
-Cloudflare Worker route), which validates the input, optionally verifies a
-Cloudflare Turnstile token, and opens a PR through the GitHub API for review.
+Visitors can submit questions, corrections, topics, articles, and interview
+experiences without GitHub via `/contribute/submit/`. It POSTs to
+`src/pages/api/contributions.ts` (a Cloudflare Worker route), which validates
+the input, optionally verifies a Cloudflare Turnstile token, and opens a review
+PR through the GitHub API. Corrections open a tracked GitHub issue because they
+need a maintainer to verify and edit existing content. The older
+`/contribute/experience/` route remains available for existing links.
+
+Long-form fields use the MIT-licensed Tiptap editor in the browser. Its
+Markdown extension serializes the rich content back to Markdown before the form
+is submitted, so the Worker and repository continue to store plain text files.
 
 It needs these set on the **Worker** (Cloudflare → Workers & Pages →
 `androiddevkit` → Settings → Variables and Secrets):
 
 | Name | Required | Notes |
 | --- | --- | --- |
-| `GITHUB_TOKEN` | yes | Fine-grained token, Contents + Pull requests: R/W on this repo. |
+| `GITHUB_TOKEN` | yes | Fine-grained token, Contents + Pull requests + Issues: R/W on this repo. |
 | `TURNSTILE_SECRET_KEY` | no | Enables spam protection. Skipped when unset. |
 | `GITHUB_OWNER` / `GITHUB_REPO` / `GITHUB_BASE_BRANCH` | no | Override repo defaults (owner/repo come from `SITE.github`; base defaults to `main`). |
 

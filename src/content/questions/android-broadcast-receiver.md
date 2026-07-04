@@ -20,7 +20,7 @@ registerReceiver(receiver, IntentFilter(ACTION), RECEIVER_NOT_EXPORTED)
 ```
 
 **Key constraints interviewers probe:**
-- **`onReceive` runs on the main thread** and must return **quickly**—no heavy
+- **`onReceive` runs on the main thread** and must return **quickly** - no heavy
   work. Enqueue durable work in WorkManager. For a brief asynchronous handoff,
   `goAsync()` returns a `PendingResult`, but you must call `finish()` within the
   receiver's limited execution window; it is not a way to run indefinitely.

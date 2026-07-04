@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TopicCard from '../../components/TopicCard.astro';
 import ProgressBar from '../../components/ProgressBar.astro';
-import { SITE } from '../../consts';
 
 const topics = await getCollection('topics');
 const questions = await getCollection('questions');
@@ -53,8 +52,8 @@ const allIds = questions.map((q) => q.id);
     {categories.length === 0 && (
       <div class="empty card">
         <p>
-          No topics published yet. They land in the next phase - or add the
-          first one via a <a href={SITE.github} target="_blank" rel="noopener noreferrer">pull request</a>.
+          No topics published yet. Propose the first one through the
+          <a href="/contribute/submit/?type=topic">anonymous contribution form</a>.
         </p>
       </div>
     )}

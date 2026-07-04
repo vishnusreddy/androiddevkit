@@ -10,6 +10,6 @@ labels: content
 **Topic it belongs under:**
 
 **Your suggestion:**
-<!-- The question, or what should change. If you can, open a PR instead — it's faster! -->
+<!-- The question, or what should change. If you can, open a PR instead - it's faster! -->
 
 **Source / why it matters (optional):**

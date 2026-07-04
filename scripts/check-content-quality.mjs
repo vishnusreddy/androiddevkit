@@ -20,6 +20,32 @@ const failures = [];
 const fail = (source, message) => failures.push(`${source}: ${message}`);
 const words = (value) => value.match(/[\p{L}\p{N}_]+/gu)?.length ?? 0;
 
+function collectCopyFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) return collectCopyFiles(path);
+    return /\.(astro|md|mdx|ts)$/.test(entry.name) ? [path] : [];
+  });
+}
+
+const copyFiles = [
+  ...collectCopyFiles(join(root, 'src')),
+  join(root, 'README.md'),
+  join(root, 'CONTRIBUTING.md'),
+  join(root, '.github/ISSUE_TEMPLATE/content-suggestion.md'),
+];
+
+for (const path of copyFiles) {
+  const relative = path.slice(root.length + 1);
+  const lines = readFileSync(path, 'utf8').split('\n');
+  lines.forEach((line, index) => {
+    if (line.includes('—')) fail(`${relative}:${index + 1}`, 'replace the em dash with clearer punctuation');
+    if (/\bkit\b/i.test(line) && !line.includes('@tiptap/starter-kit')) {
+      fail(`${relative}:${index + 1}`, 'replace standalone “kit” with resource, platform, guide, or another specific noun');
+    }
+  });
+}
+
 function parseFrontmatter(source, filename) {
   const match = source.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   if (!match) {

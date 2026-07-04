@@ -8,8 +8,8 @@ section: "Functions and idioms"
 tags: ["kotlin", "inline", "performance", "lambdas"]
 ---
 
-`inline` asks the compiler to **copy the function body—and inlinable lambda
-arguments—into the call site**. For a small higher-order function this can
+`inline` asks the compiler to **copy the function body - and inlinable lambda
+arguments - into the call site**. For a small higher-order function this can
 remove a virtual `invoke()` call and avoid allocating a capturing lambda object;
 the compiler may already reuse some non-capturing lambdas.
 

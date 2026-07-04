@@ -29,6 +29,11 @@ interface NewFilePR {
   prBody: string;
 }
 
+interface NewIssue {
+  title: string;
+  body: string;
+}
+
 class GitHubError extends Error {
   constructor(
     message: string,
@@ -117,6 +122,19 @@ export async function openFilePullRequest(
       base: cfg.baseBranch,
       body: pr.prBody,
     }),
+  })) as { html_url: string; number: number };
+
+  return { url: created.html_url, number: created.number };
+}
+
+/** Creates a GitHub issue for submissions that need a maintainer to edit an existing file. */
+export async function openIssue(
+  cfg: GitHubConfig,
+  issue: NewIssue,
+): Promise<{ url: string; number: number }> {
+  const created = (await gh(cfg, `/repos/${cfg.owner}/${cfg.repo}/issues`, {
+    method: 'POST',
+    body: JSON.stringify({ title: issue.title, body: issue.body }),
   })) as { html_url: string; number: number };
 
   return { url: created.html_url, number: created.number };

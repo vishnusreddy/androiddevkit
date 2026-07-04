@@ -2,10 +2,11 @@ export const SITE = {
   name: 'AndroidDevKit',
   domain: 'androiddevkit.com',
   url: 'https://androiddevkit.com',
-  tagline: 'Your one-stop kit for landing the Android job.',
+  tagline: 'Focused Android interview prep, built by the community.',
   description:
-    'An open-source, community-driven destination for Android developers preparing to switch jobs - curated interview questions, topic-by-topic guides, and real interview experiences.',
-  socialImage: '/og-default.png',
+    'A free, community-driven Android interview preparation resource with curated questions, topic guides, practice sessions, and real interview experiences.',
+  // Version the default image URL so social crawlers fetch a fresh preview after changes.
+  socialImage: '/og-default.png?v=20260705',
   socialImageAlt:
     'AndroidDevKit - open-source interview prep for Android engineers',
   github: 'https://github.com/vishnusreddy/androiddevkit',
@@ -48,7 +49,7 @@ export type NavGroup =
  * Grouped navigation is the source of truth for the header. Related
  * destinations live under a single dropdown so the top bar stays lean as the
  * site grows. To add a new section (e.g. "Practice"), drop it into the right
- * group's `items` array — the header, mobile menu, and footer all derive from
+ * group's `items` array - the header, mobile menu, and footer all derive from
  * this list automatically.
  */
 export const NAV_GROUPS: NavGroup[] = [

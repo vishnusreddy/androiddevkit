@@ -12,11 +12,11 @@ Two different ways your UI state can be destroyed - and they need different tool
 
 **Process death** (the system reclaims your app's memory while it is in the
 background): the **entire process is killed**. The ViewModel, static fields,
-singletons—**everything in memory is gone**. When the user returns through the
+singletons - **everything in memory is gone**. When the user returns through the
 retained task, Android creates a new process and Activity and can restore saved
 UI state.
-- Use **saved state**—`onSaveInstanceState`, `rememberSaveable`, or
-  `SavedStateHandle`—for small transient values needed to reconstruct the
+- Use **saved state** - `onSaveInstanceState`, `rememberSaveable`, or
+  `SavedStateHandle` - for small transient values needed to reconstruct the
   screen. Android keeps that serialized state outside your process; it is not a
   durable database and is cleared when the user fully dismisses the task.
 - Use **local persistence** such as Room or DataStore for application data that
@@ -42,6 +42,6 @@ class SearchViewModel(private val handle: SavedStateHandle) : ViewModel() {
 - Put **small, essential UI state** (a query, scroll position, selected tab) in `SavedStateHandle`/`rememberSaveable` so it survives process death too.
 - Keep saved state **small** - the Bundle is for identifiers and UI state, not large data. Re-fetch big data from a repository on restore.
 - **Test configuration recreation** with "Don't keep activities." Test actual
-  process death separately—for example, background the app and use
-  `adb shell am kill <package>`—because destroying Activities is not the same
+  process death separately - for example, background the app and use
+  `adb shell am kill <package>` - because destroying Activities is not the same
   event as killing the process.

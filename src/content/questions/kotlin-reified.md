@@ -16,7 +16,7 @@ operations.
 
 It only works on inline functions because the compiler substitutes the
 concrete type while expanding each call. It does not disable JVM type erasure
-for `T` everywhere—for example, `is List<T>` still cannot verify a list's erased
+for `T` everywhere - for example, `is List<T>` still cannot verify a list's erased
 element type.
 
 ```kotlin

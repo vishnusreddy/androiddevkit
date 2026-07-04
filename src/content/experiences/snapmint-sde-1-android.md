@@ -36,7 +36,7 @@ The final round included:
 - Fragment lifecycle transitions across different navigation scenarios
 - A detailed discussion of previous work and experience
 
-The state-restoration question was specifically about surviving configuration changes. That is transient UI state—for example, state owned by a `ViewModel`, `SavedStateHandle`, or Compose's `rememberSaveable`—rather than a guarantee of durable storage after the app's data is cleared.
+The state-restoration question was specifically about surviving configuration changes. That means transient UI state, such as state owned by a `ViewModel`, `SavedStateHandle`, or Compose's `rememberSaveable`, rather than a guarantee of durable storage after the app's data is cleared.
 
 ## Outcome
 
