@@ -98,27 +98,61 @@ const features = [
     </div>
   </section>
 
-  <!-- ===== Practice simulator ===== -->
+  <!-- ===== Featured topics ===== -->
+  <section class="section topics-section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Start with a topic</h2>
+        <a class="see-all" href="/topics/">All topics →</a>
+      </div>
+
+      {featured.length > 0 ? (
+        <div class="grid grid-3">
+          {featured.map((t) => (
+            <TopicCard
+              href={`/topics/${t.id}/`}
+              topicId={t.id}
+              title={t.data.title}
+              description={t.data.description}
+              category={t.data.category}
+              count={countFor(t.id)}
+              ids={idsFor(t.id)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="empty card">
+          <p>
+            No topics yet - this is step one. Topics and questions get added in
+            the next phase, or by the community via
+            <a href={SITE.github} target="_blank" rel="noopener noreferrer"> pull requests</a>.
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ===== Practice knowledge check ===== -->
   <section class="section practice-section">
     <div class="container">
       <div class="practice-feature">
         <div class="practice-copy">
-          <span class="practice-eyebrow">Mock interview practice</span>
-          <h2>Practice like it’s the real round.</h2>
+          <span class="practice-eyebrow">Practice mode</span>
+          <h2>Put what you’ve learned to the test.</h2>
           <p>
-            Build a focused session by topic, difficulty, and answer format.
-            Work against the clock, rehearse written answers, and finish with a
-            score that tells you what to sharpen next.
+            This isn’t a simulated interview. Pick a topic, difficulty, and
+            session length, then use your results to see what stuck and what
+            deserves another pass.
           </p>
 
           <ul class="practice-points">
             <li><span aria-hidden="true">✓</span> Timed 10–20 question sessions</li>
-            <li><span aria-hidden="true">✓</span> MCQs and written answer rehearsal</li>
-            <li><span aria-hidden="true">✓</span> Scores, streaks, XP, and personal bests</li>
+            <li><span aria-hidden="true">✓</span> MCQs and written answer practice</li>
+            <li><span aria-hidden="true">✓</span> Clear scores, streaks, and personal bests</li>
           </ul>
 
           <a class="btn btn-primary" href="/practice/">
-            Start a practice session
+            Test your knowledge
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
           <span class="practice-note">Free · no sign-up · progress stays in your browser</span>
@@ -155,40 +189,6 @@ const features = [
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ===== Featured topics ===== -->
-  <section class="section topics-section">
-    <div class="container">
-      <div class="section-head">
-        <h2>Start with a topic</h2>
-        <a class="see-all" href="/topics/">All topics →</a>
-      </div>
-
-      {featured.length > 0 ? (
-        <div class="grid grid-3">
-          {featured.map((t) => (
-            <TopicCard
-              href={`/topics/${t.id}/`}
-              topicId={t.id}
-              title={t.data.title}
-              description={t.data.description}
-              category={t.data.category}
-              count={countFor(t.id)}
-              ids={idsFor(t.id)}
-            />
-          ))}
-        </div>
-      ) : (
-        <div class="empty card">
-          <p>
-            No topics yet - this is step one. Topics and questions get added in
-            the next phase, or by the community via
-            <a href={SITE.github} target="_blank" rel="noopener noreferrer"> pull requests</a>.
-          </p>
-        </div>
-      )}
     </div>
   </section>
 
@@ -331,11 +331,11 @@ const features = [
   }
 
   .topics-section {
-    padding-top: 0;
+    padding-top: clamp(2.25rem, 5vw, 3.5rem);
   }
 
   .practice-section {
-    padding-block: clamp(2.25rem, 5vw, 4rem);
+    padding-block: 0 clamp(2.75rem, 6vw, 4.5rem);
   }
   .practice-feature {
     display: grid;
