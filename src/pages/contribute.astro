@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ContributionIcon from '../components/ContributionIcon.astro';
 import { SITE } from '../consts';
 
-const steps = [
+const githubSteps = [
   {
     n: 1,
     title: 'Fork & clone',
@@ -17,6 +18,57 @@ const steps = [
     n: 3,
     title: 'Open a pull request',
     body: 'Commit on a new branch, push to your fork, and open a PR. A maintainer reviews for accuracy and merges. Cloudflare Pages deploys automatically.',
+  },
+];
+
+const contributionTypes = [
+  {
+    type: 'question',
+    title: 'Question and answer',
+    body: 'Add one focused interview question with a precise answer, boundaries, and sources.',
+    meta: 'Creates a review PR',
+  },
+  {
+    type: 'correction',
+    title: 'Content correction',
+    body: 'Point to an outdated, unclear, or incorrect statement and propose the exact fix.',
+    meta: 'Creates a tracked issue',
+  },
+  {
+    type: 'topic',
+    title: 'Topic guide',
+    body: 'Propose a study path for an Android or Kotlin area that deserves deeper coverage.',
+    meta: 'Creates a review PR',
+  },
+  {
+    type: 'experience',
+    title: 'Interview experience',
+    body: 'Share the rounds, questions, outcome, and takeaways. Anonymous submissions are welcome.',
+    meta: 'Creates a review PR',
+  },
+  {
+    type: 'article',
+    title: 'Article or deep dive',
+    body: 'Write a longer practical guide about Android engineering or interview preparation.',
+    meta: 'Creates a review PR',
+  },
+] as const;
+
+const reviewSteps = [
+  {
+    n: 1,
+    title: 'Write in the browser',
+    body: 'Choose a contribution type and use the rich-text editor. No account or local setup is required.',
+  },
+  {
+    n: 2,
+    title: 'We create the review',
+    body: 'The site turns publishable content into Markdown and opens a pull request. Corrections become tracked issues.',
+  },
+  {
+    n: 3,
+    title: 'A maintainer checks it',
+    body: 'We review technical accuracy, clarity, privacy, and editorial fit before anything appears on the site.',
   },
 ];
 
@@ -73,40 +125,94 @@ Optional overview shown above the questions on the topic page.`;
 ---
 <BaseLayout
   title="Contribute"
-  description="AndroidDevKit is open source and community-built. Learn how to add interview questions, topics, blog posts, and your own interview experiences via GitHub pull requests."
+  description="Share an Android interview question, correction, topic, article, or interview experience without a GitHub account, or contribute directly through the open-source repository."
 >
   <section class="page-head">
     <div class="container">
-      <span class="eyebrow">Open source</span>
-      <h1>Contribute to AndroidDevKit</h1>
+      <span class="eyebrow">Built by Android developers</span>
+      <h1>Help make Android interviews less opaque</h1>
       <p class="lede text-soft">
-        Everything here is community-built and lives on
-        <a href={SITE.github} target="_blank" rel="noopener noreferrer">GitHub</a>.
-        No CMS, no login - just Markdown files and pull requests. Here is how to
-        add yours.
+        Share the question that caught you off guard, correct an answer that
+        needs a sharper boundary, or document what an interview was actually
+        like. Use the guided form. No GitHub account or Markdown required.
       </p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href={SITE.github} target="_blank" rel="noopener noreferrer">Open the repository</a>
+        <a class="btn btn-primary" href="/contribute/submit/">Contribute anonymously</a>
+        <a class="btn btn-secondary" href="#github-path">Use GitHub instead</a>
       </div>
+      <ul class="hero-trust" aria-label="Contribution form benefits">
+        <li>No sign-up</li>
+        <li>Rich-text editor</li>
+        <li>Maintainer reviewed</li>
+      </ul>
     </div>
   </section>
 
-  <section class="container">
-    <div class="card no-github">
+  <section class="container contribution-section">
+    <div class="section-head">
+      <span class="eyebrow">Choose what to share</span>
+      <h2>Five ways to help other Android developers</h2>
+      <p class="text-soft">
+        Each form asks only for the information maintainers need to review that
+        kind of contribution.
+      </p>
+    </div>
+
+    <div class="type-grid">
+      {contributionTypes.map((item) => (
+        <a class="card type-card" href={`/contribute/submit/?type=${item.type}`}>
+          <ContributionIcon name={item.type} />
+          <div class="type-card-copy">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+          <span class="type-meta">{item.meta}</span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="quick-flow">
+    <div class="container quick-flow-inner">
+      <div class="section-head compact">
+        <span class="eyebrow">How it works</span>
+        <h2>A clear path from your draft to publication</h2>
+      </div>
+      <div class="steps review-steps">
+        {reviewSteps.map((step) => (
+          <div class="review-step">
+            <span class="step-n">{step.n}</span>
+            <div>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <a class="btn btn-primary" href="/contribute/submit/">Contribute anonymously</a>
+    </div>
+  </section>
+
+  <section class="container github-path" id="github-path">
+    <div class="github-intro card">
       <div>
-        <h2>Not on GitHub? Share an experience in seconds</h2>
-        <p class="text-soft">
-          Use the in-browser form - no account, no pull request, no setup. We
-          open the PR for you and a maintainer reviews it before it goes live.
+        <span class="eyebrow">For repository contributors</span>
+        <h2>Prefer working in GitHub?</h2>
+        <p>
+          Every published page is still plain Markdown in the open-source
+          repository. Fork it, make a focused change, run the checks, and open
+          a pull request.
         </p>
       </div>
-      <a class="btn btn-primary" href="/contribute/experience/">Share your experience</a>
+      <div class="github-actions">
+        <a class="btn btn-primary" href={SITE.github} target="_blank" rel="noopener noreferrer">Open the repository</a>
+        <a class="btn btn-secondary" href={`${SITE.github}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noopener noreferrer">Read CONTRIBUTING.md</a>
+      </div>
     </div>
-  </section>
 
-  <section class="container guide">
-    <div class="steps">
-      {steps.map((s) => (
+    <div class="steps github-steps">
+      {githubSteps.map((s) => (
         <div class="card step">
           <span class="step-n">{s.n}</span>
           <h3>{s.title}</h3>
@@ -115,51 +221,80 @@ Optional overview shown above the questions on the topic page.`;
       ))}
     </div>
 
-    <div class="tpl">
-      <h2 id="add-question">Add an interview question</h2>
+    <div class="templates-head">
+      <h2>Content templates</h2>
       <p class="text-soft">
-        Create a file in <code>src/content/questions/</code>, e.g.
-        <code>structured-concurrency.md</code>. One question per file keeps
-        reviews fast.
+        Copy the relevant structure when contributing through GitHub. The
+        browser form generates this frontmatter automatically.
       </p>
-      <pre><code>{questionTemplate}</code></pre>
     </div>
 
-    <div class="tpl">
-      <h2 id="add-experience">Share an interview experience</h2>
-      <p class="text-soft">
-        Create a file in <code>src/content/experiences/</code>. Anonymize
-        anything you need to - <code>author: "Anonymous"</code> is welcome.
-      </p>
-      <pre><code>{experienceTemplate}</code></pre>
-    </div>
+    <div class="template-list">
+      <details class="card tpl" id="add-question">
+        <summary>
+          <span><strong>Interview question</strong><small>src/content/questions/</small></span>
+          <span class="summary-action">View template</span>
+        </summary>
+        <div class="template-body">
+          <p>
+            Keep each question focused on one concept. Answers should name the
+            exact API, mechanism, failure condition, and important caveat.
+          </p>
+          <pre><code>{questionTemplate}</code></pre>
+        </div>
+      </details>
 
-    <div class="tpl">
-      <h2 id="add-topic">Add a new topic</h2>
-      <p class="text-soft">
-        Topics are the spine of the site. Add one in
-        <code>src/content/topics/</code> - the filename (minus extension)
-        becomes the topic <code>id</code> that questions reference.
-      </p>
-      <pre><code>{topicTemplate}</code></pre>
-    </div>
+      <details class="card tpl" id="add-experience">
+        <summary>
+          <span><strong>Interview experience</strong><small>src/content/experiences/</small></span>
+          <span class="summary-action">View template</span>
+        </summary>
+        <div class="template-body">
+          <p>
+            Anonymize freely. Never include interviewer names, personal
+            information, confidential prompts, or NDA-bound material.
+          </p>
+          <pre><code>{experienceTemplate}</code></pre>
+        </div>
+      </details>
 
-    <div class="tpl">
-      <h2 id="write-post">Write a blog post</h2>
-      <p class="text-soft">
-        Longer guides go in <code>src/content/blog/</code> with
-        <code>title</code>, <code>description</code>, and <code>date</code>
-        frontmatter. Markdown and MDX are both supported.
-      </p>
+      <details class="card tpl" id="add-topic">
+        <summary>
+          <span><strong>Topic guide</strong><small>src/content/topics/</small></span>
+          <span class="summary-action">View template</span>
+        </summary>
+        <div class="template-body">
+          <p>
+            The filename becomes the topic ID referenced by questions. Check
+            existing topics first so the scope does not overlap.
+          </p>
+          <pre><code>{topicTemplate}</code></pre>
+        </div>
+      </details>
+
+      <div class="card article-note" id="write-post">
+        <div>
+          <strong>Article or deep dive</strong>
+          <small>src/content/blog/</small>
+        </div>
+        <p>
+          Include <code>title</code>, <code>description</code>, <code>date</code>,
+          <code>author</code>, and <code>tags</code> frontmatter. Markdown and
+          MDX are both supported.
+        </p>
+      </div>
     </div>
 
     <div class="card guidelines">
-      <h2>Review guidelines</h2>
+      <div>
+        <span class="eyebrow">Before you send it</span>
+        <h2>What makes a strong contribution</h2>
+      </div>
       <ul>
-        <li><strong>Be accurate.</strong> Answers should be correct and current - link sources where it helps.</li>
-        <li><strong>Be respectful.</strong> Never name individual interviewers, and don't post proprietary or NDA-bound material.</li>
-        <li><strong>Be concise.</strong> Explain the <em>why</em>, not just the <em>what</em> - that's what interviewers probe for.</li>
-        <li><strong>One thing per PR.</strong> Smaller pull requests get reviewed and merged faster.</li>
+        <li><strong>Be technically precise.</strong> Name exact APIs, lifecycle states, exceptions, and failure conditions.</li>
+        <li><strong>Separate guarantees from common behavior.</strong> Call out version or device dependencies where they matter.</li>
+        <li><strong>Respect privacy.</strong> Remove personal, proprietary, and NDA-bound information.</li>
+        <li><strong>Keep it focused.</strong> One question, correction, experience, or article per submission is easier to review.</li>
       </ul>
     </div>
   </section>
@@ -167,25 +302,136 @@ Optional overview shown above the questions on the topic page.`;
 
 <style>
   .page-head {
-    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+    padding-block: clamp(3rem, 7vw, 5.5rem) clamp(2.5rem, 5vw, 4rem);
+  }
+  .page-head .container {
+    max-width: 900px;
+  }
+  .page-head h1 {
+    max-width: 760px;
+    margin: 0.65rem 0 0;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
   }
   .page-head .lede {
-    max-width: 620px;
-    margin-top: 0.8rem;
-    font-size: 1.08rem;
+    max-width: 700px;
+    margin: 1rem 0 0;
+    font-size: clamp(1.05rem, 2vw, 1.18rem);
   }
   .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     margin-top: 1.6rem;
   }
-  .guide {
-    padding-block: 2rem 1rem;
-    max-width: 860px;
+  .hero-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 1.4rem;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    color: var(--ink-faint);
+    font-size: 0.86rem;
+    list-style: none;
+  }
+  .hero-trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .hero-trust li::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    content: '';
+  }
+  .contribution-section {
+    padding-block: 1rem clamp(3.5rem, 7vw, 5.5rem);
+  }
+  .section-head {
+    max-width: 680px;
+    margin-bottom: 1.6rem;
+  }
+  .section-head h2 {
+    margin: 0.5rem 0 0;
+  }
+  .section-head p {
+    margin: 0.65rem 0 0;
+  }
+  .section-head.compact {
+    margin-bottom: 2rem;
+  }
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .type-card {
+    position: relative;
+    display: grid;
+    grid-column: span 2;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    min-height: 210px;
+    padding: 1.4rem;
+    color: inherit;
+  }
+  .type-card:nth-last-child(-n + 2) {
+    grid-column: span 3;
+  }
+  .type-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    box-shadow: var(--shadow);
+    color: inherit;
+  }
+  .type-card-copy h3 {
+    margin: 0.15rem 0 0.45rem;
+    font-size: 1.08rem;
+  }
+  .type-card-copy p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  .type-meta {
+    align-self: end;
+    grid-column: 1 / -1;
+    color: var(--ink-faint);
+    font-size: 0.76rem;
+    font-weight: 600;
+  }
+  .card-arrow {
+    position: absolute;
+    right: 1.35rem;
+    bottom: 1.2rem;
+    color: var(--accent);
+    font-size: 1.25rem;
+  }
+  .quick-flow {
+    border-block: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .quick-flow-inner {
+    padding-block: clamp(3rem, 6vw, 4.5rem);
+  }
+  .review-steps {
+    margin-bottom: 2rem;
   }
   .steps {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    margin-bottom: 3rem;
+  }
+  .review-step {
+    display: flex;
+    gap: 1rem;
+  }
+  .review-step h3 {
+    margin: 0.15rem 0 0.4rem;
+    font-size: 1rem;
+  }
+  .review-step p {
+    margin: 0;
+    font-size: 0.88rem;
   }
   .step {
     padding: 1.5rem;
@@ -200,37 +446,141 @@ Optional overview shown above the questions on the topic page.`;
     background: var(--accent);
     color: var(--on-accent);
     font-weight: 700;
-    margin-bottom: 0.8rem;
+    flex: 0 0 auto;
   }
   .step h3 {
-    margin: 0 0 0.4rem;
+    margin: 0.8rem 0 0.4rem;
     font-size: 1.05rem;
   }
   .step p {
     margin: 0;
     font-size: 0.9rem;
   }
+  .github-path {
+    max-width: 920px;
+    padding-block: clamp(3.5rem, 7vw, 5rem);
+    scroll-margin-top: 80px;
+  }
+  .github-intro {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.5rem, 4vw, 2.2rem);
+  }
+  .github-intro h2 {
+    margin: 0.45rem 0 0;
+  }
+  .github-intro p {
+    max-width: 55ch;
+    margin: 0.7rem 0 0;
+  }
+  .github-actions {
+    display: flex;
+    align-items: stretch;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .github-actions .btn {
+    text-align: center;
+    white-space: nowrap;
+  }
+  .github-steps {
+    margin: 1rem 0 3.5rem;
+  }
+  .templates-head {
+    margin-bottom: 1rem;
+  }
+  .templates-head h2 {
+    margin-bottom: 0;
+  }
+  .templates-head p {
+    margin: 0.6rem 0 0;
+  }
+  .template-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.7rem;
+    min-width: 0;
+  }
   .tpl {
-    margin-bottom: 2.5rem;
+    overflow: clip;
+    min-width: 0;
   }
-  .tpl h2 {
-    scroll-margin-top: 90px;
+  .tpl summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    list-style: none;
   }
-  .tpl p {
-    margin: 0.5rem 0 1rem;
+  .tpl summary::-webkit-details-marker {
+    display: none;
   }
-  .tpl pre {
+  .tpl summary > span:first-child,
+  .article-note > div {
+    display: flex;
+    flex-direction: column;
+  }
+  .tpl summary small,
+  .article-note small {
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+    font-size: 0.73rem;
+    font-weight: 400;
+  }
+  .summary-action {
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tpl[open] .summary-action {
+    font-size: 0;
+  }
+  .tpl[open] .summary-action::after {
+    font-size: 0.8rem;
+    content: 'Hide template';
+  }
+  .template-body {
+    min-width: 0;
+    padding: 0 1.2rem 1.2rem;
+    border-top: 1px solid var(--border);
+  }
+  .template-body p {
+    margin: 1rem 0;
+  }
+  .template-body pre {
+    max-width: 100%;
+    margin-bottom: 0;
+    overflow-x: auto;
     font-size: 0.82rem;
   }
+  .article-note {
+    display: grid;
+    grid-template-columns: minmax(180px, 0.7fr) 1.5fr;
+    gap: 1.5rem;
+    padding: 1.2rem;
+  }
+  .article-note p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
   .guidelines {
-    padding: 1.8rem 2rem;
-    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: minmax(220px, 0.8fr) 1.5fr;
+    gap: 2rem;
+    padding: clamp(1.5rem, 4vw, 2rem);
+    margin-top: 3rem;
   }
   .guidelines h2 {
-    margin-top: 0;
+    margin: 0.45rem 0 0;
   }
   .guidelines ul {
-    margin: 1rem 0 0;
+    margin: 0;
     padding-left: 1.1rem;
     color: var(--ink-soft);
   }
@@ -240,33 +590,48 @@ Optional overview shown above the questions on the topic page.`;
   .guidelines strong {
     color: var(--ink);
   }
-  .no-github {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    padding: 1.6rem 2rem;
-    margin-top: 1.5rem;
-    border: 1px solid var(--accent);
-  }
-  .no-github h2 {
-    margin: 0 0 0.4rem;
-    font-size: 1.15rem;
-  }
-  .no-github p {
-    margin: 0;
-    max-width: 52ch;
-  }
-  .no-github .btn {
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  @media (max-width: 680px) {
+  @media (max-width: 800px) {
+    .type-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .type-card,
+    .type-card:nth-last-child(-n + 2) {
+      grid-column: span 1;
+    }
     .steps {
       grid-template-columns: 1fr;
     }
-    .no-github {
+    .github-intro {
       flex-direction: column;
+      align-items: flex-start;
+    }
+    .github-actions {
+      width: 100%;
+    }
+    .guidelines {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+  @media (max-width: 560px) {
+    .hero-cta {
+      align-items: stretch;
+      flex-direction: column;
+    }
+    .hero-cta .btn {
+      text-align: center;
+    }
+    .type-grid {
+      grid-template-columns: 1fr;
+    }
+    .type-card {
+      min-height: 0;
+    }
+    .article-note {
+      grid-template-columns: 1fr;
+      gap: 0.7rem;
+    }
+    .tpl summary {
       align-items: flex-start;
     }
   }

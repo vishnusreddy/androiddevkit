@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { SITE } from '../../consts';
 
 const posts = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
@@ -32,8 +31,8 @@ const [featured, ...rest] = posts;
       <div class="empty card">
         <h3>No posts yet</h3>
         <p class="text-soft">
-          Articles land in the next phase. Want to write one? Open a
-          <a href={SITE.github} target="_blank" rel="noopener noreferrer">pull request</a>.
+          Articles land in the next phase. Want to write one? Use the
+          <a href="/contribute/submit/?type=article">anonymous contribution form</a>.
         </p>
       </div>
     )}

@@ -37,12 +37,12 @@ const topicManifest = topics.map((topic) => ({
           <h1>Enter focus mode.</h1>
           <p>
             Build a 10–20 question run, answer under pressure, and leave with a
-            score—not another open tab you meant to study later.
+            score - not another open tab you meant to study later.
           </p>
         </div>
         <div class="best-card" aria-live="polite">
           <span class="best-label">Personal best</span>
-          <strong id="personal-best">—</strong>
+          <strong id="personal-best">Not set</strong>
           <span id="best-detail">Complete a run to set it</span>
         </div>
       </div>
@@ -749,7 +749,7 @@ const topicManifest = topics.map((topic) => ({
     try {
       const best = Number(localStorage.getItem('adk-practice-best') || 0);
       const last = JSON.parse(localStorage.getItem('adk-practice-last') || 'null');
-      $('#personal-best')!.textContent = best ? `${best}%` : '—';
+      $('#personal-best')!.textContent = best ? `${best}%` : 'Not set';
       $('#best-detail')!.textContent = last ? `Last run ${last.percent}% · ${last.xp} XP` : 'Complete a run to set it';
     } catch { /* Keep the empty state. */ }
   }

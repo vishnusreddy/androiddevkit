@@ -1,0 +1,761 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+const today = new Date().toISOString().slice(0, 10);
+const topics = (await getCollection('topics')).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
+);
+const levels = ['Intern', 'Junior', 'Mid', 'Senior', 'Staff+'];
+const outcomes = ['Offer', 'Rejected', 'Withdrew', 'In Progress', 'No Response'];
+---
+
+<BaseLayout
+  title="Contribute without GitHub"
+  description="Submit an Android interview question, correction, topic, article, or interview experience without creating a GitHub pull request."
+>
+  {turnstileSiteKey && (
+    <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  )}
+
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Contribute</span>
+      <h1>Share what you know</h1>
+      <p class="lede text-soft">
+        No GitHub account, pull request, or setup needed. Send a question,
+        correction, topic, article, or interview experience here. Ready-to-publish
+        content becomes a review PR; corrections become a tracked review request.
+      </p>
+    </div>
+  </section>
+
+  <section class="container form-wrap">
+    <form id="contribution-form" class="card contribution-form" novalidate>
+      <label class="field contribution-type">
+        <span>What would you like to contribute?</span>
+        <select id="contribution-type" name="type" autocomplete="off">
+          <option value="question">Interview question and answer</option>
+          <option value="correction">Correction to existing content</option>
+          <option value="topic">New topic guide</option>
+          <option value="experience">Interview experience</option>
+          <option value="article">Article or deep dive</option>
+        </select>
+      </label>
+
+      <p id="type-help" class="type-help text-soft"></p>
+
+      <fieldset class="panel" data-contribution-panel="question">
+        <legend>Interview question and answer</legend>
+        <div class="grid">
+          <label class="field field-wide">
+            <span>Question <em>*</em></span>
+            <input name="question" type="text" required minlength="10" maxlength="240" placeholder="What is structured concurrency in Kotlin coroutines?" />
+          </label>
+          <label class="field">
+            <span>Topic <em>*</em></span>
+            <select name="topic" required>
+              {topics.map((topic) => <option value={topic.id}>{topic.data.title}</option>)}
+            </select>
+          </label>
+          <label class="field">
+            <span>Difficulty</span>
+            <select name="difficulty">
+              <option value="junior">Junior</option>
+              <option value="mid" selected>Mid</option>
+              <option value="senior">Senior</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Your name / handle</span>
+            <input name="author" type="text" maxlength="80" placeholder="Anonymous" />
+          </label>
+          <label class="field">
+            <span>Tags (comma-separated)</span>
+            <input name="tags" type="text" maxlength="240" placeholder="coroutines, scopes" />
+          </label>
+        </div>
+        <div class="field block-field">
+          <label for="question-answer">Answer <em>*</em></label>
+          <textarea id="question-answer" data-rich-editor name="answer" required rows="12" minlength="80" maxlength="20000" placeholder="Explain the mechanism, trade-offs, failure conditions, and important boundary or caveat."></textarea>
+          <small class="text-faint">Use the formatting toolbar. Name exact APIs and distinguish guarantees from common behavior.</small>
+        </div>
+        <label class="field block-field">
+          <span>Sources (optional)</span>
+          <textarea name="sources" rows="3" maxlength="2000" placeholder="Official documentation or primary-source links, one per line"></textarea>
+        </label>
+      </fieldset>
+
+      <fieldset class="panel" data-contribution-panel="correction" hidden disabled>
+        <legend>Correction to existing content</legend>
+        <div class="grid">
+          <label class="field field-wide">
+            <span>Page URL or title <em>*</em></span>
+            <input name="page" type="text" required minlength="3" maxlength="500" placeholder="https://androiddevkit.com/topics/coroutines/" />
+          </label>
+          <label class="field field-wide">
+            <span>Your name / handle</span>
+            <input name="author" type="text" maxlength="80" placeholder="Anonymous" />
+          </label>
+        </div>
+        <div class="field block-field">
+          <label for="correction-problem">What is wrong? <em>*</em></label>
+          <textarea id="correction-problem" data-rich-editor name="problem" required rows="5" minlength="20" maxlength="4000" placeholder="Quote or identify the exact statement and explain the failure condition or inaccuracy."></textarea>
+        </div>
+        <div class="field block-field">
+          <label for="correction-proposal">Proposed correction <em>*</em></label>
+          <textarea id="correction-proposal" data-rich-editor name="correction" required rows="7" minlength="20" maxlength="10000" placeholder="Write the replacement wording or describe the precise change."></textarea>
+        </div>
+        <label class="field block-field">
+          <span>Sources (optional)</span>
+          <textarea name="sources" rows="3" maxlength="2000" placeholder="Official documentation or primary-source links, one per line"></textarea>
+        </label>
+      </fieldset>
+
+      <fieldset class="panel" data-contribution-panel="topic" hidden disabled>
+        <legend>New topic guide</legend>
+        <div class="grid">
+          <label class="field">
+            <span>Topic title <em>*</em></span>
+            <input name="title" type="text" required minlength="2" maxlength="100" placeholder="Kotlin Multiplatform" />
+          </label>
+          <label class="field">
+            <span>Category <em>*</em></span>
+            <input name="category" type="text" required minlength="2" maxlength="60" placeholder="Kotlin" />
+          </label>
+          <label class="field field-wide">
+            <span>Short description <em>*</em></span>
+            <input name="description" type="text" required minlength="20" maxlength="240" placeholder="What this topic covers and why it matters in Android interviews." />
+          </label>
+          <label class="field">
+            <span>Icon</span>
+            <input name="icon" type="text" maxlength="8" placeholder="▚" />
+          </label>
+          <label class="field">
+            <span>Your name / handle</span>
+            <input name="author" type="text" maxlength="80" placeholder="Anonymous" />
+          </label>
+        </div>
+        <div class="field block-field">
+          <label for="topic-overview">Topic overview <em>*</em></label>
+          <textarea id="topic-overview" data-rich-editor name="overview" required rows="12" minlength="80" maxlength="20000" placeholder="Outline a study path, the concepts interviewers test, common question formats, and useful references."></textarea>
+          <small class="text-faint">Use the formatting toolbar. Maintainers will review scope and overlap with existing topics.</small>
+        </div>
+      </fieldset>
+
+      <fieldset class="panel" data-contribution-panel="experience" hidden disabled>
+        <legend>Interview experience</legend>
+        <div class="grid">
+          <label class="field">
+            <span>Company <em>*</em></span>
+            <input name="company" type="text" required maxlength="120" placeholder="Acme Corp" />
+          </label>
+          <label class="field">
+            <span>Role</span>
+            <input name="role" type="text" maxlength="120" placeholder="Senior Android Engineer" />
+          </label>
+          <label class="field">
+            <span>Level</span>
+            <select name="level">
+              {levels.map((level) => <option value={level} selected={level === 'Mid'}>{level}</option>)}
+            </select>
+          </label>
+          <label class="field">
+            <span>Outcome</span>
+            <select name="outcome">
+              {outcomes.map((outcome) => <option value={outcome}>{outcome}</option>)}
+            </select>
+          </label>
+          <label class="field">
+            <span>Location</span>
+            <input name="location" type="text" maxlength="120" placeholder="Bengaluru, India" />
+          </label>
+          <label class="field">
+            <span>Interview date</span>
+            <input name="date" type="date" value={today} max={today} />
+          </label>
+          <label class="field">
+            <span>Your name / handle</span>
+            <input name="author" type="text" maxlength="80" placeholder="Anonymous" />
+          </label>
+          <label class="field">
+            <span>Tags (comma-separated)</span>
+            <input name="tags" type="text" maxlength="240" placeholder="compose, system-design" />
+          </label>
+        </div>
+        <label class="field checkbox">
+          <input name="remote" type="checkbox" />
+          <span>This was a remote interview</span>
+        </label>
+        <div class="field block-field">
+          <label for="experience-body">Your write-up <em>*</em></label>
+          <textarea id="experience-body" data-rich-editor name="body" required rows="14" minlength="30" maxlength="20000" placeholder="Describe each interview round, what they asked, how it went, and your takeaways."></textarea>
+          <small class="text-faint">Use the formatting toolbar. Do not name individual interviewers or post NDA-bound material.</small>
+        </div>
+      </fieldset>
+
+      <fieldset class="panel" data-contribution-panel="article" hidden disabled>
+        <legend>Article or deep dive</legend>
+        <div class="grid">
+          <label class="field field-wide">
+            <span>Article title <em>*</em></span>
+            <input name="title" type="text" required minlength="5" maxlength="140" placeholder="A practical guide to testing Compose navigation" />
+          </label>
+          <label class="field field-wide">
+            <span>Short description <em>*</em></span>
+            <input name="description" type="text" required minlength="20" maxlength="240" placeholder="A one-sentence summary shown on the blog index." />
+          </label>
+          <label class="field">
+            <span>Your name / handle</span>
+            <input name="author" type="text" maxlength="80" placeholder="Anonymous" />
+          </label>
+          <label class="field">
+            <span>Tags (comma-separated)</span>
+            <input name="tags" type="text" maxlength="240" placeholder="testing, compose" />
+          </label>
+        </div>
+        <div class="field block-field">
+          <label for="article-body">Article <em>*</em></label>
+          <textarea id="article-body" data-rich-editor name="body" required rows="16" minlength="200" maxlength="30000" placeholder="Use clear headings, concrete examples, and primary sources for technical claims."></textarea>
+        </div>
+      </fieldset>
+
+      {turnstileSiteKey && (
+        <div class="cf-turnstile" data-sitekey={turnstileSiteKey}></div>
+      )}
+
+      <div class="actions">
+        <button type="submit" class="btn btn-primary" id="submit-btn">Submit question</button>
+        <p id="form-status" class="status" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <div class="card success" id="success-panel" hidden>
+      <h2>Thank you! 🎉</h2>
+      <p id="success-message" class="text-soft"></p>
+      <a id="review-link" class="btn btn-primary" href="#" target="_blank" rel="noopener noreferrer">
+        View the review request
+      </a>
+      <a class="btn btn-secondary" href="/contribute/submit/">Send another contribution</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { initializeRichEditors } from '../../lib/rich-editor';
+
+  const form = document.getElementById('contribution-form') as HTMLFormElement;
+  const typeSelect = document.getElementById('contribution-type') as HTMLSelectElement;
+  const panels = Array.from(form?.querySelectorAll<HTMLFieldSetElement>('[data-contribution-panel]') ?? []);
+  const help = document.getElementById('type-help') as HTMLParagraphElement;
+  const statusEl = document.getElementById('form-status') as HTMLParagraphElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const successPanel = document.getElementById('success-panel') as HTMLElement;
+  const successMessage = document.getElementById('success-message') as HTMLParagraphElement;
+  const reviewLink = document.getElementById('review-link') as HTMLAnchorElement;
+
+  initializeRichEditors(form);
+
+  const typeCopy: Record<string, { help: string; button: string }> = {
+    question: {
+      help: 'Send one focused question with an answer that explains the mechanism and its boundaries.',
+      button: 'Submit question',
+    },
+    correction: {
+      help: 'Point us to the exact page and wording. We will track the correction for maintainer review.',
+      button: 'Submit correction',
+    },
+    topic: {
+      help: 'Propose a topic guide with enough structure to become a useful study path.',
+      button: 'Submit topic',
+    },
+    experience: {
+      help: 'Share the rounds, questions, outcome, and takeaways. Anonymize anything you need to.',
+      button: 'Submit experience',
+    },
+    article: {
+      help: 'Share a longer practical guide or technical deep dive in Markdown.',
+      button: 'Submit article',
+    },
+  };
+
+  const showType = (type: string) => {
+    const selected = typeCopy[type] ? type : 'question';
+    typeSelect.value = selected;
+    panels.forEach((panel) => {
+      const active = panel.dataset.contributionPanel === selected;
+      panel.hidden = !active;
+      panel.disabled = !active;
+      if (!active) panel.querySelectorAll('.rich-editor.is-invalid').forEach((editor) => editor.classList.remove('is-invalid'));
+    });
+    help.textContent = typeCopy[selected].help;
+    submitBtn.textContent = typeCopy[selected].button;
+    statusEl.textContent = '';
+    statusEl.className = 'status';
+    form.classList.remove('was-validated');
+  };
+
+  const requestedType = new URLSearchParams(window.location.search).get('type') ?? 'question';
+  showType(requestedType);
+
+  typeSelect?.addEventListener('change', () => {
+    showType(typeSelect.value);
+    const url = new URL(window.location.href);
+    url.searchParams.set('type', typeSelect.value);
+    history.replaceState({}, '', url);
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    statusEl.textContent = '';
+    statusEl.className = 'status';
+
+    let firstInvalidEditor: HTMLElement | null = null;
+    form.querySelectorAll<HTMLTextAreaElement>('textarea[data-rich-editor]').forEach((textarea) => {
+      const panel = textarea.closest<HTMLFieldSetElement>('[data-contribution-panel]');
+      if (panel?.disabled) return;
+      const valueLength = textarea.value.trim().length;
+      const required = textarea.dataset.richRequired === 'true';
+      const invalid =
+        (required && valueLength === 0) ||
+        (valueLength > 0 && valueLength < textarea.minLength) ||
+        (textarea.maxLength > -1 && valueLength > textarea.maxLength);
+      const shell = textarea.previousElementSibling as HTMLElement | null;
+      shell?.classList.toggle('is-invalid', invalid);
+      if (invalid && !firstInvalidEditor) {
+        firstInvalidEditor = shell?.querySelector<HTMLElement>('[contenteditable="true"]') ?? null;
+      }
+    });
+
+    if (firstInvalidEditor) {
+      firstInvalidEditor.focus();
+      statusEl.textContent = 'Please complete the required fields with enough detail.';
+      statusEl.classList.add('error');
+      return;
+    }
+
+    if (!form.checkValidity()) {
+      form.classList.add('was-validated');
+      form.reportValidity();
+      statusEl.textContent = 'Please complete the required fields.';
+      statusEl.classList.add('error');
+      return;
+    }
+
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries()) as Record<string, FormDataEntryValue | boolean>;
+    payload.remote = formData.get('remote') === 'on';
+    payload.turnstileToken = (formData.get('cf-turnstile-response') as string) || '';
+
+    submitBtn.disabled = true;
+    typeSelect.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    try {
+      const response = await fetch('/api/contributions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = (await response.json()) as {
+        ok?: boolean;
+        url?: string;
+        kind?: 'pull-request' | 'issue';
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || 'Something went wrong. Please try again.');
+      }
+
+      form.hidden = true;
+      successPanel.hidden = false;
+      const isIssue = data.kind === 'issue';
+      successMessage.textContent = isIssue
+        ? 'Your correction is now tracked for a maintainer to verify and apply.'
+        : 'Your contribution is in a pull request for maintainer review. Once it is approved and merged, it will appear on the site.';
+      reviewLink.textContent = isIssue ? 'View the correction' : 'View the pull request';
+      if (data.url) reviewLink.href = data.url;
+      successPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (error) {
+      statusEl.textContent = error instanceof Error ? error.message : 'Submission failed.';
+      statusEl.classList.add('error');
+      submitBtn.disabled = false;
+      typeSelect.disabled = false;
+      submitBtn.textContent = typeCopy[typeSelect.value].button;
+      (window as any).turnstile?.reset?.();
+    }
+  });
+</script>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1rem;
+  }
+  .page-head .lede {
+    max-width: 700px;
+    margin-top: 0.8rem;
+    font-size: 1.08rem;
+  }
+  .form-wrap {
+    max-width: 860px;
+    padding-block: 2rem 4rem;
+  }
+  .contribution-form {
+    padding: clamp(1.4rem, 3vw, 2.2rem);
+  }
+  .contribution-type {
+    max-width: 440px;
+  }
+  .type-help {
+    min-height: 1.5em;
+    margin: 0.6rem 0 1.8rem;
+    font-size: 0.92rem;
+  }
+  .panel {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .panel[hidden] {
+    display: none;
+  }
+  .panel legend {
+    width: 100%;
+    margin-bottom: 1.2rem;
+    color: var(--ink);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem 1.2rem;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+    font-size: 0.92rem;
+  }
+  .field-wide {
+    grid-column: 1 / -1;
+  }
+  .field > span,
+  .field > label {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .field em {
+    color: var(--accent);
+    font-style: normal;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    padding: 0.62rem 0.75rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    line-height: 1.35;
+  }
+  .field input:hover,
+  .field select:hover,
+  .field textarea:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border-strong));
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--accent);
+    outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    outline-offset: 1px;
+  }
+  .was-validated .field input:invalid,
+  .was-validated .field select:invalid,
+  .was-validated .field textarea:invalid {
+    border-color: #b42318;
+    box-shadow: 0 0 0 1px #b42318;
+  }
+  .field input:disabled,
+  .field select:disabled,
+  .field textarea:disabled {
+    border-color: var(--border);
+    background-color: var(--surface-2);
+    color: var(--ink-soft);
+    cursor: not-allowed;
+    opacity: 1;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: var(--ink-faint);
+    opacity: 1;
+  }
+  .field input[type='date']::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.72;
+  }
+  .field select {
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236d7d74' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+  }
+  .field option {
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .field textarea {
+    min-height: 7rem;
+    resize: vertical;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  :global(.rich-editor-source) {
+    display: none;
+  }
+  :global(.rich-editor) {
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    background: var(--surface);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  :global(.rich-editor:hover) {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border-strong));
+  }
+  :global(.rich-editor:focus-within) {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  :global(.rich-editor.is-invalid) {
+    border-color: #b42318;
+    box-shadow: 0 0 0 1px #b42318;
+  }
+  :global(.rich-editor-toolbar) {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    overflow-x: auto;
+    padding: 0.4rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    scrollbar-width: thin;
+  }
+  :global(.rich-editor-button) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  :global(.rich-editor-icon) {
+    display: block;
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+  }
+  :global(.rich-editor-divider) {
+    flex: 0 0 auto;
+    width: 1px;
+    height: 20px;
+    margin-inline: 0.2rem;
+    background: var(--border-strong);
+  }
+  :global(.rich-editor-button:hover) {
+    border-color: var(--border-strong);
+    background: var(--surface);
+    color: var(--ink);
+  }
+  :global(.rich-editor-button:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  :global(.rich-editor-button.is-active) {
+    border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  :global(.rich-editor-content) {
+    min-height: var(--editor-min-height);
+    padding: 0.8rem 0.9rem;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    outline: none;
+    overflow-wrap: anywhere;
+  }
+  :global(.rich-editor-content > :first-child) {
+    margin-top: 0;
+  }
+  :global(.rich-editor-content > :last-child) {
+    margin-bottom: 0;
+  }
+  :global(.rich-editor-content p) {
+    margin: 0 0 0.75rem;
+    color: var(--ink);
+  }
+  :global(.rich-editor-content p.is-editor-empty:first-child::before) {
+    float: left;
+    height: 0;
+    color: var(--ink-faint);
+    content: attr(data-placeholder);
+    pointer-events: none;
+  }
+  :global(.rich-editor-content h2),
+  :global(.rich-editor-content h3) {
+    margin: 1rem 0 0.5rem;
+  }
+  :global(.rich-editor-content ul),
+  :global(.rich-editor-content ol) {
+    margin: 0.5rem 0 0.8rem;
+    padding-left: 1.5rem;
+  }
+  :global(.rich-editor-content blockquote) {
+    margin: 0.8rem 0;
+    padding-left: 0.9rem;
+    border-left: 3px solid var(--accent);
+    color: var(--ink-soft);
+  }
+  :global(.rich-editor-content code) {
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--surface-2);
+    padding: 0.08em 0.32em;
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+  }
+  :global(.rich-editor-content pre) {
+    margin: 0.8rem 0;
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface-2);
+    white-space: pre-wrap;
+  }
+  :global(.rich-editor-content pre code) {
+    border: 0;
+    background: transparent;
+    padding: 0;
+  }
+  :global(.rich-editor-content a) {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  :global(.rich-editor-content hr) {
+    margin: 1rem 0;
+  }
+  .field small {
+    font-size: 0.78rem;
+  }
+  .block-field {
+    margin-top: 1.2rem;
+  }
+  .field.checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+  }
+  .field.checkbox input {
+    flex: 0 0 auto;
+    width: 20px;
+    min-height: 20px;
+    height: 20px;
+    padding: 0;
+    border-radius: 5px;
+  }
+  .field.checkbox input:checked {
+    border-color: var(--accent);
+    background-color: var(--accent);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='m4.5 10 3.2 3.2 7.8-7.8'/%3E%3C/svg%3E");
+  }
+  .field.checkbox input:checked:disabled {
+    border-color: var(--accent);
+    background-color: var(--accent);
+    opacity: 0.68;
+  }
+  .field.checkbox span {
+    font-weight: 500;
+  }
+  .cf-turnstile {
+    margin-top: 1.25rem;
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.7rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--border);
+  }
+  .actions .btn:disabled {
+    background: var(--accent);
+    color: var(--on-accent);
+    cursor: wait;
+    opacity: 0.66;
+  }
+  .status {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  .status.error {
+    color: #b42318;
+  }
+  :global(:root[data-theme='dark']) .status.error {
+    color: #ff8a80;
+  }
+  .success {
+    padding: clamp(1.6rem, 4vw, 2.4rem);
+    text-align: center;
+  }
+  .success h2 {
+    margin-top: 0;
+  }
+  .success .btn {
+    margin: 1rem 0.35rem 0;
+  }
+  @media (max-width: 640px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .field-wide {
+      grid-column: auto;
+    }
+    .actions {
+      align-items: stretch;
+      flex-direction: column;
+    }
+    .actions .btn {
+      width: 100%;
+    }
+    .status {
+      text-align: center;
+    }
+  }
+</style>

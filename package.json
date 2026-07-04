@@ -2,7 +2,7 @@
   "name": "androiddevkit",
   "type": "module",
   "version": "0.1.0",
-  "description": "An open-source, one-stop destination for Android developers preparing for job interviews - curated questions, topic guides, and real interview experiences.",
+  "description": "A free, community-driven Android interview preparation resource with curated questions, topic guides, practice sessions, and real interview experiences.",
   "repository": {
     "type": "git",
     "url": "https://github.com/vishnusreddy/androiddevkit.git"
@@ -24,7 +24,12 @@
     "@astrojs/mdx": "^4.2.0",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.3.0",
-    "astro": "^5.7.0"
+    "@tiptap/core": "^3.27.1",
+    "@tiptap/extension-placeholder": "^3.27.1",
+    "@tiptap/markdown": "^3.27.1",
+    "@tiptap/starter-kit": "^3.27.1",
+    "astro": "^5.7.0",
+    "lucide": "^1.23.0"
   },
   "devDependencies": {
     "wrangler": "^4.105.0"

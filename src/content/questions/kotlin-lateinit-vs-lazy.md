@@ -17,7 +17,7 @@ Both defer initialization, but they're for different situations.
   `UninitializedPropertyAccessException`, which names the property that was
   read too early.
 - You can reassign it and check `::x.isInitialized`.
-- Use when a framework or setup phase must assign the value later—for example,
+- Use when a framework or setup phase must assign the value later - for example,
   field injection or test setup. For Activity/Fragment view binding, also clear
   any Fragment view reference in `onDestroyView()` so it cannot outlive the
   view lifecycle.

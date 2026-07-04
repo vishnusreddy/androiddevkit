@@ -44,7 +44,7 @@ const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: SITE.name,
-  alternateName: 'Android Dev Kit',
+  alternateName: 'Android Interview Prep',
   url: SITE.url,
   description: SITE.description,
   image: new URL(SITE.socialImage, SITE.url).href,
@@ -117,6 +117,7 @@ const pageSchema = type === 'article'
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={socialImage} />
+    <meta property="og:image:url" content={socialImage} />
     <meta property="og:image:secure_url" content={socialImage} />
     <meta property="og:image:type" content={imageType} />
     <meta property="og:image:width" content={String(imageWidth)} />
