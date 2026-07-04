@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import rehypeExternalLinks from './src/lib/rehype-external-links.mjs';
 
 import cloudflare from "@astrojs/cloudflare";
 
@@ -14,6 +15,7 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
 
   markdown: {
+    rehypePlugins: [[rehypeExternalLinks, { site: SITE }]],
     shikiConfig: {
       themes: {
         light: 'github-light',
