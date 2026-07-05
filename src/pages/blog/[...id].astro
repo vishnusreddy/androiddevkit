@@ -36,6 +36,9 @@ const fmt = d.date.toLocaleDateString('en-US', {
     <a class="back" href="/blog/">← All posts</a>
 
     <header class="post-header">
+      {d.highlighted && (
+        <span class="post-highlight"><span aria-hidden="true">★</span> Last-minute prep</span>
+      )}
       <h1>{d.title}</h1>
       <p class="post-desc text-soft">{d.description}</p>
       <div class="post-byline">
@@ -91,6 +94,19 @@ const fmt = d.date.toLocaleDateString('en-US', {
   .post-header h1 {
     margin: 1rem 0 0.6rem;
   }
+  .post-highlight {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.28rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+    border-radius: 999px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    font-size: 0.76rem;
+    font-weight: 750;
+    letter-spacing: 0.02em;
+  }
   .post-desc {
     margin: 0;
     font-size: 1.1rem;
@@ -140,6 +156,141 @@ const fmt = d.date.toLocaleDateString('en-US', {
     padding: 0.2rem 0 0.2rem 1.2rem;
     color: var(--ink-soft);
     font-style: italic;
+  }
+  .post-body :global(.article-toc) {
+    margin: 1.75rem 0 2rem;
+    padding: clamp(1.1rem, 3vw, 1.5rem);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-2);
+  }
+  .post-body :global(.toc-head h2) {
+    margin: 0.3rem 0 1rem;
+    font-size: 1.2rem;
+  }
+  .post-body :global(.toc-groups) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.5rem;
+  }
+  .post-body :global(.toc-groups > div) {
+    display: grid;
+    align-content: start;
+    gap: 0.28rem;
+  }
+  .post-body :global(.toc-groups strong) {
+    margin-bottom: 0.18rem;
+    color: var(--ink);
+    font-size: 0.8rem;
+  }
+  .post-body :global(.toc-groups a) {
+    color: var(--ink-soft);
+    font-size: 0.86rem;
+    line-height: 1.4;
+  }
+  .post-body :global(.toc-groups a:hover) {
+    color: var(--accent);
+  }
+  .post-body :global(.practice-callout) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.9rem;
+    margin: 1.5rem 0 2rem;
+    padding: 1rem 1.1rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--border));
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 100% 0, var(--accent-soft), transparent 58%),
+      var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .post-body :global(.practice-callout:hover) {
+    border-color: var(--accent);
+    box-shadow: var(--shadow);
+  }
+  .post-body :global(.practice-callout-icon) {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border-radius: 10px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    font: 800 1.15rem var(--font-mono);
+  }
+  .post-body :global(.practice-callout > span:nth-child(2)) {
+    display: grid;
+    min-width: 0;
+  }
+  .post-body :global(.practice-callout small) {
+    color: var(--accent);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .post-body :global(.practice-callout strong) {
+    color: var(--ink);
+    font-size: 0.96rem;
+    line-height: 1.35;
+  }
+  .post-body :global(.practice-callout strong + span) {
+    margin-top: 0.1rem;
+    color: var(--ink-faint);
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+  .post-body :global(.practice-callout > b) {
+    color: var(--accent);
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+  .post-body :global(.practice-callout-compact) {
+    margin-top: 1.1rem;
+  }
+  .post-body :global(.practice-callout-final) {
+    margin-top: 1.75rem;
+    background:
+      radial-gradient(circle at 100% 0, color-mix(in srgb, var(--accent) 18%, transparent), transparent 62%),
+      var(--accent-soft);
+  }
+  .post-body :global(.code-result) {
+    margin: -1rem 0 1.35rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
+    border-top: 0;
+    border-radius: 0 0 var(--radius) var(--radius);
+    background: var(--surface-2);
+  }
+  .post-body :global(.code-result > span) {
+    display: block;
+    padding: 0.42rem 0.8rem 0;
+    color: var(--accent);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .post-body :global(.code-result pre) {
+    margin: 0;
+    padding: 0.45rem 0.8rem 0.7rem;
+    border: 0;
+    border-radius: 0;
+    color: var(--ink-soft);
+    background: transparent;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 0.78rem;
+  }
+  .post-body :global(.code-result code) {
+    color: inherit;
+  }
+  .post-body :global(.code-result + p),
+  .post-body :global(.code-result + h2),
+  .post-body :global(.code-result + h3) {
+    margin-top: 0;
   }
   .post-body :global(table) {
     width: 100%;
@@ -218,6 +369,15 @@ const fmt = d.date.toLocaleDateString('en-US', {
       display: block;
       overflow-x: auto;
       white-space: normal;
+    }
+    .post-body :global(.toc-groups) {
+      grid-template-columns: 1fr;
+    }
+    .post-body :global(.practice-callout) {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+    .post-body :global(.practice-callout > b) {
+      display: none;
     }
   }
 </style>

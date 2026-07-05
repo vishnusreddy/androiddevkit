@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import rehypeExternalLinks from './src/lib/rehype-external-links.mjs';
+import remarkCodeOutputs from './src/lib/remark-code-outputs.mjs';
 
 import cloudflare from "@astrojs/cloudflare";
 
@@ -15,6 +16,7 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
 
   markdown: {
+    remarkPlugins: [remarkCodeOutputs],
     rehypePlugins: [[rehypeExternalLinks, { site: SITE }]],
     shikiConfig: {
       themes: {

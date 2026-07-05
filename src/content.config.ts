@@ -55,6 +55,10 @@ const blog = defineCollection({
     tags: z.array(z.string()).default([]),
     heroImage: z.string().optional(),
     heroAlt: z.string().optional(),
+    // Editorially promoted guide: pinned above the chronological blog feed.
+    highlighted: z.boolean().default(false),
+    // Optional rendered results paired with Kotlin code fences in source order.
+    codeOutputs: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
   }),
 });

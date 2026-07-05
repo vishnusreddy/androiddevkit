@@ -4,7 +4,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const posts = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .sort((a, b) =>
+    Number(b.data.highlighted) - Number(a.data.highlighted)
+    || b.data.date.valueOf() - a.data.date.valueOf()
+  );
 
 const fmt = (d: Date) =>
   d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -38,7 +41,10 @@ const [featured, ...rest] = posts;
     )}
 
     {featured && (
-      <a class="card featured-post" href={`/blog/${featured.id}/`}>
+      <a
+        class:list={['card', 'featured-post', { 'has-image': featured.data.heroImage, highlighted: featured.data.highlighted }]}
+        href={`/blog/${featured.id}/`}
+      >
         {featured.data.heroImage && (
           <img
             class="featured-image"
@@ -50,7 +56,9 @@ const [featured, ...rest] = posts;
           />
         )}
         <div class="featured-copy">
-          <span class="eyebrow">Latest</span>
+          <span class="eyebrow feature-label">
+            {featured.data.highlighted ? '★ Last-minute prep' : 'Latest'}
+          </span>
           <h2>{featured.data.title}</h2>
           <p class="text-soft">{featured.data.description}</p>
           <div class="post-meta">
@@ -78,6 +86,7 @@ const [featured, ...rest] = posts;
               />
             )}
             <div class="post-copy">
+              {p.data.highlighted && <span class="eyebrow feature-label">★ Last-minute prep</span>}
               <h3>{p.data.title}</h3>
               <p class="text-soft">{p.data.description}</p>
               <div class="post-meta">
@@ -107,12 +116,19 @@ const [featured, ...rest] = posts;
   }
   .featured-post {
     display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+    grid-template-columns: 1fr;
     overflow: hidden;
     margin-bottom: 1.5rem;
     background:
       radial-gradient(circle at 100% 0%, var(--accent-soft), transparent 50%),
       var(--surface);
+  }
+  .featured-post.has-image {
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  }
+  .featured-post.highlighted {
+    border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
+    box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow);
   }
   .featured-copy {
     padding: clamp(1.5rem, 4vw, 2.4rem);
@@ -150,6 +166,12 @@ const [featured, ...rest] = posts;
   .post-card h3 {
     margin: 0 0 0.5rem;
   }
+  .post-card .feature-label + h3 {
+    margin-top: 0.55rem;
+  }
+  .feature-label {
+    font-weight: 750;
+  }
   .post-card p {
     margin: 0;
     font-size: 0.94rem;
@@ -176,7 +198,7 @@ const [featured, ...rest] = posts;
     margin: 0;
   }
   @media (max-width: 760px) {
-    .featured-post {
+    .featured-post.has-image {
       grid-template-columns: 1fr;
     }
     .featured-image {

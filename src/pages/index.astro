@@ -247,6 +247,7 @@ const features = [
               {recentPosts.map((p) => (
                 <a class="card fresh-row" href={`/blog/${p.id}/`}>
                   <span class="fresh-main">
+                    {p.data.highlighted && <span class="fresh-highlight">★ Last-minute prep</span>}
                     <span class="fresh-title">{p.data.title}</span>
                     <span class="fresh-sub">{p.data.description}</span>
                   </span>
@@ -654,6 +655,15 @@ const features = [
   }
   .fresh-main {
     min-width: 0;
+  }
+  .fresh-highlight {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 750;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
   .fresh-title {
     display: block;

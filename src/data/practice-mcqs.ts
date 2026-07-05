@@ -8,6 +8,19 @@ export interface PracticeMcq {
   options: [string, string, string, string];
   correct: number;
   explanation: string;
+  test?: string;
+  code?: string;
+}
+
+export interface PracticeCodeQuestion {
+  id: string;
+  topic: string;
+  difficulty: PracticeDifficulty;
+  prompt: string;
+  code?: string;
+  reference: string;
+  explanation: string;
+  test: string;
 }
 
 const mcq = (
@@ -18,7 +31,49 @@ const mcq = (
   options: [string, string, string, string],
   correct: number,
   explanation: string,
-): PracticeMcq => ({ id, topic, difficulty, prompt, options, correct, explanation });
+  extra: Pick<PracticeMcq, 'test' | 'code'> = {},
+): PracticeMcq => ({ id, topic, difficulty, prompt, options, correct, explanation, ...extra });
+
+export const KOTLIN_DSA_CODE_QUESTIONS: PracticeCodeQuestion[] = [
+  {
+    id: 'kd-code-01', topic: 'kotlin', difficulty: 'junior', test: 'kotlin-dsa',
+    prompt: 'Write the expression that returns the last valid index of `nums`.',
+    code: 'val nums = intArrayOf(4, 8, 12)\nval last = ___',
+    reference: 'val last = nums.lastIndex',
+    explanation: '`lastIndex` returns `size - 1`, so it is `2` for this array. It returns `-1` for an empty array.',
+  },
+  {
+    id: 'kd-code-02', topic: 'kotlin', difficulty: 'junior', test: 'kotlin-dsa',
+    prompt: 'Write a one-line function that returns whether `n` is even.',
+    code: 'fun isEven(n: Int): Boolean = ___',
+    reference: 'fun isEven(n: Int): Boolean = n % 2 == 0',
+    explanation: 'A number is even when division by two leaves a remainder of zero. The comparison already produces the required Boolean.',
+  },
+  {
+    id: 'kd-code-03', topic: 'kotlin', difficulty: 'mid', test: 'kotlin-dsa',
+    prompt: 'Complete the frequency update without using a not-null assertion.',
+    code: 'val counts = mutableMapOf<Char, Int>()\nfor (ch in word) {\n    counts[ch] = ___\n}',
+    reference: 'counts[ch] = counts.getOrDefault(ch, 0) + 1',
+    explanation: '`getOrDefault` supplies zero for the first occurrence. Adding one and assigning it back handles both new and existing keys.',
+  },
+  {
+    id: 'kd-code-04', topic: 'kotlin', difficulty: 'mid', test: 'kotlin-dsa',
+    prompt: 'Fill in the loop range so every valid array index is visited safely.',
+    code: 'for (i in ___) {\n    println(nums[i])\n}',
+    reference: `for (i in nums.indices) {
+    println(nums[i])
+}`,
+    explanation: '`indices` represents the valid index range of the array. For an empty array the range is empty, so the body does not run.',
+  },
+  {
+    id: 'kd-code-05', topic: 'kotlin', difficulty: 'mid', test: 'kotlin-dsa',
+    prompt: 'Complete the queue operations so nodes are processed in first-in, first-out order.',
+    code: 'val queue = ArrayDeque<Int>()\nqueue.___(start)\nval node = queue.___()',
+    reference: `queue.addLast(start)
+val node = queue.removeFirst()`,
+    explanation: 'Appending at the back and removing from the front gives FIFO behavior. Check that the deque is not empty before removal.',
+  },
+];
 
 export const PRACTICE_MCQS: PracticeMcq[] = [
   // Android fundamentals
@@ -56,6 +111,16 @@ export const PRACTICE_MCQS: PracticeMcq[] = [
   mcq('co-08', 'code-snippet-output', 'mid', 'What does `data class User(val id: Int); User(1) == User(1)` evaluate to?', ['true', 'false', 'A referential-equality error', 'It depends on whether hashCode was called first'], 0, 'For a data class, `==` calls the generated structural `equals`, which compares primary-constructor properties. The two instances have the same `id`, so the result is `true`.'),
   mcq('co-09', 'code-snippet-output', 'senior', 'Inside an inline higher-order function, what can an unlabelled `return` in an inlined lambda do?', ['Return only from the lambda', 'Return from the function that called the inline function', 'Pause the caller until the lambda completes', 'Compile only when the lambda is marked noinline'], 1, 'An inlined lambda may perform a non-local return from its enclosing caller. Marking the parameter `crossinline` forbids that behavior; `noinline` prevents inlining the lambda altogether.'),
   mcq('co-10', 'code-snippet-output', 'senior', 'When a Flow collector is slower than its producer, which value does `conflate()` guarantee will remain available?', ['Every emitted value', 'The oldest unprocessed value', 'The most recently emitted value', 'No value until the producer completes'], 2, '`conflate()` lets the producer continue and replaces pending intermediate values with the newest one. The collector receives the latest available value, but it may not observe every emission.'),
+
+  // Last-minute Kotlin DSA sprint
+  mcq('kd-01', 'kotlin', 'junior', 'After mutating the list, what does this code print?', ['[1, 2]', '[1, 2, 3]', '[3]', 'It does not compile because values is a val'], 1, '`values` is a read-only reference to a mutable list. `add` changes the list object, so printing it produces `[1, 2, 3]`.', { test: 'kotlin-dsa', code: 'val values = mutableListOf(1, 2)\nvalues.add(3)\nprintln(values)' }),
+  mcq('kd-02', 'kotlin', 'junior', 'Which indices does this exclusive range print?', ['0 1 2 3', '0 1 2', '1 2 3', '1 2'], 1, '`until` excludes its upper bound. The loop therefore visits `0`, `1`, and `2`, but never visits `3`. This avoids an off-by-one array access.', { test: 'kotlin-dsa', code: 'for (i in 0 until 3) print("$i ")' }),
+  mcq('kd-03', 'kotlin', 'junior', 'Which substring does this half-open range print?', ['otl', 'otli', 'Kot', 'tli'], 0, '`substring(1, 4)` includes index `1` and excludes index `4`, so it selects the characters at indices `1`, `2`, and `3`.', { test: 'kotlin-dsa', code: 'val word = "Kotlin"\nprintln(word.substring(1, 4))' }),
+  mcq('kd-04', 'kotlin', 'mid', 'What count does this map lookup print?', ['1', '2', 'null', 'It throws NullPointerException'], 1, '`getOrDefault` returns the stored value when the key exists. The value for `a` is `1`, then the expression adds one and prints `2`.', { test: 'kotlin-dsa', code: 'val counts = mutableMapOf(\'a\' to 1)\nprintln(counts.getOrDefault(\'a\', 0) + 1)' }),
+  mcq('kd-05', 'kotlin', 'mid', 'What remains at the top of this stack?', ['10', '20', 'null', 'It removes both values'], 0, '`removeLast` gives the deque stack behavior. The last value added was `20`, so it is removed first and `10` remains.', { test: 'kotlin-dsa', code: 'val stack = ArrayDeque<Int>()\nstack.addLast(10)\nstack.addLast(20)\nstack.removeLast()\nprintln(stack.last())' }),
+  mcq('kd-06', 'kotlin', 'mid', 'In what order are the original and sorted arrays printed?', ['[1, 2, 3] then [1, 2, 3]', '[3, 2, 1] then [3, 2, 1]', '[1, 2, 3] then [3, 1, 2]', '[3, 1, 2] then [1, 2, 3]'], 3, '`sortedArray` returns a new sorted array and leaves the source unchanged. The copy prints `[1, 2, 3]`, while `values` remains `[3, 1, 2]`.', { test: 'kotlin-dsa', code: 'val values = intArrayOf(3, 1, 2)\nval sorted = values.sortedArray()\nprintln(values.contentToString())\nprintln(sorted.contentToString())' }),
+  mcq('kd-07', 'kotlin', 'mid', 'What does this safe-call and Elvis expression print?', ['fallback', 'null', '0', 'It throws NullPointerException'], 0, 'The safe call produces `null` because `name` is null. The Elvis operator then evaluates its right side and returns `fallback`.', { test: 'kotlin-dsa', code: 'val name: String? = null\nprintln(name?.length ?: "fallback")' }),
+  mcq('kd-08', 'kotlin', 'mid', 'What sum is produced by visiting the even indices?', ['4', '5', '6', 'The loop reads past the array'], 1, '`indices` visits `0`, `1`, and `2`. The condition keeps indices `0` and `2`, whose values are `1` and `4`, giving a total of `5`.', { test: 'kotlin-dsa', code: 'val nums = intArrayOf(1, 2, 4)\nvar sum = 0\nfor (i in nums.indices) {\n    if (i % 2 == 0) sum += nums[i]\n}\nprintln(sum)' }),
 
   // Coroutines and Flow
   mcq('cf-01', 'coroutines', 'junior', 'What does the `suspend` modifier guarantee about a function?', ['It always executes on a background thread', 'It can suspend and later resume without blocking the underlying thread', 'It automatically launches a new coroutine', 'It converts thrown exceptions into Result values'], 1, '`suspend` allows the compiler to turn the function into a resumable state machine. It says nothing about which thread runs the work; that is determined by the coroutine context and implementation.'),

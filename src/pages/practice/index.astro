@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { PRACTICE_MCQS } from '../../data/practice-mcqs';
+import { KOTLIN_DSA_CODE_QUESTIONS, PRACTICE_MCQS } from '../../data/practice-mcqs';
 
 const topics = (await getCollection('topics')).sort((a, b) => a.data.order - b.data.order);
 const questions = await getCollection('questions');
@@ -45,6 +45,16 @@ const topicManifest = topics.map((topic) => ({
           <strong id="personal-best">Not set</strong>
           <span id="best-detail">Complete a run to set it</span>
         </div>
+      </div>
+
+      <div class="preset-banner card" id="preset-banner" hidden>
+        <span class="preset-mark" aria-hidden="true">⌁</span>
+        <div>
+          <span class="eyebrow">From the last-minute Kotlin guide</span>
+          <h2>Kotlin DSA quick test</h2>
+          <p>Only output tracing and small Kotlin code prompts. No Android framework trivia.</p>
+        </div>
+        <a href="/blog/last-minute-kotlin-dsa-interview-prep/">Review the guide</a>
       </div>
 
       <div class="setup-grid">
@@ -110,7 +120,7 @@ const topicManifest = topics.map((topic) => ({
           <p class="pool-note" id="pool-note" aria-live="polite"></p>
 
           <button class="btn btn-primary start-btn" type="submit">
-            Start practice
+            <span id="start-button-label">Start practice</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
           </button>
         </form>
@@ -130,7 +140,7 @@ const topicManifest = topics.map((topic) => ({
             </li>
             <li>
               <span class="rule-index">02</span>
-              <div><strong>Grade written answers</strong><small>Reveal the reference answer, then mark yours missed, close, or solid.</small></div>
+              <div><strong id="grade-rule-title">Grade written answers</strong><small id="grade-rule-detail">Reveal the reference answer, then mark yours missed, close, or solid.</small></div>
             </li>
             <li>
               <span class="rule-index">03</span>
@@ -138,7 +148,7 @@ const topicManifest = topics.map((topic) => ({
             </li>
           </ul>
           <div class="pool-stat">
-            <span>{writtenManifest.length + PRACTICE_MCQS.length}</span>
+            <span>{writtenManifest.length + PRACTICE_MCQS.length + KOTLIN_DSA_CODE_QUESTIONS.length}</span>
             <small>questions in the practice pool</small>
           </div>
         </aside>
@@ -177,12 +187,14 @@ const topicManifest = topics.map((topic) => ({
           </div>
           <h2 id="question-prompt"></h2>
 
+          <pre class="question-code" id="question-code" hidden><code></code></pre>
+
           <div class="mcq-options" id="mcq-options"></div>
 
           <div class="written-answer" id="written-answer" hidden>
-            <label for="written-response">Rehearse your answer</label>
+            <label for="written-response" id="response-label">Rehearse your answer</label>
             <textarea id="written-response" rows="7" placeholder="Explain it as if the interviewer is across the table…"></textarea>
-            <div class="writing-hint"><span id="word-count">0 words</span><span>Structure → trade-off → example</span></div>
+            <div class="writing-hint"><span id="word-count">0 words</span><span id="response-hint">Structure → trade-off → example</span></div>
           </div>
 
           <button type="button" class="btn btn-primary answer-btn" id="answer-action" disabled>Check answer</button>
@@ -246,6 +258,7 @@ const topicManifest = topics.map((topic) => ({
 
   <script type="application/json" id="practice-written-data" set:html={JSON.stringify(writtenManifest)} />
   <script type="application/json" id="practice-mcq-data" set:html={JSON.stringify(PRACTICE_MCQS)} />
+  <script type="application/json" id="practice-code-data" set:html={JSON.stringify(KOTLIN_DSA_CODE_QUESTIONS)} />
   <script type="application/json" id="practice-topic-data" set:html={JSON.stringify(topicManifest)} />
 </BaseLayout>
 
@@ -255,6 +268,12 @@ const topicManifest = topics.map((topic) => ({
   .practice-hero { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2rem; margin-bottom: 2rem; }
   .practice-hero h1 { margin: .35rem 0 .65rem; font-size: clamp(2.4rem, 6vw, 4.6rem); letter-spacing: -.055em; }
   .practice-hero p { max-width: 650px; margin: 0; font-size: 1.08rem; }
+  .preset-banner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; margin-bottom: 1rem; padding: 1rem 1.15rem; border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); background: radial-gradient(circle at 100% 0, var(--accent-soft), transparent 55%), var(--surface); }
+  .preset-banner[hidden] { display: none; }
+  .preset-mark { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 10px; color: var(--accent); background: var(--accent-soft); font: 800 1.15rem var(--font-mono); }
+  .preset-banner h2 { margin: .1rem 0; font-size: 1.08rem; }
+  .preset-banner p { margin: 0; font-size: .82rem; }
+  .preset-banner > a { font-size: .8rem; font-weight: 700; white-space: nowrap; }
   .best-card { min-width: 180px; padding: 1rem 1.1rem; border-left: 2px solid var(--accent); display: grid; }
   .best-label, .best-card span:last-child { color: var(--ink-faint); font-size: .73rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
   .best-card strong { font-size: 2rem; line-height: 1.1; color: var(--ink); }
@@ -315,6 +334,7 @@ const topicManifest = topics.map((topic) => ({
   .question-card h2 { font-size: clamp(1.35rem, 3vw, 1.9rem); margin: 1.2rem 0 1.5rem; max-width: 680px; }
   .question-card h2 code, .option-btn code, .reference-answer code { font: 600 .88em var(--font-mono); background: var(--surface-2); border: 1px solid var(--border); border-radius: 5px; padding: .06em .36em; overflow-wrap: anywhere; }
   .mcq-options { display: grid; gap: .65rem; }
+  .question-code { margin: 0 0 1rem; padding: 1rem; border-color: var(--border-strong); background: var(--surface-2); color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; font-size: .86rem; }
   .option-btn { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; align-items: center; text-align: left; gap: .8rem; padding: .85rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); cursor: pointer; font: 500 .94rem/1.45 var(--font-sans); }
   .option-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
   .option-key { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 7px; background: var(--surface-2); color: var(--ink-faint); font: 700 .75rem var(--font-mono); }
@@ -327,6 +347,7 @@ const topicManifest = topics.map((topic) => ({
   .written-answer { display: grid; gap: .45rem; }
   .written-answer label { font-size: .8rem; font-weight: 700; color: var(--ink-soft); }
   .written-answer textarea { width: 100%; resize: vertical; min-height: 150px; padding: .9rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--ink); font: 500 .94rem/1.6 var(--font-sans); }
+  .written-answer textarea.code-response { min-height: 120px; tab-size: 4; font: 500 .86rem/1.65 var(--font-mono); white-space: pre; overflow: auto; }
   .written-answer textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   .writing-hint { display: flex; justify-content: space-between; color: var(--ink-faint); font-size: .72rem; }
   .answer-btn { align-self: flex-start; margin-top: 1.2rem; }
@@ -335,6 +356,7 @@ const topicManifest = topics.map((topic) => ({
   .answer-verdict { margin-bottom: .85rem; font-weight: 800; color: var(--accent); }
   .answer-verdict.wrong { color: #c53e38; }
   .reference-answer { color: var(--ink-soft); font-size: .92rem; }
+  .reference-answer .code-reference { margin: 0 0 .75rem; padding: .9rem 1rem; background: var(--surface-2); color: var(--ink); white-space: pre-wrap; font-size: .84rem; }
   .reference-answer > :first-child { margin-top: 0; }
   .reference-answer > :last-child { margin-bottom: 0; }
   .self-grade { margin-top: 1.35rem; }
@@ -382,6 +404,8 @@ const topicManifest = topics.map((topic) => ({
   }
   @media (max-width: 560px) {
     .practice-shell { padding-inline: .8rem; }
+    .preset-banner { grid-template-columns: auto minmax(0, 1fr); }
+    .preset-banner > a { grid-column: 2; }
     .field-grid { grid-template-columns: 1fr; }
     .length-options { gap: .35rem; }
     .length-options label > span { display: grid; padding: .65rem; }
@@ -401,14 +425,16 @@ const topicManifest = topics.map((topic) => ({
 
 <script>
   type Difficulty = 'junior' | 'mid' | 'senior';
-  type WrittenQuestion = { id: string; topic: string; difficulty: Difficulty; prompt: string; starred: boolean };
-  type McqQuestion = { id: string; topic: string; difficulty: Difficulty; prompt: string; options: string[]; correct: number; explanation: string };
-  type SessionQuestion = (WrittenQuestion & { type: 'written' }) | (McqQuestion & { type: 'mcq' });
+  type WrittenQuestion = { id: string; topic: string; difficulty: Difficulty; prompt: string; starred: boolean; test?: string; code?: string };
+  type McqQuestion = { id: string; topic: string; difficulty: Difficulty; prompt: string; options: string[]; correct: number; explanation: string; test?: string; code?: string };
+  type CodeQuestion = { id: string; topic: string; difficulty: Difficulty; prompt: string; reference: string; explanation: string; test: string; code?: string };
+  type SessionQuestion = (WrittenQuestion & { type: 'written' }) | (McqQuestion & { type: 'mcq' }) | (CodeQuestion & { type: 'code' });
   type TopicInfo = { id: string; title: string; writtenCount: number; mcqCount: number };
 
   const parseData = <T,>(id: string): T => JSON.parse(document.getElementById(id)?.textContent || '[]') as T;
   const written = parseData<WrittenQuestion[]>('practice-written-data');
   const mcqs = parseData<McqQuestion[]>('practice-mcq-data');
+  const coding = parseData<CodeQuestion[]>('practice-code-data');
   const topics = parseData<TopicInfo[]>('practice-topic-data');
   const topicNames = new Map(topics.map((topic) => [topic.id, topic.title]));
   const difficultyLabels: Record<Difficulty, string> = { junior: 'Junior', mid: 'Mid', senior: 'Senior' };
@@ -439,9 +465,12 @@ const topicManifest = topics.map((topic) => ({
   const selfGrade = $('#self-grade')!;
   const nextButton = $('#next-question') as HTMLButtonElement;
   const focusToast = $('#focus-toast')!;
+  const questionCode = $('#question-code')!;
+  const responseLabel = $('#response-label')!;
+  const responseHint = $('#response-hint')!;
 
   let session: SessionQuestion[] = [];
-  let sessionConfig = { topic: 'all', format: 'mixed', difficulty: 'all', length: 15, duration: 1200 };
+  let sessionConfig = { topic: 'all', format: 'mixed', difficulty: 'all', length: 15, duration: 1200, preset: '' };
   let current = 0;
   let selectedOption: number | null = null;
   let points = 0;
@@ -464,18 +493,20 @@ const topicManifest = topics.map((topic) => ({
     return copy;
   };
 
-  function eligible<T extends WrittenQuestion | McqQuestion>(items: T[], relaxDifficulty = false): T[] {
+  function eligible<T extends WrittenQuestion | McqQuestion | CodeQuestion>(items: T[], relaxDifficulty = false): T[] {
     return items.filter((item) =>
       (sessionConfig.topic === 'all' || item.topic === sessionConfig.topic) &&
+      (sessionConfig.preset ? item.test === sessionConfig.preset : !item.test) &&
       (relaxDifficulty || sessionConfig.difficulty === 'all' || item.difficulty === sessionConfig.difficulty));
   }
 
   function availableCount() {
     const w = eligible(written).length;
     const m = eligible(mcqs).length;
-    if (sessionConfig.format === 'written') return w;
+    const c = eligible(coding).length;
+    if (sessionConfig.format === 'written') return w + c;
     if (sessionConfig.format === 'mcq') return m;
-    return w + m;
+    return w + m + c;
   }
 
   function readConfig() {
@@ -510,31 +541,41 @@ const topicManifest = topics.map((topic) => ({
   function buildSession(): SessionQuestion[] {
     let writtenPool = shuffle(eligible(written));
     let mcqPool = shuffle(eligible(mcqs));
-    const exactTotal = sessionConfig.format === 'written' ? writtenPool.length : sessionConfig.format === 'mcq' ? mcqPool.length : writtenPool.length + mcqPool.length;
+    let codePool = shuffle(eligible(coding));
+    const exactTotal = sessionConfig.format === 'written' ? writtenPool.length + codePool.length : sessionConfig.format === 'mcq' ? mcqPool.length : writtenPool.length + mcqPool.length + codePool.length;
 
     if (exactTotal < sessionConfig.length && sessionConfig.difficulty !== 'all') {
       writtenPool = shuffle(eligible(written, true));
       mcqPool = shuffle(eligible(mcqs, true));
+      codePool = shuffle(eligible(coding, true));
     }
 
     if (sessionConfig.format === 'written') {
-      return writtenPool.slice(0, sessionConfig.length).map((item) => ({ ...item, type: 'written' as const }));
+      const responsePool: SessionQuestion[] = [
+        ...writtenPool.map((item) => ({ ...item, type: 'written' as const })),
+        ...codePool.map((item) => ({ ...item, type: 'code' as const })),
+      ];
+      return shuffle(responsePool).slice(0, sessionConfig.length);
     }
     if (sessionConfig.format === 'mcq') {
       return mcqPool.slice(0, sessionConfig.length).map((item) => ({ ...item, type: 'mcq' as const }));
     }
 
     const mcqTarget = Math.min(Math.ceil(sessionConfig.length / 2), mcqPool.length);
-    const writtenTarget = Math.min(sessionConfig.length - mcqTarget, writtenPool.length);
+    const responsePool: SessionQuestion[] = shuffle([
+      ...writtenPool.map((item) => ({ ...item, type: 'written' as const })),
+      ...codePool.map((item) => ({ ...item, type: 'code' as const })),
+    ]);
+    const responseTarget = Math.min(sessionConfig.length - mcqTarget, responsePool.length);
     const picks: SessionQuestion[] = [
       ...mcqPool.slice(0, mcqTarget).map((item) => ({ ...item, type: 'mcq' as const })),
-      ...writtenPool.slice(0, writtenTarget).map((item) => ({ ...item, type: 'written' as const })),
+      ...responsePool.slice(0, responseTarget),
     ];
     const stillNeeded = sessionConfig.length - picks.length;
     if (stillNeeded > 0) {
       const moreMcq = mcqPool.slice(mcqTarget).map((item) => ({ ...item, type: 'mcq' as const }));
-      const moreWritten = writtenPool.slice(writtenTarget).map((item) => ({ ...item, type: 'written' as const }));
-      picks.push(...shuffle<SessionQuestion>([...moreMcq, ...moreWritten]).slice(0, stillNeeded));
+      const moreResponses = responsePool.slice(responseTarget);
+      picks.push(...shuffle<SessionQuestion>([...moreMcq, ...moreResponses]).slice(0, stillNeeded));
     }
     return shuffle(picks);
   }
@@ -603,8 +644,11 @@ const topicManifest = topics.map((topic) => ({
     $('#game-progress-fill')!.style.width = `${(current / session.length) * 100}%`;
     $('#question-topic')!.textContent = topicNames.get(question.topic) || question.topic;
     $('#question-difficulty')!.textContent = difficultyLabels[question.difficulty];
-    $('#question-format')!.textContent = question.type === 'mcq' ? 'Multiple choice' : 'Written · self-scored';
+    $('#question-format')!.textContent = question.type === 'mcq' ? 'Read the output' : question.type === 'code' ? 'Write Kotlin · self-scored' : 'Written · self-scored';
     $('#question-prompt')!.innerHTML = inlineMarkup(question.prompt);
+    const code = question.code || '';
+    questionCode.hidden = !code;
+    questionCode.querySelector('code')!.textContent = code;
     answerPanel.hidden = true;
     selfGrade.hidden = true;
     selfGrade.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
@@ -615,16 +659,20 @@ const topicManifest = topics.map((topic) => ({
     nextButton.hidden = true;
     answerAction.hidden = false;
     answerAction.disabled = true;
-    answerAction.textContent = question.type === 'mcq' ? 'Check answer' : 'Reveal reference answer';
-    $('#question-status')!.textContent = question.type === 'mcq' ? 'Choose an answer to continue' : 'Write a few honest lines before revealing';
+    answerAction.textContent = question.type === 'mcq' ? 'Check answer' : question.type === 'code' ? 'Reveal solution' : 'Reveal reference answer';
+    $('#question-status')!.textContent = question.type === 'mcq' ? 'Trace it before choosing' : question.type === 'code' ? 'Type the smallest correct Kotlin answer' : 'Write a few honest lines before revealing';
     $('#reference-answer')!.replaceChildren();
     $('#answer-verdict')!.className = 'answer-verdict';
     writtenResponse.value = '';
-    $('#word-count')!.textContent = '0 words';
+    $('#word-count')!.textContent = question.type === 'code' ? '0 characters' : '0 words';
+    writtenResponse.classList.toggle('code-response', question.type === 'code');
+    writtenResponse.placeholder = question.type === 'code' ? 'Type Kotlin here…' : 'Explain it as if the interviewer is across the table…';
+    responseLabel.textContent = question.type === 'code' ? 'Your Kotlin' : 'Rehearse your answer';
+    responseHint.textContent = question.type === 'code' ? 'Small and correct beats clever' : 'Structure → trade-off → example';
 
     mcqOptions.replaceChildren();
     mcqOptions.hidden = question.type !== 'mcq';
-    writtenAnswer.hidden = question.type !== 'written';
+    writtenAnswer.hidden = question.type === 'mcq';
     if (question.type === 'mcq') {
       question.options.forEach((option, index) => {
         const button = document.createElement('button');
@@ -679,6 +727,21 @@ const topicManifest = topics.map((topic) => ({
       award(isCorrect ? 1 : 0);
       $('#question-status')!.textContent = isCorrect ? `+${100 + Math.min(streak - 1, 5) * 10} XP` : '+20 XP for the rep';
       nextButton.hidden = false;
+      return;
+    }
+
+    if (question.type === 'code') {
+      verdict.textContent = 'Reference solution unlocked';
+      const pre = document.createElement('pre');
+      pre.className = 'code-reference';
+      const code = document.createElement('code');
+      code.textContent = question.reference;
+      pre.append(code);
+      const explanation = document.createElement('p');
+      explanation.innerHTML = inlineMarkup(question.explanation);
+      reference.append(pre, explanation);
+      selfGrade.hidden = false;
+      $('#question-status')!.textContent = 'Compare behavior and edge cases, not exact formatting.';
       return;
     }
 
@@ -738,17 +801,21 @@ const topicManifest = topics.map((topic) => ({
 
   function saveBest(percent: number) {
     try {
-      const previous = Number(localStorage.getItem('adk-practice-best') || 0);
-      if (percent > previous) localStorage.setItem('adk-practice-best', String(percent));
-      localStorage.setItem('adk-practice-last', JSON.stringify({ percent, xp: Math.max(0, xp), date: Date.now() }));
+      const suffix = sessionConfig.preset ? `-${sessionConfig.preset}` : '';
+      const bestKey = `adk-practice-best${suffix}`;
+      const lastKey = `adk-practice-last${suffix}`;
+      const previous = Number(localStorage.getItem(bestKey) || 0);
+      if (percent > previous) localStorage.setItem(bestKey, String(percent));
+      localStorage.setItem(lastKey, JSON.stringify({ percent, xp: Math.max(0, xp), date: Date.now() }));
       showBest();
     } catch { /* Storage is optional. */ }
   }
 
   function showBest() {
     try {
-      const best = Number(localStorage.getItem('adk-practice-best') || 0);
-      const last = JSON.parse(localStorage.getItem('adk-practice-last') || 'null');
+      const suffix = sessionConfig.preset ? `-${sessionConfig.preset}` : '';
+      const best = Number(localStorage.getItem(`adk-practice-best${suffix}`) || 0);
+      const last = JSON.parse(localStorage.getItem(`adk-practice-last${suffix}`) || 'null');
       $('#personal-best')!.textContent = best ? `${best}%` : 'Not set';
       $('#best-detail')!.textContent = last ? `Last run ${last.percent}% · ${last.xp} XP` : 'Complete a run to set it';
     } catch { /* Keep the empty state. */ }
@@ -779,9 +846,11 @@ const topicManifest = topics.map((topic) => ({
   form.addEventListener('submit', (event) => { event.preventDefault(); startSession(); });
   form.addEventListener('change', updatePoolNote);
   writtenResponse.addEventListener('input', () => {
+    const isCode = session[current]?.type === 'code';
     const words = writtenResponse.value.trim() ? writtenResponse.value.trim().split(/\s+/).length : 0;
-    $('#word-count')!.textContent = `${words} word${words === 1 ? '' : 's'}`;
-    answerAction.disabled = words < 3;
+    const characters = writtenResponse.value.trim().length;
+    $('#word-count')!.textContent = isCode ? `${characters} character${characters === 1 ? '' : 's'}` : `${words} word${words === 1 ? '' : 's'}`;
+    answerAction.disabled = isCode ? characters < 2 : words < 3;
   });
   answerAction.addEventListener('click', checkAnswer);
   nextButton.addEventListener('click', advance);
@@ -807,6 +876,26 @@ const topicManifest = topics.map((topic) => ({
     event.preventDefault();
     event.returnValue = '';
   });
+
+  const preset = new URLSearchParams(window.location.search).get('preset');
+  if (preset === 'kotlin-dsa') {
+    sessionConfig.preset = preset;
+    $('#preset-banner')!.hidden = false;
+    topicSelect.value = 'kotlin';
+    formatSelect.value = 'mixed';
+    formatSelect.options[0].textContent = 'Mixed · output + code';
+    formatSelect.options[1].textContent = 'Output tracing';
+    formatSelect.options[2].textContent = 'Write small Kotlin';
+    difficultySelect.value = 'all';
+    durationSelect.value = '600';
+    const quickLength = form.querySelector<HTMLInputElement>('input[name="length"][value="10"]');
+    if (quickLength) quickLength.checked = true;
+    $('.practice-hero h1')!.textContent = 'Kotlin under pressure.';
+    $('.practice-hero p')!.textContent = 'Trace real Kotlin output, write a few small answers, and find the syntax that still needs one more pass.';
+    $('#start-button-label')!.textContent = 'Start Kotlin sprint';
+    $('#grade-rule-title')!.textContent = 'Grade code answers';
+    $('#grade-rule-detail')!.textContent = 'Reveal the reference solution, then mark yours missed, close, or solid.';
+  }
 
   showBest();
   updatePoolNote();
