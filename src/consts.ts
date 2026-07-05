@@ -10,6 +10,7 @@ export const SITE = {
   socialImageAlt:
     'AndroidDevKit - open-source interview prep for Android engineers',
   github: 'https://github.com/vishnusreddy/androiddevkit',
+  reddit: 'https://www.reddit.com/r/AndroidDevKit/',
   author: 'AndroidDevKit Community',
 };
 
