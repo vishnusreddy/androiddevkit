@@ -634,6 +634,14 @@ const topicManifest = topics.map((topic) => ({
     startTimer();
     renderQuestion();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    (window as any).posthog?.capture('practice_session_started', {
+      topic: sessionConfig.topic,
+      format: sessionConfig.format,
+      difficulty: sessionConfig.difficulty,
+      question_count: session.length,
+      duration_seconds: sessionConfig.duration || null,
+      preset: sessionConfig.preset || null,
+    });
   }
 
   function renderQuestion() {
@@ -725,6 +733,11 @@ const topicManifest = topics.map((topic) => ({
       verdict.classList.toggle('wrong', !isCorrect);
       reference.innerHTML = inlineMarkup(question.explanation);
       award(isCorrect ? 1 : 0);
+      (window as any).posthog?.capture('practice_mcq_answered', {
+        topic: question.topic,
+        difficulty: question.difficulty,
+        is_correct: isCorrect,
+      });
       $('#question-status')!.textContent = isCorrect ? `+${100 + Math.min(streak - 1, 5) * 10} XP` : '+20 XP for the rep';
       nextButton.hidden = false;
       return;
@@ -797,6 +810,19 @@ const topicManifest = topics.map((topic) => ({
       : 'No shame in a diagnostic run. The score is a map, not a verdict.';
     saveBest(percent);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    (window as any).posthog?.capture('practice_session_completed', {
+      score_percent: percent,
+      xp: Math.max(0, xp),
+      questions_answered: answered,
+      questions_total: session.length,
+      best_streak: bestStreak,
+      focus_breaks: focusBreaks,
+      timed_out: timedOut,
+      topic: sessionConfig.topic,
+      format: sessionConfig.format,
+      difficulty: sessionConfig.difficulty,
+      preset: sessionConfig.preset || null,
+    });
   }
 
   function saveBest(percent: number) {

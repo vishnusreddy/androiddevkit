@@ -120,6 +120,10 @@ It needs these set on the **Worker** (Cloudflare → Workers & Pages →
 The public site key (`PUBLIC_TURNSTILE_SITE_KEY`) is a **build-time** var, set in
 Cloudflare's build settings or a `.env` file - not a secret.
 
+PostHog also uses public build-time configuration. Copy `.env.example` to
+`.env` for local development, then set `PUBLIC_POSTHOG_PROJECT_TOKEN` and,
+when needed, `PUBLIC_POSTHOG_HOST`. Leaving the token empty disables PostHog.
+
 > **Secrets apply per build/version.** If you add or change a secret, re-deploy
 > (push a commit or re-run the build) so the running version picks it up -
 > otherwise the endpoint returns `Submissions are not configured on the server yet.`

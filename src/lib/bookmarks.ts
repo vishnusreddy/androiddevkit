@@ -50,6 +50,7 @@ export function setSaved(id: string, saved: boolean): void {
   if (saved) map[id] = true;
   else delete map[id];
   write(map);
+  (window as any).posthog?.capture('question_bookmarked', { question_id: id, saved });
 }
 
 /** Fires whenever bookmarks change, in this tab or another. Returns an unsubscribe fn. */
