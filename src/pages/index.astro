@@ -259,6 +259,38 @@ const features = [
     </section>
   )}
 
+  <!-- ===== Reddit community ===== -->
+  <section class="section reddit-section" aria-labelledby="reddit-heading">
+    <div class="container">
+      <div class="reddit-card">
+        <div class="reddit-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="24" fill="currentColor" />
+            <path d="M37.5 24.2c0-2-1.6-3.7-3.7-3.7-1 0-1.9.4-2.6 1-2-.9-4.4-1.5-7-1.6l1.5-7 4.9 1.1a3 3 0 1 0 .5-2.2l-6-1.3c-.6-.1-1.2.3-1.3.9l-1.7 8c-2.2.1-4.3.7-6.1 1.5a3.7 3.7 0 0 0-6.3 2.7c0 1.1.5 2.2 1.3 2.9v.7c0 5 5.8 9.1 13 9.1s13-4.1 13-9.1c0-.3 0-.6-.1-.9.4-.6.6-1.3.6-2.1Z" fill="white" />
+            <circle cx="18.5" cy="26" r="2.1" fill="currentColor" />
+            <circle cx="29.5" cy="26" r="2.1" fill="currentColor" />
+            <path d="M18.5 30.4c1.5 1.4 3.3 2 5.5 2s4-.6 5.5-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            <circle cx="33.8" cy="11.5" r="1.8" fill="white" />
+          </svg>
+        </div>
+        <div class="reddit-copy">
+          <span class="reddit-eyebrow">r/AndroidDevKit</span>
+          <h2 id="reddit-heading">There’s no need to be a lone wolf.</h2>
+          <p>
+            Join the AndroidDevKit community on Reddit to swap interview tips,
+            ask questions, share what worked, and help shape what we build next.
+          </p>
+        </div>
+        <a class="reddit-button" href={SITE.reddit} target="_blank" rel="noopener noreferrer">
+          Join the community
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== Contribute CTA ===== -->
   <section class="section contrib-section">
     <div class="container">
@@ -691,6 +723,83 @@ const features = [
   .contrib-section {
     padding-top: 0;
   }
+  .reddit-section {
+    padding-top: 0;
+  }
+  .reddit-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 1.6rem);
+    padding: clamp(1.4rem, 4vw, 2rem);
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, #ff4500 24%, var(--border));
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 0 50%, color-mix(in srgb, #ff4500 9%, transparent), transparent 34%),
+      var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .reddit-mark {
+    display: grid;
+    width: clamp(54px, 7vw, 68px);
+    height: clamp(54px, 7vw, 68px);
+    place-items: center;
+    color: #ff4500;
+  }
+  .reddit-mark svg {
+    width: 100%;
+    height: 100%;
+  }
+  .reddit-copy {
+    max-width: 650px;
+  }
+  .reddit-eyebrow {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #d83a00;
+    font-size: 0.78rem;
+    font-weight: 750;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+  :global(:root[data-theme='dark']) .reddit-eyebrow {
+    color: #ff7847;
+  }
+  .reddit-copy h2 {
+    margin: 0;
+    font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+  }
+  .reddit-copy p {
+    margin: 0.45rem 0 0;
+    font-size: 0.92rem;
+  }
+  .reddit-button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid #ff4500;
+    border-radius: var(--radius-sm);
+    background: #ff4500;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .reddit-button:hover {
+    border-color: #d83a00;
+    background: #d83a00;
+    color: #fff;
+  }
+  .reddit-button svg {
+    width: 16px;
+    height: 16px;
+  }
   .cta-card {
     display: flex;
     align-items: center;
@@ -743,12 +852,30 @@ const features = [
     }
   }
   @media (max-width: 760px) {
+    .reddit-card {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+    .reddit-button {
+      grid-column: 2;
+      justify-self: start;
+    }
     .cta-card {
       flex-direction: column;
       align-items: flex-start;
     }
   }
   @media (max-width: 480px) {
+    .reddit-card {
+      grid-template-columns: 1fr;
+    }
+    .reddit-mark {
+      width: 54px;
+      height: 54px;
+    }
+    .reddit-button {
+      grid-column: 1;
+      width: 100%;
+    }
     .practice-copy {
       padding: 1.7rem 1.35rem;
     }
