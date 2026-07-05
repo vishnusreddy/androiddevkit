@@ -29,7 +29,8 @@
     "@tiptap/markdown": "^3.27.1",
     "@tiptap/starter-kit": "^3.27.1",
     "astro": "^5.7.0",
-    "lucide": "^1.23.0"
+    "lucide": "^1.23.0",
+    "posthog-node": "^5.39.4"
   },
   "devDependencies": {
     "wrangler": "^4.105.0"

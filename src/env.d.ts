@@ -27,6 +27,10 @@ declare namespace App {
 interface ImportMetaEnv {
   /** Public Turnstile site key, rendered into the form. Optional. */
   readonly PUBLIC_TURNSTILE_SITE_KEY?: string;
+  /** Public PostHog project token. When unset, analytics is disabled. */
+  readonly PUBLIC_POSTHOG_PROJECT_TOKEN?: string;
+  /** PostHog ingestion host. Defaults to the US cloud endpoint. */
+  readonly PUBLIC_POSTHOG_HOST?: string;
 }
 
 interface ImportMeta {

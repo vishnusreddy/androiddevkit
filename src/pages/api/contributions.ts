@@ -7,6 +7,7 @@ import {
   openIssue,
   type GitHubConfig,
 } from '../../lib/github';
+import { getPostHogServer } from '../../lib/posthog-server';
 
 export const prerender = false;
 
@@ -318,6 +319,24 @@ export const POST: APIRoute = async ({ request, locals }) => {
       prepared.kind === 'issue'
         ? await openIssue(cfg, prepared)
         : await openFilePullRequest(cfg, prepared);
+
+    try {
+      const posthog = getPostHogServer();
+      if (posthog) {
+        await posthog.captureImmediate({
+          distinctId: 'server',
+          event: 'contribution_created',
+          properties: {
+            contribution_type: p.type,
+            kind: prepared.kind,
+            $process_person_profile: false,
+          },
+        });
+      }
+    } catch (analyticsError) {
+      // Analytics must never turn a successful GitHub submission into an error.
+      console.error('Could not capture contribution analytics:', analyticsError);
+    }
 
     return json({ ok: true, url: result.url, number: result.number, kind: prepared.kind });
   } catch (err) {

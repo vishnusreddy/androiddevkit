@@ -56,6 +56,7 @@ export function setDone(id: string, done: boolean): void {
   if (done) map[id] = true;
   else delete map[id];
   write(map);
+  (window as any).posthog?.capture('question_marked_done', { question_id: id, done });
 }
 
 export function clearMany(ids: string[]): void {
