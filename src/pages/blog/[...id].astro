@@ -201,9 +201,7 @@ const fmt = d.date.toLocaleDateString('en-US', {
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--border));
     border-radius: var(--radius-lg);
-    background:
-      radial-gradient(circle at 100% 0, var(--accent-soft), transparent 58%),
-      var(--surface);
+    background: var(--surface);
     box-shadow: var(--shadow-sm);
   }
   .post-body :global(.practice-callout:hover) {
@@ -252,9 +250,7 @@ const fmt = d.date.toLocaleDateString('en-US', {
   }
   .post-body :global(.practice-callout-final) {
     margin-top: 1.75rem;
-    background:
-      radial-gradient(circle at 100% 0, color-mix(in srgb, var(--accent) 18%, transparent), transparent 62%),
-      var(--accent-soft);
+    background: var(--accent-soft);
   }
   .post-body :global(.code-result) {
     margin: -1rem 0 1.35rem;

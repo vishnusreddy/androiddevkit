@@ -226,7 +226,13 @@ const topicManifest = topics.map((topic) => ({
     <section class="results-view" id="results-view" hidden>
       <div class="results-card card">
         <span class="eyebrow">Session complete</span>
-        <div class="score-ring" id="score-ring"><strong id="final-score">0%</strong><span>final score</span></div>
+        <div class="score-ring" id="score-ring">
+          <svg class="score-ring-svg" viewBox="0 0 170 170" aria-hidden="true">
+            <circle class="score-ring-track" cx="85" cy="85" r="78" />
+            <circle class="score-ring-progress" id="score-ring-progress" cx="85" cy="85" r="78" />
+          </svg>
+          <span class="score-ring-label"><strong id="final-score">0%</strong><span>final score</span></span>
+        </div>
         <h1 id="result-title">Run complete.</h1>
         <p id="result-copy"></p>
 
@@ -268,7 +274,7 @@ const topicManifest = topics.map((topic) => ({
   .practice-hero { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2rem; margin-bottom: 2rem; }
   .practice-hero h1 { margin: .35rem 0 .65rem; font-size: clamp(2.4rem, 6vw, 4.6rem); letter-spacing: -.055em; }
   .practice-hero p { max-width: 650px; margin: 0; font-size: 1.08rem; }
-  .preset-banner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; margin-bottom: 1rem; padding: 1rem 1.15rem; border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); background: radial-gradient(circle at 100% 0, var(--accent-soft), transparent 55%), var(--surface); }
+  .preset-banner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; margin-bottom: 1rem; padding: 1rem 1.15rem; border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); background: var(--surface); }
   .preset-banner[hidden] { display: none; }
   .preset-mark { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 10px; color: var(--accent); background: var(--accent-soft); font: 800 1.15rem var(--font-mono); }
   .preset-banner h2 { margin: .1rem 0; font-size: 1.08rem; }
@@ -375,7 +381,12 @@ const topicManifest = topics.map((topic) => ({
 
   .results-view { max-width: 760px; margin: 1rem auto; }
   .results-card { padding: clamp(1.5rem, 5vw, 3.2rem); text-align: center; }
-  .score-ring { --score: 0%; width: 170px; height: 170px; margin: 1.3rem auto; border-radius: 50%; display: grid; place-content: center; background: radial-gradient(circle at center, var(--surface) 62%, transparent 63%), conic-gradient(var(--accent) var(--score), var(--surface-3) 0); }
+  .score-ring { position: relative; width: 170px; height: 170px; margin: 1.3rem auto; display: grid; place-content: center; }
+  .score-ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+  .score-ring-svg circle { fill: none; stroke-width: 12; }
+  .score-ring-track { stroke: var(--surface-3); }
+  .score-ring-progress { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 490.09; stroke-dashoffset: 490.09; transition: stroke-dashoffset .5s ease; }
+  .score-ring-label { position: relative; text-align: center; }
   .score-ring strong, .score-ring span { display: block; }
   .score-ring strong { font: 850 2.4rem/1 var(--font-mono); color: var(--ink); }
   .score-ring span { margin-top: .35rem; color: var(--ink-faint); font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; }
@@ -797,7 +808,11 @@ const topicManifest = topics.map((topic) => ({
     resultsView.hidden = false;
     const percent = Math.round((points / session.length) * 100);
     $('#final-score')!.textContent = `${percent}%`;
-    $('#score-ring')!.style.setProperty('--score', `${percent}%`);
+    const ringProgress = $('#score-ring-progress') as unknown as SVGCircleElement | null;
+    if (ringProgress) {
+      const circumference = 2 * Math.PI * 78;
+      ringProgress.style.strokeDashoffset = String(circumference * (1 - percent / 100));
+    }
     $('#result-correct')!.textContent = `${points % 1 ? points.toFixed(1) : points}/${session.length}`;
     $('#result-xp')!.textContent = String(Math.max(0, xp));
     $('#result-streak')!.textContent = String(bestStreak);
