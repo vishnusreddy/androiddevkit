@@ -227,7 +227,13 @@ const topicManifest = topics.map((topic) => ({
     <section class="results-view" id="results-view" hidden>
       <div class="results-card card">
         <span class="eyebrow">Session complete</span>
-        <div class="score-ring" id="score-ring"><strong id="final-score">0%</strong><span>final score</span></div>
+        <div class="score-ring" id="score-ring">
+          <svg class="score-ring-svg" viewBox="0 0 170 170" aria-hidden="true">
+            <circle class="score-ring-track" cx="85" cy="85" r="78" />
+            <circle class="score-ring-progress" id="score-ring-progress" cx="85" cy="85" r="78" />
+          </svg>
+          <span class="score-ring-label"><strong id="final-score">0%</strong><span>final score</span></span>
+        </div>
         <h1 id="result-title">Run complete.</h1>
         <p id="result-copy"></p>
 
@@ -376,7 +382,12 @@ const topicManifest = topics.map((topic) => ({
 
   .results-view { max-width: 760px; margin: 1rem auto; }
   .results-card { padding: clamp(1.5rem, 5vw, 3.2rem); text-align: center; }
-  .score-ring { --score: 0%; width: 170px; height: 170px; margin: 1.3rem auto; border: 12px solid var(--accent); border-radius: 50%; display: grid; place-content: center; background: var(--surface); }
+  .score-ring { position: relative; width: 170px; height: 170px; margin: 1.3rem auto; display: grid; place-content: center; }
+  .score-ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+  .score-ring-svg circle { fill: none; stroke-width: 12; }
+  .score-ring-track { stroke: var(--surface-3); }
+  .score-ring-progress { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 490.09; stroke-dashoffset: 490.09; transition: stroke-dashoffset .5s ease; }
+  .score-ring-label { position: relative; text-align: center; }
   .score-ring strong, .score-ring span { display: block; }
   .score-ring strong { font: 850 2.4rem/1 var(--font-mono); color: var(--ink); }
   .score-ring span { margin-top: .35rem; color: var(--ink-faint); font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; }
@@ -798,7 +809,11 @@ const topicManifest = topics.map((topic) => ({
     resultsView.hidden = false;
     const percent = Math.round((points / session.length) * 100);
     $('#final-score')!.textContent = `${percent}%`;
-    $('#score-ring')!.style.setProperty('--score', `${percent}%`);
+    const ringProgress = $('#score-ring-progress') as unknown as SVGCircleElement | null;
+    if (ringProgress) {
+      const circumference = 2 * Math.PI * 78;
+      ringProgress.style.strokeDashoffset = String(circumference * (1 - percent / 100));
+    }
     $('#result-correct')!.textContent = `${points % 1 ? points.toFixed(1) : points}/${session.length}`;
     $('#result-xp')!.textContent = String(Math.max(0, xp));
     $('#result-streak')!.textContent = String(bestStreak);

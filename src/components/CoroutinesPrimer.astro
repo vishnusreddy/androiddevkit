@@ -416,7 +416,17 @@ const flowCode = `flowOf(1, 2, 3, 4)
     position: relative;
     height: 28px;
     border-radius: 6px;
+    background: transparent;
     border-inline: 1px solid var(--border);
+  }
+  .track::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--border);
   }
   .event {
     position: absolute;
