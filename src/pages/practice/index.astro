@@ -28,6 +28,7 @@ const topicManifest = topics.map((topic) => ({
 <BaseLayout
   title="Interview Practice"
   description="Build a timed Android interview practice session by topic, format, difficulty, and length. Answer MCQs, rehearse written responses, and score your run."
+  noindex
 >
   <div class="practice-shell container">
     <section class="setup-view" id="setup-view">
@@ -268,7 +269,7 @@ const topicManifest = topics.map((topic) => ({
   .practice-hero { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2rem; margin-bottom: 2rem; }
   .practice-hero h1 { margin: .35rem 0 .65rem; font-size: clamp(2.4rem, 6vw, 4.6rem); letter-spacing: -.055em; }
   .practice-hero p { max-width: 650px; margin: 0; font-size: 1.08rem; }
-  .preset-banner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; margin-bottom: 1rem; padding: 1rem 1.15rem; border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); background: radial-gradient(circle at 100% 0, var(--accent-soft), transparent 55%), var(--surface); }
+  .preset-banner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; margin-bottom: 1rem; padding: 1rem 1.15rem; border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); background: var(--surface); }
   .preset-banner[hidden] { display: none; }
   .preset-mark { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 10px; color: var(--accent); background: var(--accent-soft); font: 800 1.15rem var(--font-mono); }
   .preset-banner h2 { margin: .1rem 0; font-size: 1.08rem; }
@@ -375,7 +376,7 @@ const topicManifest = topics.map((topic) => ({
 
   .results-view { max-width: 760px; margin: 1rem auto; }
   .results-card { padding: clamp(1.5rem, 5vw, 3.2rem); text-align: center; }
-  .score-ring { --score: 0%; width: 170px; height: 170px; margin: 1.3rem auto; border-radius: 50%; display: grid; place-content: center; background: radial-gradient(circle at center, var(--surface) 62%, transparent 63%), conic-gradient(var(--accent) var(--score), var(--surface-3) 0); }
+  .score-ring { --score: 0%; width: 170px; height: 170px; margin: 1.3rem auto; border: 12px solid var(--accent); border-radius: 50%; display: grid; place-content: center; background: var(--surface); }
   .score-ring strong, .score-ring span { display: block; }
   .score-ring strong { font: 850 2.4rem/1 var(--font-mono); color: var(--ink); }
   .score-ring span { margin-top: .35rem; color: var(--ink-faint); font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; }

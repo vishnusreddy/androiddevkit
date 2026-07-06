@@ -47,7 +47,7 @@ export async function GET() {
     records.push({
       type: 'question',
       title: q.data.question,
-      url: `/questions/#${q.id}`,
+      url: `/topics/${topicId}/#${q.id}`,
       meta: topicTitle.get(topicId) ?? topicId,
       tags: q.data.tags ?? [],
       body: strip(q.body),

@@ -7,7 +7,7 @@ import QuestionItem from '../../components/QuestionItem.astro';
 import ProgressBar from '../../components/ProgressBar.astro';
 import Comments from '../../components/Comments.astro';
 import TopicIcon from '../../components/TopicIcon.astro';
-import { DIFFICULTY_ORDER, DIFFICULTY_LABEL, SITE } from '../../consts';
+import { DIFFICULTY_ORDER, DIFFICULTY_LABEL } from '../../consts';
 
 export const getStaticPaths = (async () => {
   const topics = await getCollection('topics');
@@ -149,7 +149,7 @@ const questionGroups = DIFFICULTY_ORDER.map((level) => {
 const { Content: Overview } = await render(topic);
 const hasOverview = topic.body && topic.body.trim().length > 0;
 ---
-<BaseLayout title={topic.data.title} description={topic.data.description}>
+<BaseLayout title={topic.data.title} description={topic.data.description} ads>
   <section class="page-head">
     <div class="container">
       <a class="back" href="/topics/">← All topics</a>
