@@ -6,7 +6,7 @@ export const SITE = {
   description:
     'A free, community-driven Android interview preparation resource with curated questions, topic guides, practice sessions, and real interview experiences.',
   // Version the default image URL so social crawlers fetch a fresh preview after changes.
-  socialImage: '/og-default.png?v=20260705',
+  socialImage: '/og-default.png?v=20260706',
   socialImageAlt:
     'AndroidDevKit - open-source interview prep for Android engineers',
   github: 'https://github.com/vishnusreddy/androiddevkit',

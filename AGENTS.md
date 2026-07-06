@@ -7,6 +7,19 @@
 - Exercise every interactive state: default, hover, focus, selected, disabled, error, and completed. Selected state must remain visibly distinct after the control becomes disabled.
 - Inspect the full interaction after content expands or state changes. Remove accidental borders, dividers, overflow, or spacing artifacts instead of accepting them as browser differences.
 
+## Visual design
+
+- No gradients anywhere in the design theme. This includes CSS `linear-gradient`,
+  `radial-gradient`, and `conic-gradient` backgrounds, as well as gradient fills
+  in SVGs, diagrams, generated social/preview images, and marketing art. Use flat
+  fills only.
+- Surfaces stay neutral; green is an accent, not a wash. Nothing is tinted with a
+  color gradient. Convey depth with borders and shadows, not blended color.
+- Preview and social images (e.g. `public/og-default.png`) stay in light mode with
+  flat surfaces. When regenerating one, verify it renders at 1200x630 with no
+  gradient, and bump the `?v=` version on `SITE.socialImage` in `src/consts.ts` so
+  crawlers refetch.
+
 ## Editorial quality
 
 - Treat interview content as technical documentation: name the exact API,
