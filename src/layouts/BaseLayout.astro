@@ -18,6 +18,8 @@ interface Props {
   publishedTime?: Date;
   modifiedTime?: Date;
   noindex?: boolean;
+  /** Load AdSense only on pages with substantial publisher-authored content. */
+  ads?: boolean;
   /** Hide the global footer/header chrome - rarely needed. */
   bare?: boolean;
 }
@@ -35,6 +37,7 @@ const {
   publishedTime,
   modifiedTime,
   noindex = false,
+  ads = false,
   bare = false,
 } = Astro.props;
 
@@ -101,15 +104,17 @@ const pageSchema = type === 'article'
       gtag('config', 'G-LT34BZT1CE');
     </script>
 
-    <!-- Google AdSense -->
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5864821304414128"
-      crossorigin="anonymous"></script>
+    {ads && (
+      <!-- Auto ads are intentionally limited to substantial editorial pages. -->
+      <script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5864821304414128"
+        crossorigin="anonymous"></script>
+    )}
 
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
     <link rel="canonical" href={canonical} />
 
     <!-- Open Graph / Twitter -->

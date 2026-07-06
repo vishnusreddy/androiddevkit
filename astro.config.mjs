@@ -13,7 +13,18 @@ const SITE = 'https://androiddevkit.com';
 // https://astro.build/config
 export default defineConfig({
   site: SITE,
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => ![
+        '/questions/',
+        '/practice/',
+        '/progress/',
+        '/contribute/submit/',
+        '/contribute/experience/',
+      ].some((path) => page.endsWith(path)),
+    }),
+  ],
 
   markdown: {
     remarkPlugins: [remarkCodeOutputs],

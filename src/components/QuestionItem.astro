@@ -325,4 +325,16 @@ const {
   // Wires up "mark done" + "save for review" toggles and keeps them in sync.
   import '../lib/progress';
   import '../lib/bookmarks';
+
+  function openLinkedQuestion() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (target instanceof HTMLDetailsElement && target.classList.contains('qitem')) {
+      target.open = true;
+    }
+  }
+
+  window.addEventListener('hashchange', openLinkedQuestion);
+  openLinkedQuestion();
 </script>
