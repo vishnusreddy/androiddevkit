@@ -4,7 +4,6 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE } from '../consts';
 import PostHog from '../components/posthog.astro';
-import KofiWidget from '../components/KofiWidget.astro';
 
 interface Props {
   title?: string;
@@ -163,6 +162,5 @@ const pageSchema = type === 'article'
       <slot />
     </main>
     {!bare && <Footer />}
-    {!bare && <KofiWidget />}
   </body>
 </html>
