@@ -83,12 +83,28 @@ const features = [
           bank with explanations that tell you why - everything you need to
           prepare, in one place.
         </p>
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="/tests/">
-            Start a mock test
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-          <a class="btn btn-ghost" href="/practice/">Build a custom session</a>
+        <div class="hero-choice">
+          <div class="choice-panel choice-panel--primary">
+            <span class="choice-eyebrow">Practice</span>
+            <h2 class="choice-title">Take a mock test</h2>
+            <p class="choice-body">
+              Timed and scored, with topic-wise sets and full mocks that mirror
+              the real interview bar.
+            </p>
+            <a class="btn btn-primary choice-btn" href="/tests/">
+              Start a mock test
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+          <div class="choice-panel choice-panel--secondary">
+            <span class="choice-eyebrow">Prepare</span>
+            <h2 class="choice-title">Study the material</h2>
+            <p class="choice-body">
+              Topic guides, a question bank with explained answers, and real
+              interview write-ups from people who sat the rounds.
+            </p>
+            <a class="btn btn-ghost choice-btn" href="/topics/">Explore topics</a>
+          </div>
         </div>
         <p class="hero-meta">
           {questions.length} questions · {topics.length} topics · {MOCK_TESTS.length} structured mock tests ·
@@ -321,7 +337,7 @@ const features = [
     background: var(--surface);
   }
   .hero-copy {
-    max-width: 640px;
+    max-width: 760px;
     padding-bottom: clamp(2rem, 5vw, 3.5rem);
   }
   .hero h1 {
@@ -332,11 +348,50 @@ const features = [
     font-size: 1.08rem;
     max-width: 560px;
   }
-  .hero-cta {
+  .hero-choice {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.9rem;
+  }
+  .choice-panel {
     display: flex;
-    gap: 0.7rem;
-    margin-top: 1.7rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: clamp(1.3rem, 3vw, 1.7rem);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .choice-panel--primary {
+    border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  }
+  .choice-panel--secondary {
+    background: var(--surface-2);
+  }
+  .choice-eyebrow {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .choice-panel--secondary .choice-eyebrow {
+    color: var(--ink-faint);
+  }
+  .choice-title {
+    margin: 0.55rem 0 0;
+    font-size: 1.15rem;
+  }
+  .choice-body {
+    margin: 0.45rem 0 1.15rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+  .choice-btn {
+    margin-top: auto;
   }
   .hero-meta {
     margin: 1.4rem 0 0;
@@ -866,6 +921,9 @@ const features = [
       flex-direction: column;
       align-items: flex-start;
     }
+    .hero-choice {
+      grid-template-columns: 1fr;
+    }
   }
   @media (max-width: 480px) {
     .reddit-card {
@@ -904,8 +962,8 @@ const features = [
       grid-template-columns: 1fr;
       gap: 1.6rem;
     }
-    .hero-cta .btn {
-      flex: 1 1 auto;
+    .choice-btn {
+      width: 100%;
     }
   }
 </style>

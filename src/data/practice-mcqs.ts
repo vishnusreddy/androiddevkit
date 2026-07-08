@@ -81,48 +81,107 @@ val node = queue.removeFirst()`,
 // bracket matching, sliding window).
 export const DSA_ROUND_QUESTIONS: PracticeCodeQuestion[] = [
   {
-    id: 'dsa-code-01', topic: 'dsa', difficulty: 'mid', test: 'dsa-round-1',
-    prompt: 'Return the indices of the two numbers in `nums` that add up to `target`. Exactly one valid answer exists. Aim for a single pass.',
-    code: 'fun twoSum(nums: IntArray, target: Int): IntArray {\n    // your code\n}',
+    id: 'dsa-code-01', topic: 'dsa', difficulty: 'junior', test: 'dsa-round-1',
+    prompt: 'Implement `twoSum` so it returns the indices of the two entries in `nums` that add up to `target`. Exactly one valid pair exists and you may not use the same element twice.',
+    code: `// Example 1
+// Input:  nums = [2, 7, 11, 15], target = 9
+// Output: [0, 1]        (nums[0] + nums[1] == 9)
+//
+// Example 2
+// Input:  nums = [3, 2, 4], target = 6
+// Output: [1, 2]        (nums[1] + nums[2] == 6)
+//
+// Constraints: 2 <= nums.size <= 10^4, exactly one valid pair, an element cannot be reused.
+
+fun twoSum(nums: IntArray, target: Int): IntArray {
+    // write your solution
+}`,
     reference: `fun twoSum(nums: IntArray, target: Int): IntArray {
     val seen = HashMap<Int, Int>()
     for (i in nums.indices) {
-        val need = target - nums[i]
-        seen[need]?.let { return intArrayOf(it, i) }
+        val complement = target - nums[i]
+        seen[complement]?.let { return intArrayOf(it, i) }
         seen[nums[i]] = i
     }
     return intArrayOf()
 }`,
-    explanation: 'Walk the array once, and for each element ask whether its complement (`target - value`) was already seen. The map lookup is O(1), so the whole thing is O(n) time and O(n) space, against O(n^2) for the nested-loop version. Checking before inserting also handles duplicates like `[3, 3]` with target `6`.',
+    explanation: 'A single-pass hash map stores each value against its index, and for every element you check whether its complement target - nums[i] was already seen. That turns the brute-force O(n^2) double loop into O(n) time and O(n) space. The follow-up interviewers press on is duplicate values, which is why you look up the complement before inserting the current index.',
   },
   {
     id: 'dsa-code-02', topic: 'dsa', difficulty: 'junior', test: 'dsa-round-1',
-    prompt: 'Return the first character in `s` that appears exactly once, or `null` if every character repeats.',
-    code: 'fun firstUnique(s: String): Char? {\n    // your code\n}',
-    reference: `fun firstUnique(s: String): Char? {
-    val counts = LinkedHashMap<Char, Int>()
-    for (ch in s) counts[ch] = (counts[ch] ?: 0) + 1
-    return counts.entries.firstOrNull { it.value == 1 }?.key
+    prompt: 'Implement `firstUniqChar` so it returns the index of the first non-repeating character in `s`, or -1 when every character repeats.',
+    code: `// Example 1
+// Input:  s = "leetcode"
+// Output: 0             ('l' occurs once and appears first)
+//
+// Example 2
+// Input:  s = "loveleetcode"
+// Output: 2             ('v' is the earliest character that never repeats)
+//
+// Example 3
+// Input:  s = "aabb"
+// Output: -1            (every character repeats)
+//
+// Constraints: 1 <= s.length <= 10^5, s contains only lowercase English letters.
+
+fun firstUniqChar(s: String): Int {
+    // write your solution
 }`,
-    explanation: 'Count every character, then take the first entry whose count is one. LinkedHashMap keeps insertion order, so "first" is free; with a plain HashMap you would need a second pass over the string instead. O(n) time either way. If the input is guaranteed lowercase ASCII, an IntArray(26) beats the map.',
+    reference: `fun firstUniqChar(s: String): Int {
+    val counts = IntArray(26)
+    for (c in s) counts[c - 'a']++
+    for (i in s.indices) {
+        if (counts[s[i] - 'a'] == 1) return i
+    }
+    return -1
+}`,
+    explanation: 'Two passes over the string: the first tallies each letter into a fixed 26-slot frequency array, and the second returns the index of the earliest letter whose count is one. It runs in O(n) time and O(1) space because the alphabet size is constant. The edge case interviewers check is a string with no unique letter, which must return -1 rather than 0 or the length.',
   },
   {
     id: 'dsa-code-03', topic: 'dsa', difficulty: 'mid', test: 'dsa-round-2',
-    prompt: 'Move every `0` in `nums` to the end, in place, keeping the relative order of the non-zero elements.',
-    code: 'fun moveZeroes(nums: IntArray) {\n    // your code\n}',
+    prompt: 'Implement `moveZeroes` so it shifts every 0 in `nums` to the end while preserving the relative order of the non-zero elements, modifying the array in place.',
+    code: `// Example 1
+// Input:  nums = [0, 1, 0, 3, 12]
+// Output: [1, 3, 12, 0, 0]
+//
+// Example 2
+// Input:  nums = [0, 0]
+// Output: [0, 0]        (no non-zero values to move)
+//
+// Constraints: 1 <= nums.size <= 10^4, mutate in place with O(1) extra space.
+
+fun moveZeroes(nums: IntArray): Unit {
+    // write your solution
+}`,
     reference: `fun moveZeroes(nums: IntArray) {
     var write = 0
-    for (value in nums) {
-        if (value != 0) nums[write++] = value
+    for (read in nums.indices) {
+        if (nums[read] != 0) {
+            val temp = nums[write]
+            nums[write] = nums[read]
+            nums[read] = temp
+            write++
+        }
     }
-    while (write < nums.size) nums[write++] = 0
 }`,
-    explanation: 'A write pointer tracks where the next non-zero belongs. Copy non-zeros forward in one pass, then fill the tail with zeros: O(n) time, O(1) extra space. The stability requirement (keep non-zero order) is what rules out shortcuts like sorting or swapping from both ends.',
+    explanation: 'A write pointer marks where the next non-zero value belongs, and a read pointer scans the array swapping each non-zero element into the write slot before advancing. That packs the non-zeros forward and lets the zeros fall to the tail in O(n) time and O(1) space. Interviewers probe the all-non-zero input, where an element swapped with itself must not disturb the existing order.',
   },
   {
     id: 'dsa-code-04', topic: 'dsa', difficulty: 'mid', test: 'dsa-round-2',
-    prompt: 'Return the largest sum of any contiguous subarray of `nums`. The array has at least one element and may be all negative.',
-    code: 'fun maxSubArray(nums: IntArray): Int {\n    // your code\n}',
+    prompt: 'Implement `maxSubArray` so it returns the largest sum obtainable from any contiguous, non-empty subarray of `nums`.',
+    code: `// Example 1
+// Input:  nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+// Output: 6             (the subarray [4, -1, 2, 1] sums to 6)
+//
+// Example 2
+// Input:  nums = [-3, -1, -2]
+// Output: -1            (all negative, so the best is the single largest element)
+//
+// Constraints: 1 <= nums.size <= 10^5, the chosen subarray must hold at least one element.
+
+fun maxSubArray(nums: IntArray): Int {
+    // write your solution
+}`,
     reference: `fun maxSubArray(nums: IntArray): Int {
     var best = nums[0]
     var current = nums[0]
@@ -132,40 +191,76 @@ export const DSA_ROUND_QUESTIONS: PracticeCodeQuestion[] = [
     }
     return best
 }`,
-    explanation: 'This is Kadane: at each element, either extend the running subarray or start fresh from the element, whichever is larger. Initializing both values from `nums[0]` instead of `0` is the detail interviewers probe, because an all-negative array like `[-3, -1, -2]` must return `-1`, not `0`.',
+    explanation: 'Kadane\'s algorithm keeps a running best-ending-here sum and restarts it whenever starting fresh at the current element beats extending the previous subarray, while a second variable tracks the global maximum. It is O(n) time and O(1) space. The all-negative case is the classic trap: seeding both trackers with nums[0] rather than 0 makes the answer the largest single element instead of an empty-subarray sum.',
   },
   {
     id: 'dsa-code-05', topic: 'dsa', difficulty: 'mid', test: 'dsa-round-3',
-    prompt: 'Return `true` if every bracket in `s` closes in the correct order. `s` contains only the characters `()[]{}`.',
-    code: 'fun isValid(s: String): Boolean {\n    // your code\n}',
-    reference: `fun isValid(s: String): Boolean {
-    val open = ArrayDeque<Char>()
-    val pairs = mapOf(')' to '(', ']' to '[', '}' to '{')
-    for (ch in s) {
-        if (ch in pairs.values) open.addLast(ch)
-        else if (open.removeLastOrNull() != pairs[ch]) return false
-    }
-    return open.isEmpty()
+    prompt: 'Implement `isValid` so it returns true only when every bracket in `s` (which contains only the characters (){}[]) is closed by the correct type in the correct order.',
+    code: `// Example 1
+// Input:  s = "()[]{}"
+// Output: true
+//
+// Example 2
+// Input:  s = "(]"
+// Output: false         (the closer does not match the last opener)
+//
+// Example 3
+// Input:  s = "([)]"
+// Output: false         (brackets close in the wrong order)
+//
+// Constraints: 1 <= s.length <= 10^4, s contains only the characters ( ) { } [ ].
+
+fun isValid(s: String): Boolean {
+    // write your solution
 }`,
-    explanation: 'The most recently opened bracket must close first, which is stack behavior. `removeLastOrNull` returning null covers a closer with nothing open, like `")("`. The final `isEmpty` check catches leftover openers like `"(("`, the case most first attempts miss.',
+    reference: `fun isValid(s: String): Boolean {
+    val stack = ArrayDeque<Char>()
+    val closerToOpener = mapOf(')' to '(', ']' to '[', '}' to '{')
+    for (c in s) {
+        val opener = closerToOpener[c]
+        if (opener == null) {
+            stack.addLast(c)
+        } else if (stack.removeLastOrNull() != opener) {
+            return false
+        }
+    }
+    return stack.isEmpty()
+}`,
+    explanation: 'A stack holds each unmatched opener, and when a closer arrives you pop the top and confirm it is the matching opener, treating any mismatch or empty pop as invalid. Both time and space are O(n). The follow-up interviewers focus on is leftover openers such as ((( , which is why the final check requires the stack to be empty rather than merely never mismatching.',
   },
   {
-    id: 'dsa-code-06', topic: 'dsa', difficulty: 'senior', test: 'dsa-round-3',
-    prompt: 'Return the length of the longest substring of `s` that contains no repeating characters.',
-    code: 'fun lengthOfLongestSubstring(s: String): Int {\n    // your code\n}',
+    id: 'dsa-code-06', topic: 'dsa', difficulty: 'mid', test: 'dsa-round-3',
+    prompt: 'Implement `lengthOfLongestSubstring` so it returns the length of the longest substring of `s` that contains no repeated character.',
+    code: `// Example 1
+// Input:  s = "abcabcbb"
+// Output: 3             (the answer is abc)
+//
+// Example 2
+// Input:  s = "bbbbb"
+// Output: 1             (the answer is a single b)
+//
+// Example 3
+// Input:  s = "pwwkew"
+// Output: 3             (wke is a substring; pwke is only a subsequence)
+//
+// Constraints: 0 <= s.length <= 5 * 10^4, the answer must be a contiguous substring.
+
+fun lengthOfLongestSubstring(s: String): Int {
+    // write your solution
+}`,
     reference: `fun lengthOfLongestSubstring(s: String): Int {
     val lastSeen = HashMap<Char, Int>()
     var start = 0
     var best = 0
-    for (i in s.indices) {
-        val prev = lastSeen[s[i]]
-        if (prev != null && prev >= start) start = prev + 1
-        lastSeen[s[i]] = i
-        best = maxOf(best, i - start + 1)
+    for (end in s.indices) {
+        val c = s[end]
+        lastSeen[c]?.let { if (it >= start) start = it + 1 }
+        lastSeen[c] = end
+        best = maxOf(best, end - start + 1)
     }
     return best
 }`,
-    explanation: 'Slide a window over the string and remember where each character last appeared. On a repeat, jump the window start past the previous occurrence. The `prev >= start` guard matters: for `"abba"`, when the second `a` arrives, the first `a` is already outside the window and must not drag `start` backwards.',
+    explanation: 'A sliding window bounded by start and end grows rightward, and when the current character was last seen at or after start, the left edge jumps just past that previous index so the window never holds a duplicate. Tracking the widest window gives O(n) time and O(min(n, alphabet)) space. The empty string must return 0, and the bug interviewers watch for is failing to ignore a previous index that lies before the current window start.',
   },
 ];
 

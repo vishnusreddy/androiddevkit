@@ -46,16 +46,19 @@
 }
 
 :root[data-theme='dark'] {
-  --bg: #0d0f0e;
-  --surface: #171a18;
-  --surface-2: #212422;
-  --surface-3: #2c302d;
-  --border: #2b2f2c;
-  --border-strong: #454a46;
+  /* Warm-neutral charcoal, deepest to lightest. Each surface is visibly a
+     step up, and borders stay light enough to read against every surface so
+     cards land as distinct panels. Not black, not green-tinted. */
+  --bg: #141312;
+  --surface: #1c1b19;
+  --surface-2: #252321;
+  --surface-3: #2f2d2a;
+  --border: #37342f;
+  --border-strong: #4c4842;
 
-  --ink: #f2f4f1;
-  --ink-soft: #b8bfb9;
-  --ink-faint: #8b928c;
+  --ink: #eceae7;
+  --ink-soft: #b0aca6;
+  --ink-faint: #85807a;
 
   --accent: #5cca8e;
   --accent-hover: #7cd8a6;
