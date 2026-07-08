@@ -3,6 +3,8 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE } from '../consts';
+import EzoicDynamicAds from '../components/EzoicDynamicAds.astro';
+import EzoicAdsHeader from '../components/EzoicAdsHeader.astro';
 import PostHog from '../components/posthog.astro';
 import KofiWidget from '../components/KofiWidget.astro';
 
@@ -19,7 +21,7 @@ interface Props {
   publishedTime?: Date;
   modifiedTime?: Date;
   noindex?: boolean;
-  /** Load AdSense only on pages with substantial publisher-authored content. */
+  /** Enable Ezoic ad placements on pages with substantial publisher-authored content. */
   ads?: boolean;
   /** Hide the global footer/header chrome - rarely needed. */
   bare?: boolean;
@@ -85,6 +87,7 @@ const pageSchema = type === 'article'
 <!doctype html>
 <html lang="en">
   <head>
+    <EzoicAdsHeader />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -104,14 +107,6 @@ const pageSchema = type === 'article'
       gtag('js', new Date());
       gtag('config', 'G-LT34BZT1CE');
     </script>
-
-    {ads && (
-      <!-- Auto ads are intentionally limited to substantial editorial pages. -->
-      <script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5864821304414128"
-        crossorigin="anonymous"></script>
-    )}
 
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
@@ -162,6 +157,7 @@ const pageSchema = type === 'article'
     <main>
       <slot />
     </main>
+    {ads && <EzoicDynamicAds />}
     {!bare && <Footer />}
     {!bare && <KofiWidget />}
   </body>

@@ -1,0 +1,80 @@
+<script is:inline>
+  (function () {
+    var selector = '.ezoicad';
+    var scheduled = false;
+
+    function pushEzoic(callback) {
+      window.ezstandalone = window.ezstandalone || {};
+      window.ezstandalone.cmd = window.ezstandalone.cmd || [];
+      window.ezstandalone.cmd.push(callback);
+    }
+
+    function hasAdSpots(root) {
+      if (!root) return false;
+      if (root.nodeType === 1 && root.matches && root.matches(selector)) return true;
+      return Boolean(root.querySelector && root.querySelector(selector));
+    }
+
+    function showAdSpots() {
+      scheduled = false;
+      if (!document.querySelector(selector)) return;
+
+      pushEzoic(function () {
+        window.ezstandalone.showAds(selector);
+      });
+    }
+
+    function scheduleShowAdSpots() {
+      if (scheduled) return;
+      scheduled = true;
+      window.requestAnimationFrame(showAdSpots);
+    }
+
+    window.AndroidDevKitAds = {
+      refresh: scheduleShowAdSpots,
+      destroyAll: function () {
+        pushEzoic(function () {
+          window.ezstandalone.destroyAll();
+        });
+      },
+      suppressAdditionalFormats: function (reason) {
+        pushEzoic(function () {
+          if (window.ezstandalone.setOutstreamAllowed) {
+            window.ezstandalone.setOutstreamAllowed(false, { reason: reason || 'dynamic-content' });
+          }
+          if (window.ezstandalone.setInterstitialAllowed) {
+            window.ezstandalone.setInterstitialAllowed(false, { reason: reason || 'dynamic-content' });
+          }
+        });
+      },
+      allowAdditionalFormats: function (reason) {
+        pushEzoic(function () {
+          var options = { reason: reason || 'dynamic-content', requestAdOnAllow: true };
+          if (window.ezstandalone.setOutstreamAllowed) {
+            window.ezstandalone.setOutstreamAllowed(true, options);
+          }
+          if (window.ezstandalone.setInterstitialAllowed) {
+            window.ezstandalone.setInterstitialAllowed(true, options);
+          }
+        });
+      },
+    };
+
+    scheduleShowAdSpots();
+    document.addEventListener('astro:page-load', scheduleShowAdSpots);
+    document.addEventListener('androiddevkit:ads-refresh', scheduleShowAdSpots);
+
+    if ('MutationObserver' in window) {
+      new MutationObserver(function (mutations) {
+        for (var i = 0; i < mutations.length; i++) {
+          for (var j = 0; j < mutations[i].addedNodes.length; j++) {
+            if (hasAdSpots(mutations[i].addedNodes[j])) {
+              scheduleShowAdSpots();
+              return;
+            }
+          }
+        }
+      }).observe(document.body, { childList: true, subtree: true });
+    }
+  })();
+</script>

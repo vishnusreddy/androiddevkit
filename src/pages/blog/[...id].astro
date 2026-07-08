@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import EzoicAdSpot from '../../components/EzoicAdSpot.astro';
 import Comments from '../../components/Comments.astro';
 
 export const getStaticPaths = (async () => {
@@ -66,9 +67,24 @@ const fmt = d.date.toLocaleDateString('en-US', {
       </figure>
     )}
 
+    <EzoicAdSpot
+      location="under_page_title"
+      mobileSizes="300x250,336x280"
+      tabletSizes="300x250,336x280"
+      desktopSizes="728x90,970x250"
+    />
+
     <div class="prose post-body">
       <Content />
     </div>
+
+    <EzoicAdSpot
+      location="bottom_of_page"
+      mobileSizes="300x250,336x280"
+      tabletSizes="300x250,336x280"
+      desktopSizes="728x90"
+      required={false}
+    />
   </article>
 
   <Comments />
