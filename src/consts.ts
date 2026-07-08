@@ -6,7 +6,7 @@ export const SITE = {
   description:
     'A community-driven Android interview practice platform: one-click topic-wise mock tests, timed full mock interviews, a curated question bank, and real interview experiences.',
   // Version the default image URL so social crawlers fetch a fresh preview after changes.
-  socialImage: '/og-default.png?v=20260706',
+  socialImage: '/og-default.png?v=20260708',
   socialImageAlt:
     'AndroidDevKit - mock tests and interview practice for Android engineers',
   github: 'https://github.com/vishnusreddy/androiddevkit',
