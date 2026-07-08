@@ -2,13 +2,13 @@ export const SITE = {
   name: 'AndroidDevKit',
   domain: 'androiddevkit.com',
   url: 'https://androiddevkit.com',
-  tagline: 'Focused Android interview prep, built by the community.',
+  tagline: 'Mock tests and interview practice for Android engineers.',
   description:
-    'A free, community-driven Android interview preparation resource with curated questions, topic guides, practice sessions, and real interview experiences.',
+    'A community-driven Android interview practice platform: one-click topic-wise mock tests, timed full mock interviews, a curated question bank, and real interview experiences.',
   // Version the default image URL so social crawlers fetch a fresh preview after changes.
   socialImage: '/og-default.png?v=20260706',
   socialImageAlt:
-    'AndroidDevKit - open-source interview prep for Android engineers',
+    'AndroidDevKit - mock tests and interview practice for Android engineers',
   github: 'https://github.com/vishnusreddy/androiddevkit',
   reddit: 'https://www.reddit.com/r/AndroidDevKit/',
   author: 'AndroidDevKit Community',
@@ -54,6 +54,8 @@ export type NavGroup =
  * this list automatically.
  */
 export const NAV_GROUPS: NavGroup[] = [
+  { label: 'Mock Tests', href: '/tests/' },
+  { label: 'Practice', href: '/practice/' },
   {
     label: 'Learn',
     items: [
@@ -61,7 +63,6 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: 'Questions', href: '/questions/', desc: 'Curated interview questions' },
     ],
   },
-  { label: 'Practice', href: '/practice/' },
   { label: 'Progress', href: '/progress/' },
   {
     label: 'Community',

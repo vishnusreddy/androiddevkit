@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TopicCard from '../components/TopicCard.astro';
 import { SITE } from '../consts';
+import { MOCK_TESTS } from '../data/mock-tests';
 
 const topics = await getCollection('topics');
 const questions = await getCollection('questions');
@@ -41,8 +42,8 @@ const features = [
       'M4 19.5A2.5 2.5 0 0 1 6.5 17H20',
       'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z',
     ],
-    title: 'Topic-by-topic guides',
-    body: 'Coroutines, Compose, architecture, system design - drill exactly the areas you are rusty on.',
+    title: 'Topic-wise mock tests',
+    body: 'Coroutines, Compose, architecture, system design - one-click tests that drill exactly the areas you are rusty on.',
   },
   {
     iconPaths: [
@@ -50,8 +51,8 @@ const features = [
       'M12 17h.01',
       'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z',
     ],
-    title: 'A real question bank',
-    body: 'Standalone questions tagged by difficulty, each with an answer that explains the why.',
+    title: 'Timed full mock interviews',
+    body: 'Junior, mid, and senior mocks run against the clock, so the pressure feels familiar before the real thing.',
   },
   {
     iconPaths: [
@@ -66,8 +67,8 @@ const features = [
     iconPaths: [
       'M20 6 9 17l-5-5',
     ],
-    title: 'Progress you can see',
-    body: 'Mark questions done and save the hard ones for review - stored privately in your browser.',
+    title: 'Scores and review, tracked',
+    body: 'Streaks, personal bests, and a queue of missed questions to revisit - stored privately in your browser.',
   },
 ];
 ---
@@ -76,86 +77,52 @@ const features = [
   <section class="hero">
     <div class="container">
       <div class="hero-copy">
-        <h1>Switch jobs in Android dev with zero guesswork.</h1>
+        <h1>Practice like it's the real interview.</h1>
         <p class="lede">
-          {SITE.name} is a community-built resource with curated interview questions,
-          topic deep-dives, and real interview experiences - everything you
-          need to prepare, in one place.
+          One-click topic-wise mock tests, timed full mocks, and a question
+          bank with explanations that tell you why - everything you need to
+          prepare, in one place.
         </p>
         <div class="hero-cta">
-          <a class="btn btn-primary" href="/topics/">
-            Start with topics
+          <a class="btn btn-primary" href="/tests/">
+            Start a mock test
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
-          <a class="btn btn-ghost" href="/questions/">Browse all questions</a>
+          <a class="btn btn-ghost" href="/practice/">Build a custom session</a>
         </div>
         <p class="hero-meta">
-          {questions.length} questions · {topics.length} topics ·
+          {questions.length} questions · {topics.length} topics · {MOCK_TESTS.length} structured mock tests ·
           {experiences.length} interview {experiences.length === 1 ? 'experience' : 'experiences'} ·
-          free &amp; open source, no sign-up
+          no sign-up needed
         </p>
       </div>
     </div>
   </section>
 
-  <!-- ===== Featured topics ===== -->
-  <section class="section topics-section">
-    <div class="container">
-      <div class="section-head">
-        <h2>Start with a topic</h2>
-        <a class="see-all" href="/topics/">All topics →</a>
-      </div>
-
-      {featured.length > 0 ? (
-        <div class="grid grid-3">
-          {featured.map((t) => (
-            <TopicCard
-              href={`/topics/${t.id}/`}
-              topicId={t.id}
-              title={t.data.title}
-              description={t.data.description}
-              category={t.data.category}
-              count={countFor(t.id)}
-              ids={idsFor(t.id)}
-            />
-          ))}
-        </div>
-      ) : (
-        <div class="empty card">
-          <p>
-            No topics yet - this is step one. Topics and questions get added in
-            the next phase, or by the community via
-            <a href={SITE.github} target="_blank" rel="noopener noreferrer"> pull requests</a>.
-          </p>
-        </div>
-      )}
-    </div>
-  </section>
-
-  <!-- ===== Practice knowledge check ===== -->
+  <!-- ===== Mock tests ===== -->
   <section class="section practice-section">
     <div class="container">
       <div class="practice-feature">
         <div class="practice-copy">
-          <span class="practice-eyebrow">Practice mode</span>
-          <h2>Put what you’ve learned to the test.</h2>
+          <span class="practice-eyebrow">Mock tests</span>
+          <h2>Run a timed mock, see exactly what to fix.</h2>
           <p>
-            This isn’t a simulated interview. Pick a topic, difficulty, and
-            session length, then use your results to see what stuck and what
-            deserves another pass.
+            Start a structured, scored mock in one click. Answer against the
+            clock, then review every question you missed so you know exactly
+            what to study next.
           </p>
 
           <ul class="practice-points">
-            <li><span aria-hidden="true">✓</span> Timed 10–20 question sessions</li>
-            <li><span aria-hidden="true">✓</span> MCQs and written answer practice</li>
-            <li><span aria-hidden="true">✓</span> Clear scores, streaks, and personal bests</li>
+            <li><span aria-hidden="true">✓</span> Topic-wise tests, started in one click</li>
+            <li><span aria-hidden="true">✓</span> Timed full mocks for junior, mid, and senior</li>
+            <li><span aria-hidden="true">✓</span> Score breakdowns, streaks, and personal bests</li>
           </ul>
 
-          <a class="btn btn-primary" href="/practice/">
-            Test your knowledge
+          <a class="btn btn-primary" href="/tests/">
+            Browse mock tests
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
-          <span class="practice-note">Free · no sign-up · progress stays in your browser</span>
+          <span class="practice-note">No sign-up · progress stays in your browser</span>
         </div>
 
         <div class="practice-preview" aria-hidden="true">
@@ -189,6 +156,40 @@ const features = [
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== Featured topics ===== -->
+  <section class="section topics-section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Brush up by topic</h2>
+        <a class="see-all" href="/topics/">All topics →</a>
+      </div>
+
+      {featured.length > 0 ? (
+        <div class="grid grid-3">
+          {featured.map((t) => (
+            <TopicCard
+              href={`/topics/${t.id}/`}
+              topicId={t.id}
+              title={t.data.title}
+              description={t.data.description}
+              category={t.data.category}
+              count={countFor(t.id)}
+              ids={idsFor(t.id)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="empty card">
+          <p>
+            No topics yet - this is step one. Topics and questions get added in
+            the next phase, or by the community via
+            <a href={SITE.github} target="_blank" rel="noopener noreferrer"> pull requests</a>.
+          </p>
+        </div>
+      )}
     </div>
   </section>
 
@@ -319,9 +320,6 @@ const features = [
     border-bottom: 1px solid var(--border);
     background: var(--surface);
   }
-  :global(:root[data-theme='dark']) .hero {
-    background: transparent;
-  }
   .hero-copy {
     max-width: 640px;
     padding-bottom: clamp(2rem, 5vw, 3.5rem);
@@ -364,11 +362,11 @@ const features = [
   }
 
   .topics-section {
-    padding-top: clamp(2.25rem, 5vw, 3.5rem);
+    padding-top: 0;
   }
 
   .practice-section {
-    padding-block: 0 clamp(2.75rem, 6vw, 4.5rem);
+    padding-top: clamp(2.25rem, 5vw, 3.5rem);
   }
   .practice-feature {
     display: grid;
@@ -602,9 +600,6 @@ const features = [
     border-block: 1px solid var(--border);
     background: var(--surface);
     padding-block: clamp(2.25rem, 5vw, 3.5rem);
-  }
-  :global(:root[data-theme='dark']) .feature-band {
-    background: transparent;
   }
   .feature-grid {
     display: grid;

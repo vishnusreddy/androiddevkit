@@ -1,0 +1,273 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { DSA_ROUND_QUESTIONS, KOTLIN_DSA_CODE_QUESTIONS, PRACTICE_MCQS } from '../../data/practice-mcqs';
+import { MOCK_TESTS, type MockTest } from '../../data/mock-tests';
+
+const questions = await getCollection('questions');
+
+// Mirror the practice engine's pool logic so no card advertises more
+// questions than actually exist for its topic / format / difficulty.
+const writtenPool = questions.map((q) => ({
+  topic: q.data.topic.id,
+  difficulty: q.data.difficulty as string,
+  test: undefined as string | undefined,
+}));
+
+const matches = (
+  item: { topic: string; difficulty: string; test?: string },
+  test: MockTest,
+) =>
+  (test.topic === 'all' || item.topic === test.topic) &&
+  (test.preset ? item.test === test.preset : !item.test) &&
+  (test.difficulty === 'all' || item.difficulty === test.difficulty);
+
+function availableCount(test: MockTest): number {
+  const written = writtenPool.filter((item) => matches(item, test)).length;
+  const mcq = PRACTICE_MCQS.filter((item) => matches(item, test)).length;
+  const code = [...KOTLIN_DSA_CODE_QUESTIONS, ...DSA_ROUND_QUESTIONS].filter((item) => matches(item, test)).length;
+  if (test.format === 'mcq') return mcq;
+  if (test.format === 'written') return written + code;
+  return written + mcq + code;
+}
+
+const formatLabels: Record<MockTest['format'], string> = {
+  mcq: 'Multiple choice',
+  written: 'Written',
+  mixed: 'Mixed',
+};
+const difficultyLabels: Record<MockTest['difficulty'], string> = {
+  all: 'All levels',
+  junior: 'Junior',
+  mid: 'Mid',
+  senior: 'Senior',
+};
+
+// Clamp each advertised length to the real pool.
+const prepared = MOCK_TESTS.map((test) => {
+  const pool = availableCount(test);
+  const length = Math.min(test.length, pool);
+  const minutes = Math.round(test.duration / 60);
+  return {
+    ...test,
+    length,
+    minutes,
+    meta: [
+      `${length} question${length === 1 ? '' : 's'}`,
+      test.duration ? `${minutes} min` : 'Untimed',
+      formatLabels[test.format],
+      difficultyLabels[test.difficulty],
+    ],
+  };
+});
+
+const fullMocks = prepared.filter((t) => t.kind === 'full' || t.kind === 'sprint');
+const interviews = prepared.filter((t) => t.kind === 'interview');
+const dsaRounds = prepared.filter((t) => t.kind === 'dsa');
+const topicTests = prepared.filter((t) => t.kind === 'topic');
+---
+
+<BaseLayout
+  title="Android Mock Tests"
+  description="Timed Android interview mock tests you can start in one click. Full junior, mid, and senior mocks plus focused topic tests on Kotlin, coroutines, Compose, architecture, and system design."
+>
+  <div class="tests-shell container">
+    <header class="tests-hero">
+      <span class="eyebrow">Mock tests</span>
+      <h1>Pick a test. Hit start.</h1>
+      <p>
+        Timed, one-click Android interview sets. Every run scores itself, shows
+        your misses, and remembers your best.
+      </p>
+    </header>
+
+    <section class="tests-section" aria-labelledby="full-mocks-heading">
+      <div class="section-head">
+        <h2 id="full-mocks-heading">Full mock tests</h2>
+        <p>Cross-topic runs that mirror a real screen. Start with your level.</p>
+      </div>
+      <div class="tests-grid tests-grid--full">
+        {fullMocks.map((test) => (
+          <article class="test-card card card-hover" data-test-id={test.id}>
+            <div class="test-card-body">
+              <h3>{test.title}</h3>
+              <p class="test-desc">{test.description}</p>
+              <ul class="test-meta">
+                {test.meta.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="test-card-foot">
+              <p class="test-record" data-record={test.id} aria-live="polite">
+                <span class="test-record-empty">Not attempted</span>
+              </p>
+              <a class="btn btn-primary" href={`/practice/?test=${test.id}`}>
+                Start test
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="tests-section" aria-labelledby="interviews-heading">
+      <div class="section-head">
+        <h2 id="interviews-heading">Mock interviews</h2>
+        <p>Written answers against the clock. Reveal the reference, then grade yourself honestly.</p>
+      </div>
+      <div class="tests-grid tests-grid--full">
+        {interviews.map((test) => (
+          <article class="test-card card card-hover" data-test-id={test.id}>
+            <div class="test-card-body">
+              <h3>{test.title}</h3>
+              <p class="test-desc">{test.description}</p>
+              <ul class="test-meta">
+                {test.meta.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="test-card-foot">
+              <p class="test-record" data-record={test.id} aria-live="polite">
+                <span class="test-record-empty">Not attempted</span>
+              </p>
+              <a class="btn btn-primary" href={`/practice/?test=${test.id}`}>
+                Start interview
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="tests-section" aria-labelledby="dsa-rounds-heading">
+      <div class="section-head">
+        <h2 id="dsa-rounds-heading">DSA rounds</h2>
+        <p>Two coding questions per round, ten minutes each. Write real Kotlin, then compare with the reference solution.</p>
+      </div>
+      <div class="tests-grid tests-grid--dsa">
+        {dsaRounds.map((test) => (
+          <article class="test-card card card-hover" data-test-id={test.id}>
+            <div class="test-card-body">
+              <h3>{test.title}</h3>
+              <p class="test-desc">{test.description}</p>
+              <ul class="test-meta">
+                {test.meta.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="test-card-foot">
+              <p class="test-record" data-record={test.id} aria-live="polite">
+                <span class="test-record-empty">Not attempted</span>
+              </p>
+              <a class="btn btn-primary" href={`/practice/?test=${test.id}`}>
+                Start round
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="tests-section" aria-labelledby="topic-tests-heading">
+      <div class="section-head">
+        <h2 id="topic-tests-heading">Topic-wise tests</h2>
+        <p>Ten multiple-choice questions per topic, twelve minutes on the clock.</p>
+      </div>
+      <div class="tests-grid tests-grid--topic">
+        {topicTests.map((test) => (
+          <article class="test-card card card-hover" data-test-id={test.id}>
+            <div class="test-card-body">
+              <h3>{test.title}</h3>
+              <p class="test-desc">{test.description}</p>
+              <ul class="test-meta">
+                {test.meta.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="test-card-foot">
+              <p class="test-record" data-record={test.id} aria-live="polite">
+                <span class="test-record-empty">Not attempted</span>
+              </p>
+              <a class="btn btn-primary" href={`/practice/?test=${test.id}`}>
+                Start test
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <style is:global>
+    .tests-shell { padding-block: clamp(2rem, 5vw, 4rem) 4rem; }
+    .tests-hero { max-width: 640px; margin-bottom: clamp(2rem, 5vw, 3.25rem); }
+    .tests-hero h1 { margin: .4rem 0 .7rem; font-size: clamp(2.4rem, 6vw, 4.2rem); letter-spacing: -.055em; }
+    .tests-hero p { margin: 0; font-size: 1.08rem; color: var(--ink-soft); }
+
+    .tests-section { margin-top: clamp(2rem, 4vw, 3rem); }
+    .section-head { margin-bottom: 1.25rem; }
+    .section-head h2 { margin: 0 0 .25rem; font-size: clamp(1.3rem, 2.6vw, 1.6rem); letter-spacing: -.02em; }
+    .section-head p { margin: 0; font-size: .92rem; color: var(--ink-faint); }
+
+    .tests-grid { display: grid; gap: 1rem; }
+    .tests-grid--full { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tests-grid--dsa { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .tests-grid--topic { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .test-card { display: flex; flex-direction: column; padding: clamp(1.25rem, 2.5vw, 1.6rem); }
+    .test-card-body { flex: 1 0 auto; }
+    .test-card h3 { margin: 0 0 .5rem; font-size: 1.14rem; letter-spacing: -.015em; }
+    .test-desc { margin: 0 0 1rem; font-size: .9rem; line-height: 1.55; color: var(--ink-soft); }
+
+    .test-meta { display: flex; flex-wrap: wrap; gap: .4rem .5rem; margin: 0 0 1.1rem; padding: 0; list-style: none; }
+    .test-meta li { position: relative; display: inline-flex; align-items: center; font-size: .75rem; font-weight: 600; color: var(--ink-faint); padding-right: .5rem; }
+    .test-meta li::after { content: '·'; position: absolute; right: -.05rem; color: var(--border-strong); }
+    .test-meta li:last-child { padding-right: 0; }
+    .test-meta li:last-child::after { content: none; }
+
+    .test-card-foot { border-top: 1px solid var(--border); margin-top: auto; padding-top: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .test-record { margin: 0; font-size: .78rem; line-height: 1.35; color: var(--ink-faint); }
+    .test-record-best { color: var(--ink); font-weight: 700; }
+    .test-record-best strong { color: var(--accent); font: 800 .95rem var(--font-mono); }
+    .test-record-attempts { display: block; color: var(--ink-faint); font-size: .72rem; }
+    .test-record-empty { color: var(--ink-faint); }
+    .test-card-foot .btn { flex: 0 0 auto; }
+
+    @media (max-width: 900px) {
+      .tests-grid--topic, .tests-grid--dsa { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .tests-shell { padding-inline: .9rem; }
+      .tests-grid--full, .tests-grid--topic, .tests-grid--dsa { grid-template-columns: 1fr; }
+      .test-card-foot { flex-direction: column; align-items: stretch; }
+      .test-card-foot .btn { width: 100%; }
+    }
+  </style>
+
+  <script>
+    // Hydrate each card's best-score / attempts readout from localStorage.
+    document.querySelectorAll<HTMLElement>('[data-record]').forEach((node) => {
+      const id = node.dataset.record;
+      if (!id) return;
+      try {
+        const best = Number(localStorage.getItem(`adk-test-best-${id}`) || 0);
+        const attempts = Number(localStorage.getItem(`adk-test-attempts-${id}`) || 0);
+        if (!attempts) return;
+        const attemptLabel = `${attempts} attempt${attempts === 1 ? '' : 's'}`;
+        node.innerHTML =
+          `<span class="test-record-best">Best <strong>${best}%</strong></span>` +
+          `<span class="test-record-attempts">${attemptLabel}</span>`;
+      } catch {
+        /* Storage is optional; keep the empty state. */
+      }
+    });
+  </script>
+</BaseLayout>
