@@ -85,6 +85,13 @@ Static build on **Cloudflare Pages**:
 
 Every merged PR to `main` triggers an automatic deploy.
 
+## Support
+
+AndroidDevKit is free and has no paywall. If it helped you prep, you can support
+its upkeep on Ko-fi:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B1U522TQU6)
+
 ## License
 
 [MIT](./LICENSE) - content and code. Use it, fork it, learn from it.
