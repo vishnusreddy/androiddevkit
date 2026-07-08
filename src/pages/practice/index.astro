@@ -1,7 +1,10 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { KOTLIN_DSA_CODE_QUESTIONS, PRACTICE_MCQS } from '../../data/practice-mcqs';
+import { DSA_ROUND_QUESTIONS, KOTLIN_DSA_CODE_QUESTIONS, PRACTICE_MCQS } from '../../data/practice-mcqs';
+
+const CODE_QUESTIONS = [...KOTLIN_DSA_CODE_QUESTIONS, ...DSA_ROUND_QUESTIONS];
+import { MOCK_TESTS } from '../../data/mock-tests';
 
 const topics = (await getCollection('topics')).sort((a, b) => a.data.order - b.data.order);
 const questions = await getCollection('questions');
@@ -149,7 +152,7 @@ const topicManifest = topics.map((topic) => ({
             </li>
           </ul>
           <div class="pool-stat">
-            <span>{writtenManifest.length + PRACTICE_MCQS.length + KOTLIN_DSA_CODE_QUESTIONS.length}</span>
+            <span>{writtenManifest.length + PRACTICE_MCQS.length + CODE_QUESTIONS.length}</span>
             <small>questions in the practice pool</small>
           </div>
         </aside>
@@ -158,10 +161,13 @@ const topicManifest = topics.map((topic) => ({
 
     <section class="game-view" id="game-view" hidden aria-live="polite">
       <div class="game-topbar">
-        <button type="button" class="quit-btn" id="quit-session" aria-label="End session">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6" /></svg>
-          End session
-        </button>
+        <div class="topbar-left">
+          <button type="button" class="quit-btn" id="quit-session" aria-label="End session">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6" /></svg>
+            End session
+          </button>
+          <span class="test-tag" id="test-tag" hidden></span>
+        </div>
         <div class="live-stats">
           <div><span>Streak</span><strong id="live-streak">0</strong></div>
           <div><span>XP</span><strong id="live-xp">0</strong></div>
@@ -244,11 +250,23 @@ const topicManifest = topics.map((topic) => ({
           <div><strong id="result-focus">0</strong><span>focus breaks</span></div>
         </div>
 
+        <div class="topic-breakdown" id="topic-breakdown" hidden>
+          <span class="breakdown-label">By topic</span>
+          <ul id="topic-breakdown-list"></ul>
+        </div>
+
         <div class="result-actions">
           <button type="button" class="btn btn-primary" id="retry-session">Run it again</button>
+          <a class="btn btn-ghost" id="back-to-tests" href="/tests/" hidden>Back to all tests</a>
           <button type="button" class="btn btn-ghost" id="new-session">Change setup</button>
         </div>
       </div>
+
+      <section class="misses-review" id="misses-review" hidden aria-labelledby="misses-heading">
+        <h2 id="misses-heading">Review your misses</h2>
+        <p class="misses-intro" id="misses-intro"></p>
+        <div class="misses-list" id="misses-list"></div>
+      </section>
     </section>
   </div>
 
@@ -265,8 +283,9 @@ const topicManifest = topics.map((topic) => ({
 
   <script type="application/json" id="practice-written-data" set:html={JSON.stringify(writtenManifest)} />
   <script type="application/json" id="practice-mcq-data" set:html={JSON.stringify(PRACTICE_MCQS)} />
-  <script type="application/json" id="practice-code-data" set:html={JSON.stringify(KOTLIN_DSA_CODE_QUESTIONS)} />
+  <script type="application/json" id="practice-code-data" set:html={JSON.stringify(CODE_QUESTIONS)} />
   <script type="application/json" id="practice-topic-data" set:html={JSON.stringify(topicManifest)} />
+  <script type="application/json" id="practice-test-data" set:html={JSON.stringify(MOCK_TESTS)} />
 </BaseLayout>
 
 <style is:global>
@@ -400,6 +419,56 @@ const topicManifest = topics.map((topic) => ({
   .result-stats strong { font: 800 1.2rem var(--font-mono); }
   .result-stats span { color: var(--ink-faint); font-size: .7rem; }
   .result-actions { display: flex; justify-content: center; gap: .7rem; flex-wrap: wrap; }
+
+  .topbar-left { display: flex; align-items: center; gap: .7rem; min-width: 0; }
+  .test-tag { display: inline-flex; align-items: center; max-width: 42vw; padding: .3rem .6rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--ink-soft); font-size: .74rem; font-weight: 700; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .test-tag[hidden] { display: none; }
+
+  .topic-breakdown { margin: 1.6rem 0 1.8rem; padding: 1.05rem 1.2rem 1.15rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); text-align: left; }
+  .topic-breakdown[hidden] { display: none; }
+  .breakdown-label { display: block; margin-bottom: .8rem; color: var(--ink-faint); font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+  #topic-breakdown-list { margin: 0; padding: 0; list-style: none; display: grid; gap: .65rem; }
+  #topic-breakdown-list li { display: grid; grid-template-columns: minmax(0, 1fr) clamp(80px, 24%, 140px) 3.2em; align-items: center; gap: .9rem; }
+  #topic-breakdown-list .bd-name { font-size: .84rem; font-weight: 650; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #topic-breakdown-list .bd-count { font: 650 .76rem var(--font-mono); color: var(--ink-soft); text-align: right; font-variant-numeric: tabular-nums; }
+  #topic-breakdown-list .bd-bar { height: 6px; border-radius: 99px; background: var(--surface-3); border: 1px solid var(--border); overflow: hidden; }
+  #topic-breakdown-list .bd-bar span { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+  @media (max-width: 560px) {
+    #topic-breakdown-list li { grid-template-columns: minmax(0, 1fr) 72px 3.2em; gap: .6rem; }
+  }
+
+  .misses-review { max-width: 760px; margin: 1.5rem auto 0; }
+  .misses-review[hidden] { display: none; }
+  .misses-review h2 { font-size: 1.2rem; margin: 0 0 .3rem; }
+  .misses-intro { margin: 0 0 1.1rem; font-size: .88rem; color: var(--ink-faint); }
+  .misses-list { display: grid; gap: .6rem; }
+  .miss-item { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); overflow: hidden; }
+  .miss-item > summary { display: flex; align-items: flex-start; gap: .7rem; padding: .9rem 1.05rem; cursor: pointer; list-style: none; color: var(--ink); }
+  .miss-item > summary::-webkit-details-marker { display: none; }
+  .miss-item > summary::marker { content: ''; }
+  .miss-item > summary:hover { background: var(--surface-2); }
+  .miss-item > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .miss-chevron { flex: 0 0 auto; margin-top: .15rem; color: var(--ink-faint); transition: transform .18s ease; }
+  .miss-item[open] .miss-chevron { transform: rotate(90deg); }
+  .miss-summary-text { flex: 1 1 auto; min-width: 0; }
+  .miss-summary-text .miss-prompt { display: block; font-size: .9rem; font-weight: 600; line-height: 1.45; }
+  .miss-summary-text .miss-verdict { display: block; margin-top: .2rem; font-size: .74rem; font-weight: 700; }
+  .miss-verdict.is-wrong { color: #c53e38; }
+  .miss-verdict.is-partial { color: #8a6100; }
+  :root[data-theme='dark'] .miss-verdict.is-partial { color: #e5c377; }
+  .miss-body { padding: 0 1.05rem 1.05rem; border-top: 1px solid var(--border); }
+  .miss-body .miss-row { margin-top: .85rem; }
+  .miss-body .miss-row-label { display: block; margin-bottom: .3rem; color: var(--ink-faint); font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+  .miss-answer { display: flex; align-items: baseline; gap: .5rem; padding: .5rem .7rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: .88rem; line-height: 1.45; }
+  .miss-answer.is-yours { border-color: #c53e38; background: color-mix(in srgb, #d64b45 7%, var(--surface)); color: var(--ink); }
+  .miss-answer.is-correct { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+  .miss-answer .miss-key { flex: 0 0 auto; font: 800 .72rem var(--font-mono); }
+  .miss-answer.is-yours .miss-key { color: #c53e38; }
+  .miss-answer.is-correct .miss-key { color: var(--accent); }
+  .miss-explanation { margin-top: .85rem; font-size: .88rem; color: var(--ink-soft); }
+  .miss-explanation > :first-child { margin-top: 0; }
+  .miss-explanation > :last-child { margin-bottom: 0; }
+  .miss-reference { margin: .3rem 0 0; padding: .8rem .95rem; background: var(--surface-2); border-radius: var(--radius-sm); color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; font-size: .82rem; }
   .focus-toast { position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 100; display: grid; padding: .85rem 1rem; border: 1px solid #c53e38; border-radius: var(--radius-sm); background: var(--surface); box-shadow: var(--shadow-lg); }
   .focus-toast[hidden] { display: none; }
   .focus-toast strong { font-size: .85rem; color: #c53e38; }
@@ -442,13 +511,17 @@ const topicManifest = topics.map((topic) => ({
   type CodeQuestion = { id: string; topic: string; difficulty: Difficulty; prompt: string; reference: string; explanation: string; test: string; code?: string };
   type SessionQuestion = (WrittenQuestion & { type: 'written' }) | (McqQuestion & { type: 'mcq' }) | (CodeQuestion & { type: 'code' });
   type TopicInfo = { id: string; title: string; writtenCount: number; mcqCount: number };
+  type MockTest = { id: string; title: string; description: string; topic: string; format: 'mcq' | 'written' | 'mixed'; difficulty: 'all' | 'junior' | 'mid' | 'senior'; length: number; duration: number; preset?: string; kind: 'topic' | 'full' | 'sprint' };
 
   const parseData = <T,>(id: string): T => JSON.parse(document.getElementById(id)?.textContent || '[]') as T;
   const written = parseData<WrittenQuestion[]>('practice-written-data');
   const mcqs = parseData<McqQuestion[]>('practice-mcq-data');
   const coding = parseData<CodeQuestion[]>('practice-code-data');
   const topics = parseData<TopicInfo[]>('practice-topic-data');
+  const mockTests = parseData<MockTest[]>('practice-test-data');
   const topicNames = new Map(topics.map((topic) => [topic.id, topic.title]));
+  // DSA round questions carry a topic that has no content-collection entry.
+  topicNames.set('dsa', 'DSA');
   const difficultyLabels: Record<Difficulty, string> = { junior: 'Junior', mid: 'Mid', senior: 'Senior' };
 
   const escapeHtml = (text: string) =>
@@ -480,6 +553,17 @@ const topicManifest = topics.map((topic) => ({
   const questionCode = $('#question-code')!;
   const responseLabel = $('#response-label')!;
   const responseHint = $('#response-hint')!;
+  const testTag = $('#test-tag')!;
+  const backToTests = $('#back-to-tests') as HTMLAnchorElement;
+  const topicBreakdown = $('#topic-breakdown')!;
+  const topicBreakdownList = $('#topic-breakdown-list')!;
+  const missesReview = $('#misses-review')!;
+  const missesIntro = $('#misses-intro')!;
+  const missesList = $('#misses-list')!;
+
+  type RunLogEntry = { question: SessionQuestion; credit: number; picked: number | null };
+  let activeTest: MockTest | null = null;
+  let runLog: RunLogEntry[] = [];
 
   let session: SessionQuestion[] = [];
   let sessionConfig = { topic: 'all', format: 'mixed', difficulty: 'all', length: 15, duration: 1200, preset: '' };
@@ -522,6 +606,7 @@ const topicManifest = topics.map((topic) => ({
   }
 
   function readConfig() {
+    if (activeTest) return; // Test runs lock the config set by configureTest().
     sessionConfig.topic = topicSelect.value;
     sessionConfig.format = formatSelect.value;
     sessionConfig.difficulty = difficultySelect.value;
@@ -636,6 +721,7 @@ const topicManifest = topics.map((topic) => ({
     bestStreak = 0;
     answered = 0;
     focusBreaks = 0;
+    runLog = [];
     active = true;
     hiddenDuringSession = false;
     setupView.hidden = true;
@@ -646,14 +732,18 @@ const topicManifest = topics.map((topic) => ({
     startTimer();
     renderQuestion();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    (window as any).posthog?.capture('practice_session_started', {
+    const startProps = {
       topic: sessionConfig.topic,
       format: sessionConfig.format,
       difficulty: sessionConfig.difficulty,
       question_count: session.length,
       duration_seconds: sessionConfig.duration || null,
       preset: sessionConfig.preset || null,
-    });
+    };
+    (window as any).posthog?.capture('practice_session_started', startProps);
+    if (activeTest) {
+      (window as any).posthog?.capture('mock_test_started', { test_id: activeTest.id, ...startProps });
+    }
   }
 
   function renderQuestion() {
@@ -664,7 +754,9 @@ const topicManifest = topics.map((topic) => ({
     $('#game-progress-fill')!.style.width = `${(current / session.length) * 100}%`;
     $('#question-topic')!.textContent = topicNames.get(question.topic) || question.topic;
     $('#question-difficulty')!.textContent = difficultyLabels[question.difficulty];
-    $('#question-format')!.textContent = question.type === 'mcq' ? 'Read the output' : question.type === 'code' ? 'Write Kotlin · self-scored' : 'Written · self-scored';
+    $('#question-format')!.textContent = question.type === 'mcq'
+      ? (question.code || question.topic === 'code-snippet-output' ? 'Read the output' : 'Multiple choice')
+      : question.type === 'code' ? 'Write Kotlin · self-scored' : 'Written · self-scored';
     $('#question-prompt')!.innerHTML = inlineMarkup(question.prompt);
     const code = question.code || '';
     questionCode.hidden = !code;
@@ -680,7 +772,9 @@ const topicManifest = topics.map((topic) => ({
     answerAction.hidden = false;
     answerAction.disabled = true;
     answerAction.textContent = question.type === 'mcq' ? 'Check answer' : question.type === 'code' ? 'Reveal solution' : 'Reveal reference answer';
-    $('#question-status')!.textContent = question.type === 'mcq' ? 'Trace it before choosing' : question.type === 'code' ? 'Type the smallest correct Kotlin answer' : 'Write a few honest lines before revealing';
+    $('#question-status')!.textContent = question.type === 'mcq'
+      ? (question.code || question.topic === 'code-snippet-output' ? 'Trace it before choosing' : 'Commit to an answer, then check')
+      : question.type === 'code' ? 'Type the smallest correct Kotlin answer' : 'Write a few honest lines before revealing';
     $('#reference-answer')!.replaceChildren();
     $('#answer-verdict')!.className = 'answer-verdict';
     writtenResponse.value = '';
@@ -745,6 +839,7 @@ const topicManifest = topics.map((topic) => ({
       verdict.classList.toggle('wrong', !isCorrect);
       reference.innerHTML = inlineMarkup(question.explanation);
       award(isCorrect ? 1 : 0);
+      runLog.push({ question, credit: isCorrect ? 1 : 0, picked: selectedOption });
       (window as any).posthog?.capture('practice_mcq_answered', {
         topic: question.topic,
         difficulty: question.difficulty,
@@ -779,6 +874,7 @@ const topicManifest = topics.map((topic) => ({
 
   function submitGrade(value: number, selectedButton: HTMLButtonElement) {
     award(value);
+    runLog.push({ question: session[current], credit: value, picked: null });
     selfGrade.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
       const selected = button === selectedButton;
       button.disabled = true;
@@ -824,9 +920,18 @@ const topicManifest = topics.map((topic) => ({
       : percent >= 85 ? 'The fundamentals held under pressure. Raise the difficulty or cut the timer next.'
       : percent >= 65 ? 'You have a dependable base. Review the misses, then run the same setup once more.'
       : 'No shame in a diagnostic run. The score is a map, not a verdict.';
-    saveBest(percent);
+    if (activeTest) {
+      $('#result-title')!.textContent = activeTest.title;
+      backToTests.hidden = false;
+      saveTestRecord(percent);
+    } else {
+      backToTests.hidden = true;
+      saveBest(percent);
+    }
+    renderBreakdown();
+    renderMisses();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    (window as any).posthog?.capture('practice_session_completed', {
+    const completedProps = {
       score_percent: percent,
       xp: Math.max(0, xp),
       questions_answered: answered,
@@ -838,7 +943,11 @@ const topicManifest = topics.map((topic) => ({
       format: sessionConfig.format,
       difficulty: sessionConfig.difficulty,
       preset: sessionConfig.preset || null,
-    });
+    };
+    (window as any).posthog?.capture('practice_session_completed', completedProps);
+    if (activeTest) {
+      (window as any).posthog?.capture('mock_test_completed', { test_id: activeTest.id, ...completedProps });
+    }
   }
 
   function saveBest(percent: number) {
@@ -861,6 +970,168 @@ const topicManifest = topics.map((topic) => ({
       $('#personal-best')!.textContent = best ? `${best}%` : 'Not set';
       $('#best-detail')!.textContent = last ? `Last run ${last.percent}% · ${last.xp} XP` : 'Complete a run to set it';
     } catch { /* Keep the empty state. */ }
+  }
+
+  function saveTestRecord(percent: number) {
+    if (!activeTest) return;
+    try {
+      const bestKey = `adk-test-best-${activeTest.id}`;
+      const attemptsKey = `adk-test-attempts-${activeTest.id}`;
+      const previous = Number(localStorage.getItem(bestKey) || 0);
+      if (percent > previous) localStorage.setItem(bestKey, String(percent));
+      localStorage.setItem(attemptsKey, String(Number(localStorage.getItem(attemptsKey) || 0) + 1));
+    } catch { /* Storage is optional. */ }
+  }
+
+  function renderBreakdown() {
+    const byTopic = new Map<string, { answered: number; score: number }>();
+    for (const entry of runLog) {
+      const bucket = byTopic.get(entry.question.topic) || { answered: 0, score: 0 };
+      bucket.answered += 1;
+      bucket.score += entry.credit;
+      byTopic.set(entry.question.topic, bucket);
+    }
+    if (byTopic.size < 2) {
+      topicBreakdown.hidden = true;
+      return;
+    }
+    topicBreakdownList.replaceChildren();
+    [...byTopic.entries()]
+      .sort((a, b) => b[1].score / b[1].answered - a[1].score / a[1].answered)
+      .forEach(([topic, stat]) => {
+        const li = document.createElement('li');
+        const name = document.createElement('span');
+        name.className = 'bd-name';
+        name.textContent = topicNames.get(topic) || topic;
+        const count = document.createElement('span');
+        count.className = 'bd-count';
+        const scoreLabel = stat.score % 1 ? stat.score.toFixed(1) : String(stat.score);
+        count.textContent = `${scoreLabel}/${stat.answered}`;
+        const bar = document.createElement('div');
+        bar.className = 'bd-bar';
+        const fill = document.createElement('span');
+        fill.style.width = `${Math.round((stat.score / stat.answered) * 100)}%`;
+        bar.append(fill);
+        li.append(name, bar, count);
+        topicBreakdownList.append(li);
+      });
+    topicBreakdown.hidden = false;
+  }
+
+  function missRow(label: string, content: Node): HTMLDivElement {
+    const row = document.createElement('div');
+    row.className = 'miss-row';
+    const heading = document.createElement('span');
+    heading.className = 'miss-row-label';
+    heading.textContent = label;
+    row.append(heading, content);
+    return row;
+  }
+
+  function optionRow(label: string, index: number, text: string, variant: string): HTMLDivElement {
+    const answer = document.createElement('div');
+    answer.className = `miss-answer ${variant}`;
+    const key = document.createElement('span');
+    key.className = 'miss-key';
+    key.textContent = String.fromCharCode(65 + index);
+    const value = document.createElement('span');
+    value.innerHTML = inlineMarkup(text);
+    answer.append(key, value);
+    return missRow(label, answer);
+  }
+
+  function buildMissItem(entry: RunLogEntry): HTMLDetailsElement {
+    const question = entry.question;
+    const details = document.createElement('details');
+    details.className = 'miss-item';
+
+    const summary = document.createElement('summary');
+    const partial = entry.credit > 0;
+    const verdictText = partial
+      ? 'Partial credit'
+      : question.type === 'mcq'
+        ? 'Answered incorrectly'
+        : 'Marked missed';
+    summary.innerHTML =
+      '<svg class="miss-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>' +
+      `<span class="miss-summary-text"><span class="miss-prompt">${inlineMarkup(question.prompt)}</span>` +
+      `<span class="miss-verdict ${partial ? 'is-partial' : 'is-wrong'}">${verdictText}</span></span>`;
+    details.append(summary);
+
+    const body = document.createElement('div');
+    body.className = 'miss-body';
+
+    if (question.type === 'mcq') {
+      if (entry.picked !== null && entry.picked !== question.correct) {
+        body.append(optionRow('Your answer', entry.picked, question.options[entry.picked], 'is-yours'));
+      }
+      body.append(optionRow('Correct answer', question.correct, question.options[question.correct], 'is-correct'));
+      const explanation = document.createElement('div');
+      explanation.className = 'miss-explanation';
+      explanation.innerHTML = inlineMarkup(question.explanation);
+      body.append(missRow('Why', explanation));
+    } else if (question.type === 'code') {
+      const pre = document.createElement('pre');
+      pre.className = 'miss-reference';
+      pre.textContent = question.reference;
+      body.append(missRow('Reference solution', pre));
+      const explanation = document.createElement('div');
+      explanation.className = 'miss-explanation';
+      explanation.innerHTML = inlineMarkup(question.explanation);
+      body.append(missRow('Why', explanation));
+    } else {
+      const reference = document.createElement('div');
+      reference.className = 'miss-explanation';
+      const template = document.getElementById(`answer-${question.id}`) as HTMLTemplateElement | null;
+      if (template) reference.append(template.content.cloneNode(true));
+      else reference.textContent = 'Reference answer shown during the run.';
+      body.append(missRow('Reference answer', reference));
+    }
+
+    details.append(body);
+    return details;
+  }
+
+  function renderMisses() {
+    const misses = runLog.filter((entry) => entry.credit < 1);
+    missesList.replaceChildren();
+    if (!misses.length) {
+      missesReview.hidden = true;
+      return;
+    }
+    missesIntro.textContent = misses.length === 1
+      ? 'One question to revisit. Read the reference, then run the set again.'
+      : `${misses.length} questions to revisit. Read each reference, then run the set again.`;
+    misses.forEach((entry) => missesList.append(buildMissItem(entry)));
+    missesReview.hidden = false;
+  }
+
+  function configureTest(test: MockTest) {
+    activeTest = test;
+    sessionConfig.topic = test.topic;
+    sessionConfig.format = test.format;
+    sessionConfig.difficulty = test.difficulty;
+    sessionConfig.length = test.length;
+    sessionConfig.duration = test.duration;
+    sessionConfig.preset = test.preset || '';
+    topicSelect.value = test.topic;
+    formatSelect.value = test.format;
+    difficultySelect.value = test.difficulty;
+    if (durationSelect.querySelector(`option[value="${test.duration}"]`)) {
+      durationSelect.value = String(test.duration);
+    }
+    const lengthRadio = form.querySelector<HTMLInputElement>(`input[name="length"][value="${test.length}"]`);
+    if (lengthRadio) lengthRadio.checked = true;
+    testTag.textContent = test.title;
+    testTag.hidden = false;
+  }
+
+  function clearTestMode() {
+    activeTest = null;
+    sessionConfig.preset = '';
+    testTag.textContent = '';
+    testTag.hidden = true;
+    backToTests.hidden = true;
   }
 
   function resetToSetup() {
@@ -900,10 +1171,20 @@ const topicManifest = topics.map((topic) => ({
     button.addEventListener('click', () => submitGrade(Number(button.dataset.grade), button));
   });
   $('#quit-session')!.addEventListener('click', () => {
+    if (activeTest) {
+      if (confirm('Leave this test? This run will not be scored or recorded.')) {
+        clearTestMode();
+        resetToSetup();
+      }
+      return;
+    }
     if (confirm('End this run now? Unanswered questions will count against the score.')) finishSession(false);
   });
   $('#retry-session')!.addEventListener('click', startSession);
-  $('#new-session')!.addEventListener('click', resetToSetup);
+  $('#new-session')!.addEventListener('click', () => {
+    if (activeTest) clearTestMode();
+    resetToSetup();
+  });
 
   document.addEventListener('visibilitychange', () => {
     if (!active) return;
@@ -941,4 +1222,13 @@ const topicManifest = topics.map((topic) => ({
 
   showBest();
   updatePoolNote();
+
+  // One-click test start: /practice/?test=<id> configures and auto-starts the run.
+  const params = new URLSearchParams(window.location.search);
+  const testId = params.get('test');
+  const matchedTest = testId ? mockTests.find((test) => test.id === testId) : null;
+  if (matchedTest) {
+    configureTest(matchedTest);
+    startSession();
+  }
 </script>

@@ -46,26 +46,29 @@
 }
 
 :root[data-theme='dark'] {
-  --bg: #161816;
-  --surface: #1d201e;
-  --surface-2: #242725;
-  --surface-3: #2b2f2c;
-  --border: #2e322f;
-  --border-strong: #404541;
+  /* Warm-neutral charcoal, deepest to lightest. Each surface is visibly a
+     step up, and borders stay light enough to read against every surface so
+     cards land as distinct panels. Not black, not green-tinted. */
+  --bg: #141312;
+  --surface: #1c1b19;
+  --surface-2: #252321;
+  --surface-3: #2f2d2a;
+  --border: #37342f;
+  --border-strong: #4c4842;
 
-  --ink: #ecefec;
-  --ink-soft: #adb4af;
-  --ink-faint: #7f867f;
+  --ink: #eceae7;
+  --ink-soft: #b0aca6;
+  --ink-faint: #85807a;
 
-  --accent: #53c383;
-  --accent-hover: #74d49d;
+  --accent: #5cca8e;
+  --accent-hover: #7cd8a6;
   --accent-bright: #3ddc84;
-  --accent-soft: color-mix(in srgb, #3ddc84 9%, transparent);
+  --accent-soft: color-mix(in srgb, #3ddc84 11%, transparent);
   --on-accent: #0a2517;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
-  --shadow: 0 2px 12px -4px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 12px 40px -16px rgba(0, 0, 0, 0.55);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow: 0 2px 14px -4px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 40px -16px rgba(0, 0, 0, 0.65);
 
   color-scheme: dark;
 }
