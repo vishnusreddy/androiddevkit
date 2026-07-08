@@ -1,0 +1,70 @@
+---
+// Ko-fi floating "Support Us" overlay. Desktop / large screens only.
+// Uses the overlay-widget.js API (DOM injection), NOT the legacy
+// Widget_2.js, which called document.write() and blanked the page.
+---
+
+<style>
+  /* Belt-and-braces: hide the overlay on small or touch screens even if
+     the widget somehow draws (e.g. viewport resized down after load). */
+  @media (max-width: 1023px), (hover: none), (pointer: coarse) {
+    :global([class*='floatingchat' i]),
+    :global([class*='floating-chat' i]),
+    :global([id*='kofi' i]),
+    :global(iframe[src*='ko-fi.com' i]) {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var desktopQuery = window.matchMedia(
+      '(min-width: 1024px) and (hover: hover) and (pointer: fine)'
+    );
+    var scriptId = 'kofi-overlay-widget-script';
+    var hasDrawn = false;
+
+    function drawWidget() {
+      if (hasDrawn || !desktopQuery.matches) return;
+      if (!window.kofiWidgetOverlay || typeof window.kofiWidgetOverlay.draw !== 'function') return;
+
+      window.kofiWidgetOverlay.draw('androiddevkit', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Support Us',
+        'floating-chat.donateButton.background-color': '#fcbf47',
+        'floating-chat.donateButton.text-color': '#323842',
+      });
+      hasDrawn = true;
+    }
+
+    function loadWidget() {
+      if (!desktopQuery.matches) return;
+
+      if (window.kofiWidgetOverlay) {
+        drawWidget();
+        return;
+      }
+
+      var existingScript = document.getElementById(scriptId);
+      if (existingScript) {
+        existingScript.addEventListener('load', drawWidget, { once: true });
+        return;
+      }
+
+      var script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
+      script.async = true;
+      script.addEventListener('load', drawWidget);
+      document.body.appendChild(script);
+    }
+
+    loadWidget();
+    desktopQuery.addEventListener('change', function (event) {
+      if (event.matches) loadWidget();
+    });
+  })();
+</script>
