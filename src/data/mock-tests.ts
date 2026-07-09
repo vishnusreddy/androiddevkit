@@ -257,4 +257,16 @@ export const MOCK_TESTS: MockTest[] = [
     duration: 720,
     kind: 'topic',
   },
+  {
+    id: 'platform-internals-test',
+    title: 'Platform Internals Mock Test',
+    description:
+      'Binder IPC and its transaction limit, the Java versus native heap, ART garbage collection, dex2oat and Baseline Profiles, JNI references, and Keystore-backed encryption.',
+    topic: 'platform-internals',
+    format: 'mcq',
+    difficulty: 'all',
+    length: 10,
+    duration: 720,
+    kind: 'topic',
+  },
 ];

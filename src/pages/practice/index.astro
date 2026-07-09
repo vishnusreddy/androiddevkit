@@ -589,6 +589,17 @@ const topicManifest = topics.map((topic) => ({
     return copy;
   };
 
+  // Present options in a fresh random order each run so answer position never
+  // becomes a pattern a repeat visitor can learn.
+  const shuffleOptions = (item: McqQuestion): McqQuestion => {
+    const order = shuffle(item.options.map((_, index) => index));
+    return {
+      ...item,
+      options: order.map((index) => item.options[index]),
+      correct: order.indexOf(item.correct),
+    };
+  };
+
   function eligible<T extends WrittenQuestion | McqQuestion | CodeQuestion>(items: T[], relaxDifficulty = false): T[] {
     return items.filter((item) =>
       (sessionConfig.topic === 'all' || item.topic === sessionConfig.topic) &&
@@ -655,7 +666,7 @@ const topicManifest = topics.map((topic) => ({
       return shuffle(responsePool).slice(0, sessionConfig.length);
     }
     if (sessionConfig.format === 'mcq') {
-      return mcqPool.slice(0, sessionConfig.length).map((item) => ({ ...item, type: 'mcq' as const }));
+      return mcqPool.slice(0, sessionConfig.length).map((item) => ({ ...shuffleOptions(item), type: 'mcq' as const }));
     }
 
     const mcqTarget = Math.min(Math.ceil(sessionConfig.length / 2), mcqPool.length);
@@ -665,12 +676,12 @@ const topicManifest = topics.map((topic) => ({
     ]);
     const responseTarget = Math.min(sessionConfig.length - mcqTarget, responsePool.length);
     const picks: SessionQuestion[] = [
-      ...mcqPool.slice(0, mcqTarget).map((item) => ({ ...item, type: 'mcq' as const })),
+      ...mcqPool.slice(0, mcqTarget).map((item) => ({ ...shuffleOptions(item), type: 'mcq' as const })),
       ...responsePool.slice(0, responseTarget),
     ];
     const stillNeeded = sessionConfig.length - picks.length;
     if (stillNeeded > 0) {
-      const moreMcq = mcqPool.slice(mcqTarget).map((item) => ({ ...item, type: 'mcq' as const }));
+      const moreMcq = mcqPool.slice(mcqTarget).map((item) => ({ ...shuffleOptions(item), type: 'mcq' as const }));
       const moreResponses = responsePool.slice(responseTarget);
       picks.push(...shuffle<SessionQuestion>([...moreMcq, ...moreResponses]).slice(0, stillNeeded));
     }

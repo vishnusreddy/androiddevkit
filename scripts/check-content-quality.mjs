@@ -12,6 +12,7 @@ const knownTopics = new Set([
   'coroutines',
   'jetpack-compose',
   'kotlin',
+  'platform-internals',
   'system-design',
   'testing-quality',
 ]);
@@ -171,6 +172,28 @@ for (const args of mcqs) {
     fail(source, 'avoid all/none-of-the-above distractors');
   }
   mcqCounts.set(topic, (mcqCounts.get(topic) ?? 0) + 1);
+}
+
+// Guard against the "just pick the longest option" tell: the correct answer must
+// not be systematically wordier than the distractors, per question or in aggregate.
+let uniqueLongestCorrect = 0;
+let lengthCheckable = 0;
+for (const args of mcqs) {
+  const [id, , , , options, correct] = args;
+  if (!Array.isArray(options) || options.length !== 4 || !Number.isInteger(correct)) continue;
+  lengthCheckable += 1;
+  const lengths = options.map((option) => String(option).length);
+  const correctLength = lengths[correct];
+  const longestDistractor = Math.max(...lengths.filter((_, index) => index !== correct));
+  if (correctLength > longestDistractor) {
+    uniqueLongestCorrect += 1;
+    if (correctLength > longestDistractor * 1.3) {
+      fail(`MCQ ${id}`, `correct option is ${(correctLength / longestDistractor).toFixed(2)}x longer than every distractor; rebalance the option lengths`);
+    }
+  }
+}
+if (lengthCheckable > 0 && uniqueLongestCorrect / lengthCheckable > 0.35) {
+  fail('MCQ bank', `correct answer is the longest option in ${uniqueLongestCorrect} of ${lengthCheckable} questions (max 35%); shorten correct answers or strengthen distractors`);
 }
 
 for (const topic of knownTopics) {

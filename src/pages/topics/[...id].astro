@@ -3,7 +3,6 @@ import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CoroutinesPrimer from '../../components/CoroutinesPrimer.astro';
-import EzoicAdSpot from '../../components/EzoicAdSpot.astro';
 import QuestionItem from '../../components/QuestionItem.astro';
 import ProgressBar from '../../components/ProgressBar.astro';
 import Comments from '../../components/Comments.astro';
@@ -129,6 +128,14 @@ const sectionOrder: Record<string, string[]> = {
     'SDK and library design',
     'Product design exercises',
   ],
+  'platform-internals': [
+    'Kernel and processes',
+    'Binder and IPC',
+    'Memory and garbage collection',
+    'Compilation and startup',
+    'Native code and JNI',
+    'Security and hardening',
+  ],
 };
 const topicSectionOrder = sectionOrder[topic.id] ?? [];
 
@@ -150,7 +157,7 @@ const questionGroups = DIFFICULTY_ORDER.map((level) => {
 const { Content: Overview } = await render(topic);
 const hasOverview = topic.body && topic.body.trim().length > 0;
 ---
-<BaseLayout title={topic.data.title} description={topic.data.description} ads>
+<BaseLayout title={topic.data.title} description={topic.data.description}>
   <section class="page-head">
     <div class="container">
       <a class="back" href="/topics/">← All topics</a>
@@ -178,13 +185,6 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
   </section>
 
   <section class="container topic-body">
-    <EzoicAdSpot
-      location="under_page_title"
-      mobileSizes="300x250,336x280"
-      tabletSizes="300x250,336x280"
-      desktopSizes="728x90,970x250"
-    />
-
     {hasOverview && (
       <div class="overview prose">
         <Overview />
@@ -234,14 +234,6 @@ const hasOverview = topic.body && topic.body.trim().length > 0;
         <a class="btn btn-primary" href="/contribute/submit/?type=question">Add a question</a>
       </div>
     )}
-
-    <EzoicAdSpot
-      location="bottom_of_page"
-      mobileSizes="300x250,336x280"
-      tabletSizes="300x250,336x280"
-      desktopSizes="728x90"
-      required={false}
-    />
   </section>
 
   <Comments />

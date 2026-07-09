@@ -44,6 +44,11 @@ const ICON_PATHS: Record<string, string> = {
     <path d="M12 8v4M6.5 16v-4h11v4"/>
     <path d="M10.5 5.5h3"/>
   `,
+  'platform-internals': `
+    <rect x="6" y="6" width="12" height="12" rx="2"/>
+    <rect x="9.5" y="9.5" width="5" height="5" rx="1"/>
+    <path d="M9 6V3M15 6V3M9 21v-3M15 21v-3M6 9H3M6 15H3M21 9h-3M21 15h-3"/>
+  `,
 };
 
 const FALLBACK_PATHS = `
