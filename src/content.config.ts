@@ -80,4 +80,24 @@ const experiences = defineCollection({
   }),
 });
 
-export const collections = { topics, questions, blog, experiences };
+/**
+ * Ordered study-plan lessons. Each file is one deep guide in the junior → mid
+ * → senior curriculum. Ids look like `junior/01-kotlin-foundations`.
+ */
+const study = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/study' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    level: difficulty,
+    // Order within a level. Lower numbers come first.
+    order: z.number(),
+    // Human-readable read time, e.g. "45 min".
+    duration: z.string(),
+    // Optional one-click quiz for the lesson footer.
+    quizHref: z.string().default('/tests/'),
+    quizLabel: z.string().default('Take a short quiz'),
+  }),
+});
+
+export const collections = { topics, questions, blog, experiences, study };

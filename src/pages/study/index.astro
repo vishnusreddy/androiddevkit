@@ -1,0 +1,258 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { DIFFICULTY_LABEL, DIFFICULTY_ORDER } from '../../consts';
+
+const lessons = (await getCollection('study')).sort(
+  (a, b) =>
+    DIFFICULTY_ORDER.indexOf(a.data.level) - DIFFICULTY_ORDER.indexOf(b.data.level) ||
+    a.data.order - b.data.order
+);
+
+const levelMeta: Record<
+  string,
+  { title: string; summary: string; audience: string }
+> = {
+  junior: {
+    title: 'Junior path',
+    summary:
+      'Build Android fundamentals in the order they connect in a real app: language, screens, lifecycle, then UI models.',
+    audience: 'New to Android or preparing for your first mobile role',
+  },
+  mid: {
+    title: 'Mid-level path',
+    summary:
+      'Turn fundamentals into production habits: async data, Compose state, architecture boundaries, and tests that protect behavior.',
+    audience: '1–4 years of Android experience',
+  },
+  senior: {
+    title: 'Senior path',
+    summary:
+      'Own larger systems: module boundaries, offline sync, mobile system design, reliability, and technical decisions under uncertainty.',
+    audience: 'Leading features, tech design, or senior+ interviews',
+  },
+};
+
+const groups = DIFFICULTY_ORDER.map((level) => ({
+  level,
+  ...levelMeta[level],
+  items: lessons.filter((l) => l.data.level === level),
+}));
+---
+<BaseLayout
+  title="Android Developer Study Plan"
+  description="A guided Android developer study plan from Kotlin foundations through Activities, Fragments, lifecycle, UI state, architecture, and senior-level system design."
+>
+  <div class="container study-index">
+    <header class="study-hero">
+      <span class="eyebrow">Study plan</span>
+      <h1>Learn Android in the order the platform asks you to.</h1>
+      <p class="lede">
+        Start with Kotlin. Then learn how Android creates screens, how those
+        screens live and die, and how you model UI state before moving into
+        architecture, performance, and system design. Each lesson is a deep
+        guide with code, failure modes, and interview framing - not a checklist
+        of buzzwords.
+      </p>
+      <p class="study-meta">
+        {lessons.length} lessons · junior → mid → senior · quiz optional after each topic
+      </p>
+    </header>
+
+    {groups.map((group) => (
+      <section class="level-block" aria-labelledby={`level-${group.level}`}>
+        <div class="level-head">
+          <div>
+            <span class:list={['badge', `badge-${group.level}`]}>{DIFFICULTY_LABEL[group.level]}</span>
+            <h2 id={`level-${group.level}`}>{group.title}</h2>
+            <p class="level-summary">{group.summary}</p>
+            <p class="level-audience">{group.audience}</p>
+          </div>
+          <span class="level-count">{group.items.length} topic{group.items.length === 1 ? '' : 's'}</span>
+        </div>
+
+        <ol class="lesson-list">
+          {group.items.map((lesson, index) => (
+            <li>
+              <a class="lesson-card" href={`/study/${lesson.id}/`}>
+                <span class="lesson-num" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                <span class="lesson-body">
+                  <span class="lesson-title">{lesson.data.title}</span>
+                  <span class="lesson-desc">{lesson.data.description}</span>
+                </span>
+                <span class="lesson-side">
+                  <span class="lesson-duration">{lesson.data.duration}</span>
+                  <span class="lesson-go" aria-hidden="true">→</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+
+    <aside class="study-note card">
+      <h2>How to use this plan</h2>
+      <ul>
+        <li>Read one lesson, then restate the main ideas without looking.</li>
+        <li>Write the small examples yourself - reading is not the same as ownership.</li>
+        <li>Take the optional quiz when you want a check, or skip straight to the next topic.</li>
+        <li>When a concept still feels fuzzy, open the matching <a href="/topics/">topic guide</a> and question bank.</li>
+      </ul>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .study-index {
+    max-width: var(--maxw);
+    padding-block: clamp(2rem, 5vw, 3.25rem) 3rem;
+  }
+  .study-hero {
+    max-width: 720px;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+  .study-hero h1 {
+    margin: 0.7rem 0 0;
+  }
+  .lede {
+    margin: 1rem 0 0;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+  }
+  .study-meta {
+    margin: 1.1rem 0 0;
+    font-size: 0.88rem;
+    color: var(--ink-faint);
+  }
+
+  .level-block {
+    margin-bottom: clamp(2rem, 4vw, 2.75rem);
+  }
+  .level-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .level-head h2 {
+    margin: 0.55rem 0 0;
+    font-size: clamp(1.35rem, 2.5vw, 1.65rem);
+  }
+  .level-summary {
+    margin: 0.45rem 0 0;
+    max-width: 640px;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+  .level-audience {
+    margin: 0.35rem 0 0;
+    color: var(--ink-faint);
+    font-size: 0.82rem;
+  }
+  .level-count {
+    flex-shrink: 0;
+    color: var(--ink-faint);
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .lesson-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.65rem;
+  }
+  .lesson-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .lesson-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+    box-shadow: var(--shadow);
+  }
+  .lesson-num {
+    font-variant-numeric: tabular-nums;
+    font-weight: 750;
+    font-size: 0.9rem;
+    color: var(--accent);
+    min-width: 1.6rem;
+  }
+  .lesson-title {
+    display: block;
+    font-weight: 650;
+    color: var(--ink);
+    font-size: 1rem;
+  }
+  .lesson-card:hover .lesson-title {
+    color: var(--accent);
+  }
+  .lesson-desc {
+    display: block;
+    margin-top: 0.2rem;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+  .lesson-side {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+  .lesson-duration {
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .lesson-go {
+    color: var(--ink-faint);
+    font-weight: 700;
+  }
+  .lesson-card:hover .lesson-go {
+    color: var(--accent);
+  }
+
+  .study-note {
+    padding: clamp(1.3rem, 3vw, 1.7rem);
+    margin-top: 0.5rem;
+  }
+  .study-note h2 {
+    margin: 0 0 0.7rem;
+    font-size: 1.1rem;
+  }
+  .study-note ul {
+    margin: 0;
+    padding-left: 1.15rem;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+  .study-note li + li {
+    margin-top: 0.4rem;
+  }
+
+  @media (max-width: 640px) {
+    .lesson-card {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.75rem 0.9rem;
+    }
+    .lesson-side {
+      grid-column: 2;
+    }
+    .level-head {
+      flex-direction: column;
+    }
+  }
+</style>
