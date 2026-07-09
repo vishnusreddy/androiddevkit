@@ -59,6 +59,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: 'Learn',
     items: [
+      { label: 'Study Plan', href: '/study/', desc: 'A topic-by-topic Android curriculum' },
       { label: 'Topics', href: '/topics/', desc: 'Concept guides, topic by topic' },
       { label: 'Questions', href: '/questions/', desc: 'Curated interview questions' },
     ],

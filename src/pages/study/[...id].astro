@@ -1,0 +1,339 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Comments from '../../components/Comments.astro';
+import { DIFFICULTY_LABEL, DIFFICULTY_ORDER } from '../../consts';
+
+export const getStaticPaths = (async () => {
+  const lessons = await getCollection('study');
+  const ordered = [...lessons].sort(
+    (a, b) =>
+      DIFFICULTY_ORDER.indexOf(a.data.level) - DIFFICULTY_ORDER.indexOf(b.data.level) ||
+      a.data.order - b.data.order
+  );
+
+  return ordered.map((entry, index) => ({
+    params: { id: entry.id },
+    props: {
+      entry,
+      prev: ordered[index - 1] ?? null,
+      next: ordered[index + 1] ?? null,
+      indexInLevel: ordered
+        .filter((l) => l.data.level === entry.data.level)
+        .findIndex((l) => l.id === entry.id),
+      levelCount: ordered.filter((l) => l.data.level === entry.data.level).length,
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { entry, prev, next, indexInLevel, levelCount } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const levelLabel = DIFFICULTY_LABEL[d.level];
+const pathLabel =
+  d.level === 'junior' ? 'Junior path' : d.level === 'mid' ? 'Mid-level path' : 'Senior path';
+---
+<BaseLayout
+  title={`${d.title} | Android study plan`}
+  description={d.description}
+  type="article"
+>
+  <article class="container study-article">
+    <a class="back" href="/study/">← Android study plan</a>
+
+    <header class="study-header">
+      <div class="study-kicker">
+        <span class:list={['badge', `badge-${d.level}`]}>{levelLabel}</span>
+        <span class="kicker-meta">{pathLabel}</span>
+        <span class="kicker-dot" aria-hidden="true">·</span>
+        <span class="kicker-meta">Topic {indexInLevel + 1} of {levelCount}</span>
+        <span class="kicker-dot" aria-hidden="true">·</span>
+        <span class="kicker-meta">{d.duration}</span>
+      </div>
+      <h1>{d.title}</h1>
+      <p class="study-desc">{d.description}</p>
+    </header>
+
+    <div class="prose study-body">
+      <Content />
+    </div>
+
+    <nav class="study-footer" aria-label="Lesson actions">
+      <div class="quiz-banner">
+        <div class="quiz-copy">
+          <span class="quiz-eyebrow">Check your understanding</span>
+          <h2>Ready for a short quiz?</h2>
+          <p>
+            Optional - reinforce this topic with a timed set, or skip ahead if
+            you already feel solid.
+          </p>
+        </div>
+        <div class="quiz-actions">
+          <a class="btn btn-primary" href={d.quizHref}>{d.quizLabel}</a>
+          {next ? (
+            <a class="btn btn-ghost" href={`/study/${next.id}/`}>
+              Next topic
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          ) : (
+            <a class="btn btn-ghost" href="/study/">Back to study plan</a>
+          )}
+        </div>
+      </div>
+
+      <div class="pager">
+        {prev ? (
+          <a class="pager-link prev" href={`/study/${prev.id}/`}>
+            <span class="pager-label">Previous</span>
+            <span class="pager-title">{prev.data.title}</span>
+          </a>
+        ) : (
+          <span class="pager-link prev empty"></span>
+        )}
+        {next ? (
+          <a class="pager-link next" href={`/study/${next.id}/`}>
+            <span class="pager-label">Next</span>
+            <span class="pager-title">{next.data.title}</span>
+          </a>
+        ) : (
+          <a class="pager-link next" href="/tests/">
+            <span class="pager-label">Practice</span>
+            <span class="pager-title">Take a full mock test</span>
+          </a>
+        )}
+      </div>
+    </nav>
+  </article>
+
+  <Comments />
+</BaseLayout>
+
+<style>
+  .study-article {
+    max-width: var(--maxw-prose);
+    padding-block: clamp(2rem, 5vw, 3rem) 2rem;
+  }
+  .back {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .back:hover {
+    color: var(--accent);
+  }
+  .study-header {
+    padding: 1.35rem 0 1.7rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.6rem;
+  }
+  .study-kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem 0.55rem;
+  }
+  .kicker-meta {
+    color: var(--ink-faint);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+  .kicker-dot {
+    color: var(--ink-faint);
+  }
+  .study-header h1 {
+    margin: 0.9rem 0 0.55rem;
+  }
+  .study-desc {
+    margin: 0;
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+  }
+  .study-body {
+    padding-bottom: 0.5rem;
+  }
+  .study-body :global(h2) {
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+  }
+  .study-body :global(h3) {
+    margin-top: 1.6rem;
+    margin-bottom: 0.55rem;
+    font-size: 1.08rem;
+  }
+  .study-body :global(p),
+  .study-body :global(li) {
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+  .study-body :global(strong) {
+    color: var(--ink);
+  }
+  .study-body :global(ul),
+  .study-body :global(ol) {
+    padding-left: 1.25rem;
+  }
+  .study-body :global(li + li) {
+    margin-top: 0.35rem;
+  }
+  .study-body :global(pre) {
+    margin: 1.1rem 0;
+    padding: 0.95rem 1.05rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface-2) !important;
+    font-size: 0.84rem;
+    line-height: 1.5;
+  }
+  .study-body :global(:not(pre) > code) {
+    padding: 0.12rem 0.35rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--surface-2);
+    font-size: 0.86em;
+  }
+  .study-body :global(table) {
+    width: 100%;
+    margin: 1.15rem 0;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .study-body :global(thead),
+  .study-body :global(tbody),
+  .study-body :global(tr) {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  .study-body :global(th),
+  .study-body :global(td) {
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+    color: var(--ink-soft);
+  }
+  .study-body :global(th) {
+    background: var(--surface-2);
+    color: var(--ink);
+    font-weight: 650;
+    font-size: 0.82rem;
+  }
+  .study-body :global(blockquote) {
+    margin: 1.3rem 0;
+    padding: 0.15rem 0 0.15rem 1rem;
+    border-left: 3px solid var(--accent);
+    color: var(--ink-soft);
+  }
+  .study-body :global(hr) {
+    margin: 2rem 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+  .study-body :global(a) {
+    font-weight: 600;
+  }
+
+  .study-footer {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .quiz-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding: clamp(1.25rem, 3vw, 1.6rem);
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--border));
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .quiz-eyebrow {
+    display: block;
+    color: var(--accent);
+    font-size: 0.74rem;
+    font-weight: 750;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .quiz-copy h2 {
+    margin: 0.35rem 0 0;
+    font-size: 1.15rem;
+  }
+  .quiz-copy p {
+    margin: 0.4rem 0 0;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+  .quiz-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .pager-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.95rem 1.05rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    min-height: 4.5rem;
+  }
+  .pager-link:hover {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  }
+  .pager-link.next {
+    text-align: right;
+    align-items: flex-end;
+  }
+  .pager-link.empty {
+    border-color: transparent;
+    background: transparent;
+    pointer-events: none;
+  }
+  .pager-label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .pager-title {
+    font-size: 0.92rem;
+    font-weight: 650;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+  .pager-link:hover .pager-title {
+    color: var(--accent);
+  }
+
+  @media (max-width: 560px) {
+    .pager {
+      grid-template-columns: 1fr;
+    }
+    .pager-link.next {
+      text-align: left;
+      align-items: flex-start;
+    }
+    .pager-link.empty {
+      display: none;
+    }
+    .quiz-actions .btn {
+      width: 100%;
+    }
+  }
+</style>
