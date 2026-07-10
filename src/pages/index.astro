@@ -96,12 +96,14 @@ const features = [
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
           </div>
-          <div class="choice-panel">
-            <span class="choice-eyebrow">Prepare</span>
-            <h2 class="choice-title">Study the material</h2>
+          <div class="choice-panel choice-panel--new">
+            <span class="choice-eyebrow">
+              Learn
+              <span class="choice-new" aria-label="New">New</span>
+            </span>
+            <h2 class="choice-title">Curated study plans</h2>
             <p class="choice-body">
-              A junior → mid → senior curriculum with deep lessons, then topic
-              guides and explained answers when you want to drill further.
+              For everyone: juniors, mid level, and seniors. For free.
             </p>
             <a class="btn btn-outline choice-btn" href="/study/">
               Open study plan
@@ -313,12 +315,35 @@ const features = [
     box-shadow: var(--shadow);
   }
   .choice-eyebrow {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 1.25rem;
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--accent);
+    line-height: 1;
+  }
+  .choice-new {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.15rem;
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--border));
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .choice-panel--new {
+    border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
   }
   .choice-title {
     margin: 0.55rem 0 0;
