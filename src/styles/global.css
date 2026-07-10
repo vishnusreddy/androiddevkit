@@ -177,6 +177,22 @@ pre {
   line-height: 1.6;
 }
 
+/* Shiki renders with dual themes: the light theme is written inline as the
+   default `color`/`background-color`, and the dark theme is stored in
+   `--shiki-dark*` custom properties. Nothing swaps to those in dark mode by
+   default, so the light (dark-on-white) tokens bleed onto our dark code
+   surface and become unreadable. Apply the dark palette explicitly. */
+:root[data-theme='dark'] .astro-code {
+  background-color: var(--surface-2) !important;
+}
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
 hr {
   border: none;
   border-top: 1px solid var(--border);
