@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="380" viewBox="0 0 1100 380" role="img" aria-labelledby="title desc">
+  <title id="title">Android cold-start critical path</title>
+  <desc id="desc">System component resolution leads to Zygote fork, process binding, app initialization, Activity creation, first frame, and useful content.</desc>
+  <rect width="1100" height="380" rx="24" fill="#f7f8f7"/>
+  <text x="42" y="52" fill="#26352d" font-family="system-ui, sans-serif" font-size="20" font-weight="750">COLD START CRITICAL PATH</text>
+  <g font-family="system-ui, sans-serif" text-anchor="middle">
+    <g><rect x="34" y="92" width="132" height="92" rx="14" fill="#ffffff" stroke="#87958d" stroke-width="2"/><text x="100" y="128" fill="#26352d" font-size="15" font-weight="700">System resolves</text><text x="100" y="151" fill="#26352d" font-size="15" font-weight="700">component</text></g>
+    <g><rect x="214" y="92" width="132" height="92" rx="14" fill="#ffffff" stroke="#87958d" stroke-width="2"/><text x="280" y="128" fill="#26352d" font-size="15" font-weight="700">Zygote forks</text><text x="280" y="151" fill="#26352d" font-size="15" font-weight="700">app process</text></g>
+    <g><rect x="394" y="92" width="132" height="92" rx="14" fill="#ffffff" stroke="#87958d" stroke-width="2"/><text x="460" y="128" fill="#26352d" font-size="15" font-weight="700">Runtime binds</text><text x="460" y="151" fill="#26352d" font-size="15" font-weight="700">application</text></g>
+    <g><rect x="574" y="92" width="132" height="92" rx="14" fill="#fff7ed" stroke="#b86a2d" stroke-width="2"/><text x="640" y="125" fill="#88491e" font-size="15" font-weight="700">Providers and</text><text x="640" y="148" fill="#88491e" font-size="15" font-weight="700">Application</text><text x="640" y="170" fill="#6a584b" font-size="13">main thread</text></g>
+    <g><rect x="754" y="92" width="132" height="92" rx="14" fill="#eef8f1" stroke="#168a47" stroke-width="2"/><text x="820" y="128" fill="#0f6e37" font-size="15" font-weight="700">Activity</text><text x="820" y="151" fill="#0f6e37" font-size="15" font-weight="700">created</text></g>
+    <g><rect x="934" y="92" width="132" height="92" rx="14" fill="#eef8f1" stroke="#168a47" stroke-width="2"/><text x="1000" y="128" fill="#0f6e37" font-size="15" font-weight="700">First frame</text><text x="1000" y="151" fill="#0f6e37" font-size="15" font-weight="700">presented</text></g>
+  </g>
+  <g stroke="#6c7a72" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M167 138h38"/><path d="M196 130l9 8-9 8"/><path d="M347 138h38"/><path d="M376 130l9 8-9 8"/><path d="M527 138h38"/><path d="M556 130l9 8-9 8"/><path d="M707 138h38"/><path d="M736 130l9 8-9 8"/><path d="M887 138h38"/><path d="M916 130l9 8-9 8"/>
+  </g>
+  <rect x="574" y="226" width="492" height="90" rx="15" fill="#ffffff" stroke="#87958d" stroke-width="2"/>
+  <text x="820" y="262" text-anchor="middle" fill="#26352d" font-family="system-ui, sans-serif" font-size="17" font-weight="750">Useful content may arrive after the first frame</text>
+  <text x="820" y="290" text-anchor="middle" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">measure initial display and the actual user journey separately</text>
+  <path d="M1000 185v32H820" stroke="#6c7a72" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M829 209l-9 8 9 8" fill="none" stroke="#6c7a72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="42" y="350" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">Eager initializers add directly to the cold-start path before the screen can become useful.</text>
+</svg>

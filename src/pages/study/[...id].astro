@@ -28,9 +28,10 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { entry, prev, next, indexInLevel, levelCount } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 const d = entry.data;
 const levelLabel = DIFFICULTY_LABEL[d.level];
+const outline = headings.filter((heading) => heading.depth === 2);
 const pathLabel =
   d.level === 'junior' ? 'Junior path' : d.level === 'mid' ? 'Mid-level path' : 'Senior path';
 ---
@@ -39,27 +40,28 @@ const pathLabel =
   description={d.description}
   type="article"
 >
-  <article class="container study-article">
-    <a class="back" href="/study/">← Android study plan</a>
+  <div class="container study-shell">
+    <article class="study-article">
+      <a class="back" href="/study/">← Android study plan</a>
 
-    <header class="study-header">
-      <div class="study-kicker">
-        <span class:list={['badge', `badge-${d.level}`]}>{levelLabel}</span>
-        <span class="kicker-meta">{pathLabel}</span>
-        <span class="kicker-dot" aria-hidden="true">·</span>
-        <span class="kicker-meta">Topic {indexInLevel + 1} of {levelCount}</span>
-        <span class="kicker-dot" aria-hidden="true">·</span>
-        <span class="kicker-meta">{d.duration}</span>
+      <header class="study-header">
+        <div class="study-kicker">
+          <span class:list={['badge', `badge-${d.level}`]}>{levelLabel}</span>
+          <span class="kicker-meta">{pathLabel}</span>
+          <span class="kicker-dot" aria-hidden="true">·</span>
+          <span class="kicker-meta">Topic {indexInLevel + 1} of {levelCount}</span>
+          <span class="kicker-dot" aria-hidden="true">·</span>
+          <span class="kicker-meta">{d.duration}</span>
+        </div>
+        <h1>{d.title}</h1>
+        <p class="study-desc">{d.description}</p>
+      </header>
+
+      <div class="prose study-body">
+        <Content />
       </div>
-      <h1>{d.title}</h1>
-      <p class="study-desc">{d.description}</p>
-    </header>
 
-    <div class="prose study-body">
-      <Content />
-    </div>
-
-    <nav class="study-footer" aria-label="Lesson actions">
+      <nav class="study-footer" aria-label="Lesson actions">
       <div class="quiz-banner">
         <div class="quiz-copy">
           <span class="quiz-eyebrow">Check your understanding</span>
@@ -103,16 +105,37 @@ const pathLabel =
           </a>
         )}
       </div>
-    </nav>
-  </article>
+      </nav>
+    </article>
+
+    {outline.length > 0 && (
+      <aside class="lesson-outline" aria-label="Lesson contents">
+        <p>In this lesson</p>
+        <ol>
+          {outline.map((heading) => (
+            <li><a href={`#${heading.slug}`}>{heading.text}</a></li>
+          ))}
+        </ol>
+        <a class="outline-all" href="/study/">View full curriculum</a>
+      </aside>
+    )}
+  </div>
 
   <Comments />
 </BaseLayout>
 
 <style>
-  .study-article {
-    max-width: var(--maxw-prose);
+  .study-shell {
+    max-width: 1120px;
+    display: grid;
+    grid-template-columns: minmax(0, var(--maxw-prose)) minmax(190px, 250px);
+    align-items: start;
+    justify-content: center;
+    gap: clamp(2rem, 5vw, 4.5rem);
     padding-block: clamp(2rem, 5vw, 3rem) 2rem;
+  }
+  .study-article {
+    min-width: 0;
   }
   .back {
     font-size: 0.88rem;
@@ -238,6 +261,57 @@ const pathLabel =
   .study-body :global(a) {
     font-weight: 600;
   }
+  .study-body :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 1.4rem 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: #f7f8f7;
+  }
+
+  .lesson-outline {
+    position: sticky;
+    top: 5.5rem;
+    max-height: calc(100vh - 7rem);
+    overflow: auto;
+    padding-left: 1rem;
+    border-left: 1px solid var(--border);
+  }
+  .lesson-outline > p {
+    margin: 0 0 0.65rem;
+    color: var(--ink);
+    font-size: 0.78rem;
+    font-weight: 750;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .lesson-outline ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .lesson-outline li + li {
+    margin-top: 0.5rem;
+  }
+  .lesson-outline a {
+    display: block;
+    color: var(--ink-faint);
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+  .lesson-outline a:hover,
+  .lesson-outline a:focus-visible {
+    color: var(--accent);
+  }
+  .lesson-outline .outline-all {
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--border);
+    color: var(--ink-soft);
+    font-weight: 650;
+  }
 
   .study-footer {
     margin-top: 2.5rem;
@@ -334,6 +408,14 @@ const pathLabel =
     }
     .quiz-actions .btn {
       width: 100%;
+    }
+  }
+  @media (max-width: 900px) {
+    .study-shell {
+      grid-template-columns: minmax(0, var(--maxw-prose));
+    }
+    .lesson-outline {
+      display: none;
     }
   }
 </style>

@@ -332,4 +332,4 @@ Strong answers show **exhaustive states**, **mapping boundaries**, and **lifecyc
 - State vs event, with a Snackbar example.
 - Layered state placement across process death.
 
-You now have the junior backbone: **Kotlin → Activity → Fragment → Lifecycle → UI state**. Mid-level lessons wire data and async into these models with Coroutines, Compose, architecture, and tests.
+Next: **Context, resources, and the Android process**, where UI state meets configuration, platform services, and object lifetimes.

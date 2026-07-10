@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620" role="img" aria-labelledby="title desc">
+  <title id="title">Background work decision tree</title>
+  <desc id="desc">A decision tree chooses lifecycle coroutine, WorkManager, foreground execution, or AlarmManager based on lifetime, durability, visibility, and exact timing.</desc>
+  <rect width="1000" height="620" rx="24" fill="#f7f8f7"/>
+  <g font-family="system-ui, sans-serif" text-anchor="middle">
+    <rect x="310" y="30" width="380" height="68" rx="15" fill="#ffffff" stroke="#87958d" stroke-width="2"/>
+    <text x="500" y="72" fill="#26352d" font-size="18" font-weight="750">Must work survive its UI owner?</text>
+    <rect x="76" y="158" width="330" height="76" rx="15" fill="#e9f5ed" stroke="#168a47" stroke-width="2"/>
+    <text x="241" y="190" fill="#0f6e37" font-size="17" font-weight="750">No</text><text x="241" y="216" fill="#435149" font-size="15">lifecycle-aware coroutine</text>
+    <rect x="594" y="148" width="330" height="88" rx="15" fill="#ffffff" stroke="#87958d" stroke-width="2"/>
+    <text x="759" y="183" fill="#26352d" font-size="17" font-weight="750">Yes</text><text x="759" y="210" fill="#435149" font-size="15">must timing be exact?</text>
+    <rect x="594" y="300" width="330" height="88" rx="15" fill="#ffffff" stroke="#87958d" stroke-width="2"/>
+    <text x="759" y="335" fill="#26352d" font-size="17" font-weight="750">No</text><text x="759" y="362" fill="#435149" font-size="15">is work immediately user-visible?</text>
+    <rect x="76" y="310" width="330" height="76" rx="15" fill="#f8f0ee" stroke="#b6583d" stroke-width="2"/>
+    <text x="241" y="342" fill="#8b3c28" font-size="17" font-weight="750">Yes</text><text x="241" y="368" fill="#5f4a43" font-size="15">AlarmManager, current policy applies</text>
+    <rect x="76" y="466" width="330" height="94" rx="15" fill="#e9f5ed" stroke="#168a47" stroke-width="2"/>
+    <text x="241" y="502" fill="#0f6e37" font-size="17" font-weight="750">No</text><text x="241" y="528" fill="#435149" font-size="15">WorkManager with constraints,</text><text x="241" y="549" fill="#435149" font-size="15">backoff, and unique identity</text>
+    <rect x="594" y="466" width="330" height="94" rx="15" fill="#e9f5ed" stroke="#168a47" stroke-width="2"/>
+    <text x="759" y="502" fill="#0f6e37" font-size="17" font-weight="750">Yes</text><text x="759" y="528" fill="#435149" font-size="15">foreground service or expedited</text><text x="759" y="549" fill="#435149" font-size="15">WorkManager, based on duration</text>
+  </g>
+  <g stroke="#6c7a72" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M390 99l-115 51"/><path d="M285 151l-10-1 4-9"/>
+    <path d="M610 99l115 41"/><path d="M718 132l7 8-10 2"/>
+    <path d="M650 237L308 303"/><path d="M317 294l-9 9 11 4"/>
+    <path d="M759 237v54"/><path d="M751 282l8 9 8-9"/>
+    <path d="M680 389L300 458"/><path d="M309 449l-9 9 11 4"/>
+    <path d="M759 389v68"/><path d="M751 448l8 9 8-9"/>
+  </g>
+  <text x="44" y="598" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">Every branch still needs cancellation, idempotence, failure policy, and user-visible state.</text>
+</svg>

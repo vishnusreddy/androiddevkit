@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="520" viewBox="0 0 1100 520" role="img" aria-labelledby="title desc">
+  <title id="title">Mobile system design interview flow</title>
+  <desc id="desc">A seven-stage interview flow covers scope, guarantees, data model, critical path, failure and security, scale and performance, then rollout and tradeoffs.</desc>
+  <rect width="1100" height="520" rx="24" fill="#f7f8f7"/>
+  <text x="44" y="55" fill="#26352d" font-family="system-ui, sans-serif" font-size="20" font-weight="750">FROM AMBIGUOUS PROMPT TO DEFENSIBLE DESIGN</text>
+  <g font-family="system-ui, sans-serif" text-anchor="middle">
+    <g><circle cx="105" cy="152" r="48" fill="#e9f5ed" stroke="#168a47" stroke-width="3"/><text x="105" y="146" fill="#0f6e37" font-size="24" font-weight="800">1</text><text x="105" y="170" fill="#435149" font-size="12" font-weight="700">SCOPE</text></g>
+    <g><circle cx="253" cy="152" r="48" fill="#ffffff" stroke="#87958d" stroke-width="2"/><text x="253" y="146" fill="#26352d" font-size="24" font-weight="800">2</text><text x="253" y="170" fill="#5d6962" font-size="12" font-weight="700">GUARANTEES</text></g>
+    <g><circle cx="401" cy="152" r="48" fill="#ffffff" stroke="#87958d" stroke-width="2"/><text x="401" y="146" fill="#26352d" font-size="24" font-weight="800">3</text><text x="401" y="170" fill="#5d6962" font-size="12" font-weight="700">STATE</text></g>
+    <g><circle cx="549" cy="152" r="48" fill="#e9f5ed" stroke="#168a47" stroke-width="3"/><text x="549" y="146" fill="#0f6e37" font-size="24" font-weight="800">4</text><text x="549" y="170" fill="#435149" font-size="12" font-weight="700">DEEP DIVE</text></g>
+    <g><circle cx="697" cy="152" r="48" fill="#ffffff" stroke="#87958d" stroke-width="2"/><text x="697" y="146" fill="#26352d" font-size="24" font-weight="800">5</text><text x="697" y="170" fill="#5d6962" font-size="12" font-weight="700">FAILURE</text></g>
+    <g><circle cx="845" cy="152" r="48" fill="#ffffff" stroke="#87958d" stroke-width="2"/><text x="845" y="146" fill="#26352d" font-size="24" font-weight="800">6</text><text x="845" y="170" fill="#5d6962" font-size="12" font-weight="700">SCALE</text></g>
+    <g><circle cx="993" cy="152" r="48" fill="#e9f5ed" stroke="#168a47" stroke-width="3"/><text x="993" y="146" fill="#0f6e37" font-size="24" font-weight="800">7</text><text x="993" y="170" fill="#435149" font-size="12" font-weight="700">ROLLOUT</text></g>
+  </g>
+  <g stroke="#6c7a72" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M154 152h50"/><path d="M195 144l9 8-9 8"/><path d="M302 152h50"/><path d="M343 144l9 8-9 8"/><path d="M450 152h50"/><path d="M491 144l9 8-9 8"/><path d="M598 152h50"/><path d="M639 144l9 8-9 8"/><path d="M746 152h50"/><path d="M787 144l9 8-9 8"/><path d="M894 152h50"/><path d="M935 144l9 8-9 8"/>
+  </g>
+  <g font-family="system-ui, sans-serif">
+    <rect x="54" y="246" width="300" height="196" rx="16" fill="#ffffff" stroke="#cbd2ce" stroke-width="2"/>
+    <text x="80" y="281" fill="#26352d" font-size="16" font-weight="750">Define first</text>
+    <text x="80" y="315" fill="#5d6962" font-size="14">• primary journey and offline contract</text><text x="80" y="342" fill="#5d6962" font-size="14">• source of truth and authority</text><text x="80" y="369" fill="#5d6962" font-size="14">• acknowledgement vocabulary</text><text x="80" y="396" fill="#5d6962" font-size="14">• sensitive data and constraints</text>
+    <rect x="400" y="246" width="300" height="196" rx="16" fill="#ffffff" stroke="#cbd2ce" stroke-width="2"/>
+    <text x="426" y="281" fill="#26352d" font-size="16" font-weight="750">Deep dive</text>
+    <text x="426" y="315" fill="#5d6962" font-size="14">• local schema and API contract</text><text x="426" y="342" fill="#5d6962" font-size="14">• one read or write end to end</text><text x="426" y="369" fill="#5d6962" font-size="14">• process death and unknown outcome</text><text x="426" y="396" fill="#5d6962" font-size="14">• conflict and retry policy</text>
+    <rect x="746" y="246" width="300" height="196" rx="16" fill="#ffffff" stroke="#cbd2ce" stroke-width="2"/>
+    <text x="772" y="281" fill="#26352d" font-size="16" font-weight="750">Close strongly</text>
+    <text x="772" y="315" fill="#5d6962" font-size="14">• security and privacy</text><text x="772" y="342" fill="#5d6962" font-size="14">• performance and capacity</text><text x="772" y="369" fill="#5d6962" font-size="14">• tests, metrics, staged rollout</text><text x="772" y="396" fill="#5d6962" font-size="14">• explicit tradeoffs</text>
+  </g>
+  <text x="550" y="486" text-anchor="middle" fill="#0f6e37" font-family="system-ui, sans-serif" font-size="15" font-weight="750">Spend the most time on the feature's hardest guarantee, not on generic layer names.</text>
+</svg>
