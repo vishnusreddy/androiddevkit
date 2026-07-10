@@ -49,6 +49,8 @@ Do not memorize as trivia. Ask:
 
 A camera preview belongs to a visible, interactive screen. A database write that must not be lost does **not** belong solely in `onDestroy`.
 
+![Activity lifecycle during configuration recreation](/diagrams/activity-lifecycle.svg)
+
 ## Configuration change vs process death
 
 These are the two recreation stories interviewers love to mix up.

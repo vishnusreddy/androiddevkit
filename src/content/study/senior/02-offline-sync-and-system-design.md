@@ -75,6 +75,8 @@ If product truth is vague, engineers invent three competing truths in UI, cache,
 | Push-triggered | FCM → fetch | Chat, breaking updates |
 | Periodic | WorkManager | Non-urgent reconciliation |
 
+![Offline-first read and refresh flow](/diagrams/offline-first.svg)
+
 ### Pagination and sync
 
 Cursor/page tokens are server read concerns; local DB remains the UI source of truth. Avoid “in-memory only” pages if offline matters.
@@ -152,12 +154,7 @@ Call these out unprompted in designs:
 
 ## Caching layers
 
-```text
-UI memory (ViewModel)
-  → local DB (source of truth)
-    → disk cache (images)
-      → network
-```
+![Mobile cache layers and their ownership](/diagrams/mobile-cache-layers.svg)
 
 Each layer needs size limits and invalidation rules. “Cache everything forever” is not a strategy.
 

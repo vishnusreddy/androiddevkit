@@ -175,9 +175,7 @@ Interview phrase: **state is what to render; events are what to do once.**
 
 ## Unidirectional data flow (junior version)
 
-```
-User action → ViewModel → new UiState → UI renders
-```
+![Unidirectional data flow between UI and ViewModel](/diagrams/udf-loop.svg)
 
 ```kotlin
 class LoginViewModel : ViewModel() {

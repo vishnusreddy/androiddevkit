@@ -104,6 +104,8 @@ Turbine is a popular library for richer Flow assertions if the project uses it.
 
 ## What to test at each layer
 
+![Android testing pyramid](/diagrams/testing-pyramid.svg)
+
 | Layer | Test | Tools |
 |-------|------|-------|
 | Mappers / pure logic | Unit | JUnit |

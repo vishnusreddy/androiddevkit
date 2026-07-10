@@ -164,6 +164,8 @@ OkHttp has an HTTP cache, but application-level Room storage and HTTP response c
 
 Paging 3 loads chunks as the UI approaches unloaded content.
 
+![Paging 3 architecture with RemoteMediator and Room](/diagrams/paging-architecture.svg)
+
 | Piece | Responsibility |
 |---|---|
 | `PagingSource<Key, Value>` | Load one page from a source and return adjacent keys |

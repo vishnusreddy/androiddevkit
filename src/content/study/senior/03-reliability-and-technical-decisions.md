@@ -41,6 +41,8 @@ analytics.track(
 
 Do **not** collect raw message bodies, tokens, email contents, or personal notes “just in case.” Privacy constraints and trust are part of reliability.
 
+![Reliable mobile analytics delivery pipeline](/diagrams/analytics-pipeline.svg)
+
 ### Define owners and thresholds
 
 A metric without an owner and a threshold is decoration.

@@ -67,19 +67,9 @@ Do not call a locally queued message "delivered."
 
 ## Step 3: draw the data flow
 
-A robust default for offline-capable features is:
+A robust default for offline-capable features keeps Room as the UI source of truth while synchronization updates it from the remote service:
 
-```text
-Compose / Views
-    observes
-ViewModel UI state
-    observes
-Repository
-    observes and writes
-Room local source of truth
-    synchronized by
-API + WorkManager / app-scoped sync
-```
+![Offline-capable mobile feature data flow](/diagrams/local-source-of-truth.svg)
 
 Add external systems only when relevant: object storage and CDN for media, WebSocket for live events, push service for wakeup hints, map SDK for tiles, or payment SDK for regulated entry.
 

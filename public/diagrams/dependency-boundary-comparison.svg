@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 330" role="img" aria-labelledby="title desc">
+  <title id="title">Feature dependency boundary comparison</title>
+  <desc id="desc">A bad design couples feed implementation directly to checkout implementation. A better design makes both features depend on a small payments API boundary.</desc>
+  <style>
+    text{font:650 15px system-ui,sans-serif;fill:#1d2b23}.heading{font-size:18px;font-weight:800}.sub{font-size:12px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.good{fill:#e9f7ed;stroke:#169447;stroke-width:2}.bad{fill:#fff4ef;stroke:#c65b35;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.4;marker-end:url(#arrow)}.badline{fill:none;stroke:#c65b35;stroke-width:2.4;marker-end:url(#bad-arrow)}
+    @media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.good{fill:#12351f;stroke:#55cc7a}.bad{fill:#351b14;stroke:#e38b68}.line{stroke:#a8b9af}.badline{stroke:#e38b68}}
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker>
+    <marker id="bad-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker>
+  </defs>
+  <rect class="bad" x="28" y="28" width="430" height="274" rx="18"/>
+  <text class="heading" x="56" y="67">Direct implementation coupling</text>
+  <text class="sub" x="56" y="91">A feed change can now require checkout internals.</text>
+  <rect class="box" x="68" y="138" width="145" height="64" rx="14"/><text x="140" y="166" text-anchor="middle">:feed:impl</text><text class="sub" x="140" y="187" text-anchor="middle">feature internals</text>
+  <rect class="box" x="275" y="138" width="145" height="64" rx="14"/><text x="347" y="166" text-anchor="middle">:checkout:impl</text><text class="sub" x="347" y="187" text-anchor="middle">feature internals</text>
+  <path class="badline" d="M213 170H275"/><text class="sub" x="244" y="151" text-anchor="middle">imports</text>
+  <text class="sub" x="244" y="252" text-anchor="middle">Private models and lifecycle choices leak across the boundary.</text>
+
+  <rect class="good" x="502" y="28" width="430" height="274" rx="18"/>
+  <text class="heading" x="530" y="67">Stable API boundary</text>
+  <text class="sub" x="530" y="91">Each implementation depends on a narrow contract.</text>
+  <rect class="box" x="530" y="205" width="145" height="64" rx="14"/><text x="602" y="233" text-anchor="middle">:feed:impl</text><text class="sub" x="602" y="254" text-anchor="middle">consumer</text>
+  <rect class="box" x="759" y="205" width="145" height="64" rx="14"/><text x="831" y="233" text-anchor="middle">:checkout:impl</text><text class="sub" x="831" y="254" text-anchor="middle">consumer</text>
+  <rect class="good" x="644" y="113" width="148" height="64" rx="14"/><text x="718" y="141" text-anchor="middle">:payments:api</text><text class="sub" x="718" y="162" text-anchor="middle">stable contract</text>
+  <path class="line" d="M602 205V184H682V177M831 205V184H754V177"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Mobile cache layers and ownership</title>
+  <desc id="desc">A ViewModel holds short-lived screen state, Room holds durable queryable app data, the image cache holds recreatable media, and the network remains the remote authority.</desc>
+  <style>
+    text{font:650 15px system-ui,sans-serif;fill:#1d2b23}.sub{font-size:12px;font-weight:500;fill:#52645a}.box{fill:#fff;stroke:#b9cec1;stroke-width:2}.accent{fill:#e9f7ed;stroke:#169447;stroke-width:2}.line{fill:none;stroke:#52645a;stroke-width:2.2;marker-end:url(#arrow)}
+    @media(prefers-color-scheme:dark){text{fill:#ecf4ef}.sub{fill:#a8b9af}.box{fill:#17211b;stroke:#405247}.accent{fill:#12351f;stroke:#55cc7a}.line{stroke:#a8b9af}}
+  </style>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
+  <rect class="box" x="42" y="55" width="188" height="104" rx="16"/>
+  <text x="136" y="86" text-anchor="middle">ViewModel memory</text><text class="sub" x="136" y="110" text-anchor="middle">screen state</text><text class="sub" x="136" y="130" text-anchor="middle">lost with process</text>
+  <rect class="accent" x="282" y="55" width="188" height="104" rx="16"/>
+  <text x="376" y="86" text-anchor="middle">Room database</text><text class="sub" x="376" y="110" text-anchor="middle">local source of truth</text><text class="sub" x="376" y="130" text-anchor="middle">schema + transactions</text>
+  <rect class="box" x="522" y="55" width="188" height="104" rx="16"/>
+  <text x="616" y="86" text-anchor="middle">Media disk cache</text><text class="sub" x="616" y="110" text-anchor="middle">recreatable bytes</text><text class="sub" x="616" y="130" text-anchor="middle">bounded + evictable</text>
+  <rect class="accent" x="762" y="55" width="156" height="104" rx="16"/>
+  <text x="840" y="86" text-anchor="middle">Remote service</text><text class="sub" x="840" y="110" text-anchor="middle">shared authority</text><text class="sub" x="840" y="130" text-anchor="middle">versioned contract</text>
+  <path class="line" d="M230 107H282M470 107H522M710 107H762"/>
+
+  <rect class="box" x="124" y="230" width="712" height="84" rx="16"/>
+  <text x="480" y="260" text-anchor="middle">Every layer needs an explicit policy</text>
+  <text class="sub" x="480" y="284" text-anchor="middle">key • lifetime • size bound • freshness • invalidation • failure behavior</text>
+  <path class="line" d="M136 159V212H480V230M376 159V212M616 159V212M840 159V212H480"/>
+</svg>

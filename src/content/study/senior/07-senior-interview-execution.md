@@ -120,25 +120,9 @@ Do not spend five minutes listing classes if the hard problem was rollout coordi
 
 ## Incident answers need a causal chain
 
-Separate trigger, root cause, and contributing factors:
+Separate trigger, root cause, contributing control gaps, mitigation, and prevention:
 
-```text
-Trigger:
-  Server began returning a new nullable field variant.
-
-Root cause:
-  Release serializer treated the field as non-null and failed the full payload.
-
-Contributing factors:
-  Contract tests covered field omission but not explicit null.
-  Staged rollout alert grouped parsing failures under generic network error.
-
-Mitigation:
-  Server rolled back field variant; client added tolerant parsing.
-
-Prevention:
-  Consumer-driven contract case, typed parsing metric, schema compatibility checklist.
-```
+![Production incident causal chain and prevention loop](/diagrams/incident-causal-chain.svg)
 
 Avoid blaming the person who deployed the trigger. Ask why the system allowed one change to reach users without containment.
 

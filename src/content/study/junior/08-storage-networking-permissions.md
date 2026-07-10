@@ -114,19 +114,9 @@ DataStore is asynchronous. Do not block startup with `runBlocking` to read it. E
 
 ## The network path
 
-A typical request crosses several boundaries:
+A typical request crosses several boundaries and returns through model mapping before it becomes UI state:
 
-```text
-UI intent
-  -> ViewModel
-  -> Repository
-  -> HTTP API interface
-  -> OkHttp call, TLS, server
-  -> HTTP response
-  -> JSON DTO
-  -> domain or UI model
-  -> UI state
-```
+![HTTP request and response lifecycle](/diagrams/http-request-lifecycle.svg)
 
 Retrofit can turn an annotated interface into calls. OkHttp performs HTTP work underneath. A serialization library maps response bytes into DTOs.
 

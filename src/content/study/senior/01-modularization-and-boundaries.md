@@ -31,22 +31,7 @@ Start by mapping:
 
 Example: a checkout feature might own its UI, presentation state, and internal data coordination. The rest of the app should depend on a small **entry point**, not on checkout’s database classes or private composables.
 
-```text
-:app
-  → :feature:checkout:api
-  → :feature:feed:api
-  → :core:designsystem
-  → :core:network
-
-:feature:checkout:impl
-  → :feature:checkout:api
-  → :core:database
-  → :core:network
-
-:feature:feed:impl
-  → :feature:feed:api
-  ...
-```
+![Feature and core module dependency structure](/diagrams/modularization.svg)
 
 ### API vs implementation modules
 
@@ -78,10 +63,7 @@ Healthy rules of thumb:
 
 When two features need shared behavior, extract a **core** or **domain** module with a stable API - do not let them reach into each other “just this once.”
 
-```text
-Bad:  feed/impl → checkout/impl
-Good: feed/impl → payments/api ← checkout/impl
-```
+![Direct feature coupling compared with a shared API boundary](/diagrams/dependency-boundary-comparison.svg)
 
 ## What to put in core modules
 

@@ -396,6 +396,24 @@ const pathLabel =
   }
 
   @media (max-width: 560px) {
+    .study-body :global(p:has(> img:only-child)) {
+      width: 100%;
+      margin: 1.4rem 0;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: #f7f8f7;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+    .study-body :global(p:has(> img:only-child) > img) {
+      width: 720px;
+      max-width: none;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+    }
     .pager {
       grid-template-columns: 1fr;
     }
