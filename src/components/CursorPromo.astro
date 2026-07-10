@@ -1,7 +1,8 @@
 ---
-// Floating Cursor referral card. Desktop only, appears once after a short
-// delay, and stays hidden for 30 days after a dismiss or a click-through.
-// Never shown on /practice so it cannot interrupt a timed session.
+// Floating Cursor referral card. Desktop only and shown at most once per
+// browser profile. The impression is recorded when the card becomes visible,
+// so navigating away before the delay does not consume it. Never shown on
+// /practice so it cannot interrupt a timed session.
 const REFERRAL_URL = 'https://cursor.com/referral?code=IPANIIUERVMH';
 ---
 
@@ -164,36 +165,55 @@ const REFERRAL_URL = 'https://cursor.com/referral?code=IPANIIUERVMH';
 
 <script is:inline>
   (function () {
-    var KEY = 'adk-cursor-promo-hide-until';
-    var THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+    var SEEN_KEY = 'adk-cursor-promo-seen-v1';
+    var LEGACY_HIDE_KEY = 'adk-cursor-promo-hide-until';
     var promo = document.getElementById('cursor-promo');
     if (!promo) return;
     if (location.pathname.indexOf('/practice') === 0) return;
-    try {
-      if (Number(localStorage.getItem(KEY) || 0) > Date.now()) return;
-    } catch (e) {
-      /* storage blocked: show normally, dismissal just will not persist */
-    }
-    var desktopQuery = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
-    if (!desktopQuery.matches) return;
 
-    function snooze() {
+    function hasSeen() {
       try {
-        localStorage.setItem(KEY, String(Date.now() + THIRTY_DAYS));
+        if (localStorage.getItem(SEEN_KEY) === '1') return true;
+        if (Number(localStorage.getItem(LEGACY_HIDE_KEY) || 0) > Date.now()) {
+          localStorage.setItem(SEEN_KEY, '1');
+          return true;
+        }
       } catch (e) {
-        /* ignore */
+        /* fall through to session storage */
+      }
+      try {
+        return sessionStorage.getItem(SEEN_KEY) === '1';
+      } catch (e) {
+        return false;
       }
     }
 
+    function markSeen() {
+      try {
+        localStorage.setItem(SEEN_KEY, '1');
+      } catch (e) {
+        /* session storage still prevents repeat prompts in this tab */
+      }
+      try {
+        sessionStorage.setItem(SEEN_KEY, '1');
+      } catch (e) {
+        /* ignore when storage is unavailable */
+      }
+    }
+
+    if (hasSeen()) return;
+    var desktopQuery = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
+    if (!desktopQuery.matches) return;
+
     window.setTimeout(function () {
+      if (!desktopQuery.matches || hasSeen()) return;
+      markSeen();
       promo.hidden = false;
-    }, 6000);
+    }, 10000);
     document.getElementById('cursor-promo-close').addEventListener('click', function () {
       promo.hidden = true;
-      snooze();
     });
     document.getElementById('cursor-promo-cta').addEventListener('click', function () {
-      snooze();
       window.setTimeout(function () {
         promo.hidden = true;
       }, 400);
