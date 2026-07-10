@@ -175,9 +175,7 @@ Interview phrase: **state is what to render; events are what to do once.**
 
 ## Unidirectional data flow (junior version)
 
-```
-User action → ViewModel → new UiState → UI renders
-```
+![Unidirectional data flow between UI and ViewModel](/diagrams/udf-loop.svg)
 
 ```kotlin
 class LoginViewModel : ViewModel() {
@@ -332,4 +330,4 @@ Strong answers show **exhaustive states**, **mapping boundaries**, and **lifecyc
 - State vs event, with a Snackbar example.
 - Layered state placement across process death.
 
-You now have the junior backbone: **Kotlin → Activity → Fragment → Lifecycle → UI state**. Mid-level lessons wire data and async into these models with Coroutines, Compose, architecture, and tests.
+Next: **Context, resources, and the Android process**, where UI state meets configuration, platform services, and object lifetimes.

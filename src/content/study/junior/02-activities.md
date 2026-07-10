@@ -194,15 +194,9 @@ Process death is a separate, harder problem - covered in the lifecycle lesson.
 
 ## Single-Activity architecture
 
-Most greenfield apps look like:
+Most greenfield apps use one Activity as a window-level host for a navigation graph:
 
-```
-MainActivity
-  └── NavHost
-        ├── Home
-        ├── Detail
-        └── Settings
-```
+![Single-Activity navigation structure](/diagrams/single-activity.svg)
 
 Benefits:
 

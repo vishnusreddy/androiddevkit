@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="540" viewBox="0 0 1000 540" role="img" aria-labelledby="title desc">
+  <title id="title">Android security trust boundaries</title>
+  <desc id="desc">External apps, links, device storage, network, dependencies, and server authority surround an untrusted mobile client.</desc>
+  <rect width="1000" height="540" rx="24" fill="#f7f8f7"/>
+  <rect x="300" y="126" width="400" height="280" rx="22" fill="#ffffff" stroke="#168a47" stroke-width="3"/>
+  <text x="500" y="171" text-anchor="middle" fill="#0f6e37" font-family="system-ui, sans-serif" font-size="20" font-weight="800">ANDROID CLIENT</text>
+  <text x="500" y="199" text-anchor="middle" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">inspectable and modifiable by a determined user</text>
+  <g font-family="system-ui, sans-serif" text-anchor="middle">
+    <rect x="354" y="232" width="126" height="62" rx="12" fill="#eef8f1" stroke="#8fb89f" stroke-width="2"/><text x="417" y="270" fill="#26352d" font-size="15" font-weight="700">UI and routes</text>
+    <rect x="520" y="232" width="126" height="62" rx="12" fill="#eef8f1" stroke="#8fb89f" stroke-width="2"/><text x="583" y="270" fill="#26352d" font-size="15" font-weight="700">Local storage</text>
+    <rect x="354" y="320" width="126" height="62" rx="12" fill="#eef8f1" stroke="#8fb89f" stroke-width="2"/><text x="417" y="358" fill="#26352d" font-size="15" font-weight="700">Credentials</text>
+    <rect x="520" y="320" width="126" height="62" rx="12" fill="#eef8f1" stroke="#8fb89f" stroke-width="2"/><text x="583" y="358" fill="#26352d" font-size="15" font-weight="700">SDK code</text>
+    <rect x="38" y="66" width="204" height="76" rx="14" fill="#ffffff" stroke="#87958d" stroke-width="2"/><text x="140" y="99" fill="#26352d" font-size="16" font-weight="700">Other apps</text><text x="140" y="122" fill="#5d6962" font-size="13">Intents, Binder, URIs</text>
+    <rect x="38" y="390" width="204" height="76" rx="14" fill="#ffffff" stroke="#87958d" stroke-width="2"/><text x="140" y="423" fill="#26352d" font-size="16" font-weight="700">Links and files</text><text x="140" y="446" fill="#5d6962" font-size="13">attacker-controlled input</text>
+    <rect x="758" y="66" width="204" height="76" rx="14" fill="#ffffff" stroke="#87958d" stroke-width="2"/><text x="860" y="99" fill="#26352d" font-size="16" font-weight="700">Dependencies</text><text x="860" y="122" fill="#5d6962" font-size="13">code and supply chain</text>
+    <rect x="758" y="390" width="204" height="76" rx="14" fill="#e9f5ed" stroke="#168a47" stroke-width="2"/><text x="860" y="423" fill="#0f6e37" font-size="16" font-weight="800">Server authority</text><text x="860" y="446" fill="#435149" font-size="13">authentication and policy</text>
+  </g>
+  <g stroke="#6c7a72" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M242 112l50 41"/><path d="M282 143l10 10-13 1"/>
+    <path d="M242 413l50-40"/><path d="M279 372l13 1-10 10"/>
+    <path d="M758 112l-50 41"/><path d="M718 143l-10 10 13 1"/>
+    <path d="M700 373l58 40"/><path d="M746 402l12 11-14 1"/>
+  </g>
+  <text x="500" y="496" text-anchor="middle" fill="#8b3c28" font-family="system-ui, sans-serif" font-size="15" font-weight="750">The client can enforce UX and raise attacker cost, but the server owns authorization and durable truth.</text>
+</svg>

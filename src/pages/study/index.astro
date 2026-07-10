@@ -11,25 +11,28 @@ const lessons = (await getCollection('study')).sort(
 
 const levelMeta: Record<
   string,
-  { title: string; summary: string; audience: string }
+  { title: string; summary: string; audience: string; outcome: string }
 > = {
   junior: {
     title: 'Junior path',
     summary:
-      'Build Android fundamentals in the order they connect in a real app: language, screens, lifecycle, then UI models.',
+      'Build Android fundamentals in the order they connect in a real app: language, components, lifecycle, UI, storage, and network boundaries.',
     audience: 'New to Android or preparing for your first mobile role',
+    outcome: 'Explain the platform and ship a complete, lifecycle-safe feature',
   },
   mid: {
     title: 'Mid-level path',
     summary:
-      'Turn fundamentals into production habits: async data, Compose state, architecture boundaries, and tests that protect behavior.',
+      'Turn fundamentals into production systems: async state, Compose, architecture, tests, data flows, background work, navigation, DI, and release builds.',
     audience: '1–4 years of Android experience',
+    outcome: 'Own a production feature from UI state through release behavior',
   },
   senior: {
     title: 'Senior path',
     summary:
-      'Own larger systems: module boundaries, offline sync, mobile system design, reliability, and technical decisions under uncertainty.',
+      'Own larger systems: boundaries, offline sync, reliability, platform performance, security, system design, and engineering leadership.',
     audience: 'Leading features, tech design, or senior+ interviews',
+    outcome: 'Defend tradeoffs, failure behavior, rollout, and measurable impact',
   },
 };
 
@@ -38,6 +41,12 @@ const groups = DIFFICULTY_ORDER.map((level) => ({
   ...levelMeta[level],
   items: lessons.filter((l) => l.data.level === level),
 }));
+
+const totalMinutes = lessons.reduce((sum, lesson) => {
+  const minutes = Number.parseInt(lesson.data.duration, 10);
+  return sum + (Number.isFinite(minutes) ? minutes : 0);
+}, 0);
+const totalHours = Math.floor(totalMinutes / 60);
 ---
 <BaseLayout
   title="Android Developer Study Plan"
@@ -46,27 +55,35 @@ const groups = DIFFICULTY_ORDER.map((level) => ({
   <div class="container study-index">
     <header class="study-hero">
       <span class="eyebrow">Study plan</span>
-      <h1>Learn Android in the order the platform asks you to.</h1>
+      <h1>Master Android from first principles to senior system design.</h1>
       <p class="lede">
-        Start with Kotlin. Then learn how Android creates screens, how those
-        screens live and die, and how you model UI state before moving into
-        architecture, performance, and system design. Each lesson is a deep
-        guide with code, failure modes, and interview framing - not a checklist
-        of buzzwords.
+        This is a complete interview curriculum, not a list of definitions.
+        Follow the paths in order to learn the runtime, UI, data, architecture,
+        performance, security, and design decisions behind production Android
+        apps. Every lesson includes exact APIs, code, failure modes, interview
+        probes, and exercises.
       </p>
-      <p class="study-meta">
-        {lessons.length} lessons · junior → mid → senior · quiz optional after each topic
-      </p>
+      <div class="study-stats" aria-label="Curriculum summary">
+        <div><strong>{lessons.length}</strong><span>deep lessons</span></div>
+        <div><strong>{totalHours}+</strong><span>study hours</span></div>
+        <div><strong>3</strong><span>career paths</span></div>
+      </div>
+      <nav class="path-jumps" aria-label="Choose a starting level">
+        <a href="#level-junior">Start with fundamentals</a>
+        <a href="#level-mid">Jump to mid-level</a>
+        <a href="#level-senior">Prepare for senior</a>
+      </nav>
     </header>
 
     {groups.map((group) => (
-      <section class="level-block" aria-labelledby={`level-${group.level}`}>
+      <section id={`level-${group.level}`} class="level-block" aria-labelledby={`level-${group.level}-title`}>
         <div class="level-head">
           <div>
             <span class:list={['badge', `badge-${group.level}`]}>{DIFFICULTY_LABEL[group.level]}</span>
-            <h2 id={`level-${group.level}`}>{group.title}</h2>
+            <h2 id={`level-${group.level}-title`}>{group.title}</h2>
             <p class="level-summary">{group.summary}</p>
             <p class="level-audience">{group.audience}</p>
+            <p class="level-outcome"><strong>Outcome:</strong> {group.outcome}</p>
           </div>
           <span class="level-count">{group.items.length} topic{group.items.length === 1 ? '' : 's'}</span>
         </div>
@@ -94,10 +111,10 @@ const groups = DIFFICULTY_ORDER.map((level) => ({
     <aside class="study-note card">
       <h2>How to use this plan</h2>
       <ul>
-        <li>Read one lesson, then restate the main ideas without looking.</li>
-        <li>Write the small examples yourself - reading is not the same as ownership.</li>
-        <li>Take the optional quiz when you want a check, or skip straight to the next topic.</li>
-        <li>When a concept still feels fuzzy, open the matching <a href="/topics/">topic guide</a> and question bank.</li>
+        <li>Read one lesson, then explain its mechanism and failure boundary without looking.</li>
+        <li>Type the examples and complete the practice checklist. Recognition is not recall.</li>
+        <li>Take the topic quiz, then write down why each missed option is wrong.</li>
+        <li>After each path, build one feature that combines its concepts and take a timed mock test.</li>
       </ul>
     </aside>
   </div>
@@ -109,7 +126,7 @@ const groups = DIFFICULTY_ORDER.map((level) => ({
     padding-block: clamp(2rem, 5vw, 3.25rem) 3rem;
   }
   .study-hero {
-    max-width: 720px;
+    max-width: 800px;
     margin-bottom: clamp(2rem, 5vw, 3rem);
   }
   .study-hero h1 {
@@ -120,14 +137,55 @@ const groups = DIFFICULTY_ORDER.map((level) => ({
     font-size: 1.05rem;
     color: var(--ink-soft);
   }
-  .study-meta {
-    margin: 1.1rem 0 0;
-    font-size: 0.88rem;
+  .study-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-top: 1.35rem;
+  }
+  .study-stats div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .study-stats strong {
+    color: var(--ink);
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+  .study-stats span {
     color: var(--ink-faint);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .path-jumps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.8rem;
+  }
+  .path-jumps a {
+    padding: 0.42rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-size: 0.8rem;
+    font-weight: 650;
+  }
+  .path-jumps a:hover,
+  .path-jumps a:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   .level-block {
     margin-bottom: clamp(2rem, 4vw, 2.75rem);
+    scroll-margin-top: 5.5rem;
   }
   .level-head {
     display: flex;
@@ -150,6 +208,11 @@ const groups = DIFFICULTY_ORDER.map((level) => ({
     margin: 0.35rem 0 0;
     color: var(--ink-faint);
     font-size: 0.82rem;
+  }
+  .level-outcome {
+    margin: 0.5rem 0 0;
+    color: var(--ink-soft);
+    font-size: 0.86rem;
   }
   .level-count {
     flex-shrink: 0;
@@ -244,6 +307,14 @@ const groups = DIFFICULTY_ORDER.map((level) => ({
   }
 
   @media (max-width: 640px) {
+    .study-stats {
+      grid-template-columns: 1fr;
+    }
+    .study-stats div {
+      flex-direction: row;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
     .lesson-card {
       grid-template-columns: auto minmax(0, 1fr);
       gap: 0.75rem 0.9rem;

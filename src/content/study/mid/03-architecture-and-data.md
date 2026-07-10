@@ -20,15 +20,7 @@ Architecture is useful when it makes change **safer**, not when it maximizes fol
 
 ## A practical default shape
 
-```text
-UI (Compose / View)
-  ↓ events / ↑ state
-ViewModel
-  ↓ / ↑ domain models or UI-ready models
-Repository
-  ↓          ↓
-Local DB    Remote API
-```
+![Recommended Android architecture with observable data flow](/diagrams/recommended-architecture.svg)
 
 Google’s guidance for modern apps aligns with: UI layer + data layer, optional domain layer when logic is rich enough to justify it.
 
@@ -118,9 +110,7 @@ This matches product truth: **what the user sees** is what we have stored, not t
 
 ## Unidirectional data flow (UDF)
 
-```text
-UI event → ViewModel → reduce new state → UI
-```
+![Unidirectional data flow loop](/diagrams/udf-loop.svg)
 
 Benefits: easier reasoning, fewer two-way binding bugs, straightforward tests (“given event, assert state”).
 

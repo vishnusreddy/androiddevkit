@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="460" viewBox="0 0 1000 460" role="img" aria-labelledby="title desc">
+  <title id="title">Android lifetime boundaries</title>
+  <desc id="desc">UI instances live inside a process, while durable storage survives process termination.</desc>
+  <rect width="1000" height="460" rx="24" fill="#f7f8f7"/>
+  <rect x="34" y="34" width="932" height="270" rx="18" fill="#ffffff" stroke="#cbd2ce" stroke-width="2"/>
+  <text x="60" y="72" fill="#47534d" font-family="system-ui, sans-serif" font-size="18" font-weight="700">APP PROCESS</text>
+  <rect x="66" y="96" width="250" height="174" rx="16" fill="#eef8f1" stroke="#168a47" stroke-width="2"/>
+  <text x="191" y="132" text-anchor="middle" fill="#0f6e37" font-family="system-ui, sans-serif" font-size="17" font-weight="700">Activity instance</text>
+  <rect x="92" y="154" width="198" height="84" rx="12" fill="#ffffff" stroke="#8fb89f" stroke-width="2"/>
+  <text x="191" y="188" text-anchor="middle" fill="#26352d" font-family="system-ui, sans-serif" font-size="16" font-weight="650">Fragment view</text>
+  <text x="191" y="214" text-anchor="middle" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">shortest lifetime</text>
+  <rect x="374" y="96" width="250" height="174" rx="16" fill="#f3f5f4" stroke="#7a8981" stroke-width="2"/>
+  <text x="499" y="132" text-anchor="middle" fill="#26352d" font-family="system-ui, sans-serif" font-size="17" font-weight="700">ViewModel</text>
+  <text x="499" y="171" text-anchor="middle" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">survives configuration change</text>
+  <text x="499" y="197" text-anchor="middle" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">cleared when owner finishes</text>
+  <rect x="682" y="96" width="250" height="174" rx="16" fill="#f3f5f4" stroke="#7a8981" stroke-width="2"/>
+  <text x="807" y="132" text-anchor="middle" fill="#26352d" font-family="system-ui, sans-serif" font-size="17" font-weight="700">Application and singletons</text>
+  <text x="807" y="171" text-anchor="middle" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">live for this process</text>
+  <text x="807" y="197" text-anchor="middle" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">not durable storage</text>
+  <path d="M500 305v40" stroke="#6c7a72" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M492 337l8 10 8-10" fill="none" stroke="#6c7a72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="165" y="350" width="670" height="76" rx="16" fill="#e9f5ed" stroke="#168a47" stroke-width="2"/>
+  <text x="500" y="383" text-anchor="middle" fill="#0f6e37" font-family="system-ui, sans-serif" font-size="18" font-weight="750">DURABLE STATE</text>
+  <text x="500" y="408" text-anchor="middle" fill="#435149" font-family="system-ui, sans-serif" font-size="15">Room, DataStore, files, or server state can reconstruct a new process</text>
+</svg>

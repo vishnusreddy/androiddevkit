@@ -1,9 +1,10 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const questionDir = join(root, 'src/content/questions');
+const studyDir = join(root, 'src/content/study');
 const mcqFile = join(root, 'src/data/practice-mcqs.ts');
 const knownTopics = new Set([
   'android-fundamentals',
@@ -96,6 +97,67 @@ for (const filename of readdirSync(questionDir).filter((name) => name.endsWith('
     else seenQuestions.set(key, filename);
   }
   writtenCounts.set(topic, (writtenCounts.get(topic) ?? 0) + 1);
+}
+
+const studyCounts = new Map();
+const studyOrders = new Map();
+const requiredStudySections = [
+  'Learning goals',
+  'Practice checklist',
+  'What you should be able to explain',
+];
+
+for (const path of collectCopyFiles(studyDir).filter((filename) => filename.endsWith('.md')).sort()) {
+  const relative = path.slice(root.length + 1);
+  const source = readFileSync(path, 'utf8');
+  const match = source.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  if (!match) {
+    fail(relative, 'missing or malformed study frontmatter');
+    continue;
+  }
+
+  const [, raw, body] = match;
+  const field = (name) => raw
+    .match(new RegExp(`^${name}:\\s*(.+)$`, 'm'))?.[1]
+    ?.trim()
+    .replace(/^['"]|['"]$/g, '');
+  const title = field('title');
+  const description = field('description');
+  const level = field('level');
+  const order = Number(field('order'));
+  const duration = field('duration');
+
+  if (!title) fail(relative, 'study title is required');
+  if (!description || words(description) < 8) fail(relative, 'study description must be specific');
+  if (!knownDifficulties.has(level)) fail(relative, `unknown study level ${JSON.stringify(level)}`);
+  if (!Number.isInteger(order) || order < 1) fail(relative, 'study order must be a positive integer');
+  if (!/^\d+ min$/.test(duration ?? '')) fail(relative, 'study duration must look like “55 min”');
+
+  const bodyWords = words(body);
+  if (bodyWords < 900) fail(relative, `study lesson is too thin (${bodyWords} words; minimum 900)`);
+  if ((body.match(/^```/gm)?.length ?? 0) % 2 !== 0) fail(relative, 'unbalanced fenced code block');
+
+  for (const section of requiredStudySections) {
+    if (!body.includes(`## ${section}`)) fail(relative, `missing required section “${section}”`);
+  }
+
+  for (const diagram of body.matchAll(/!\[[^\]]*\]\((\/diagrams\/[^)]+)\)/g)) {
+    const publicPath = join(root, 'public', diagram[1].slice(1));
+    if (!existsSync(publicPath)) fail(relative, `missing referenced diagram ${diagram[1]}`);
+  }
+
+  if (knownDifficulties.has(level)) {
+    studyCounts.set(level, (studyCounts.get(level) ?? 0) + 1);
+    const orderKey = `${level}:${order}`;
+    if (studyOrders.has(orderKey)) fail(relative, `duplicates study order with ${studyOrders.get(orderKey)}`);
+    else studyOrders.set(orderKey, relative);
+  }
+}
+
+for (const [level, minimum] of Object.entries({ junior: 8, mid: 8, senior: 7 })) {
+  if ((studyCounts.get(level) ?? 0) < minimum) {
+    fail('study plan', `${level} path needs at least ${minimum} lessons`);
+  }
 }
 
 function extractCalls(source) {
@@ -207,4 +269,5 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`Content quality check passed: ${seenQuestions.size} written questions and ${mcqs.length} MCQs.`);
+const studyTotal = [...studyCounts.values()].reduce((sum, count) => sum + count, 0);
+console.log(`Content quality check passed: ${seenQuestions.size} written questions, ${mcqs.length} MCQs, and ${studyTotal} study lessons.`);

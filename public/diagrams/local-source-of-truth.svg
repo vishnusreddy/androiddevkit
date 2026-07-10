@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="520" viewBox="0 0 1000 520" role="img" aria-labelledby="title desc">
+  <title id="title">Local source of truth data flow</title>
+  <desc id="desc">The user interface observes Room through ViewModel and repository, while network refresh writes transactionally into Room.</desc>
+  <rect width="1000" height="520" rx="24" fill="#f7f8f7"/>
+  <g font-family="system-ui, sans-serif" text-anchor="middle">
+    <rect x="333" y="36" width="334" height="72" rx="15" fill="#ffffff" stroke="#87958d" stroke-width="2"/>
+    <text x="500" y="80" fill="#26352d" font-size="18" font-weight="750">Compose or Views</text>
+    <rect x="333" y="150" width="334" height="72" rx="15" fill="#ffffff" stroke="#87958d" stroke-width="2"/>
+    <text x="500" y="194" fill="#26352d" font-size="18" font-weight="750">ViewModel UI state</text>
+    <rect x="333" y="264" width="334" height="72" rx="15" fill="#ffffff" stroke="#87958d" stroke-width="2"/>
+    <text x="500" y="308" fill="#26352d" font-size="18" font-weight="750">Repository</text>
+    <rect x="333" y="408" width="334" height="78" rx="15" fill="#e9f5ed" stroke="#168a47" stroke-width="3"/>
+    <text x="500" y="442" fill="#0f6e37" font-size="18" font-weight="800">Room database</text>
+    <text x="500" y="466" fill="#435149" font-size="14">only source rendered by the UI</text>
+    <rect x="744" y="264" width="208" height="72" rx="15" fill="#ffffff" stroke="#87958d" stroke-width="2"/>
+    <text x="848" y="298" fill="#26352d" font-size="17" font-weight="750">Remote API</text>
+    <text x="848" y="320" fill="#5d6962" font-size="13">refresh input</text>
+  </g>
+  <g stroke="#168a47" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M480 408V345"/><path d="M472 354l8-9 8 9"/>
+    <path d="M480 264V231"/><path d="M472 240l8-9 8 9"/>
+    <path d="M480 150v-33"/><path d="M472 126l8-9 8 9"/>
+  </g>
+  <text x="456" y="379" text-anchor="end" fill="#0f6e37" font-family="system-ui, sans-serif" font-size="14" font-weight="700">Flow observation</text>
+  <g stroke="#6c7a72" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M667 300h67"/><path d="M725 292l9 8-9 8"/>
+    <path d="M848 337v62H644"/><path d="M653 391l-9 8 9 8"/>
+  </g>
+  <text x="779" y="386" text-anchor="middle" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14" font-weight="700">transactional write</text>
+  <text x="43" y="476" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">Network results never race a separate in-memory list in the UI.</text>
+</svg>

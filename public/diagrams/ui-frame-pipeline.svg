@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="340" viewBox="0 0 1000 340" role="img" aria-labelledby="title desc">
+  <title id="title">Android UI frame pipeline</title>
+  <desc id="desc">Input and state changes lead to measure, layout, draw, GPU composition, and display presentation before a frame deadline.</desc>
+  <rect width="1000" height="340" rx="24" fill="#f7f8f7"/>
+  <text x="46" y="54" fill="#26352d" font-family="system-ui, sans-serif" font-size="20" font-weight="750">ONE FRAME ON THE CRITICAL PATH</text>
+  <g font-family="system-ui, sans-serif" text-anchor="middle">
+    <rect x="42" y="92" width="138" height="94" rx="14" fill="#ffffff" stroke="#87958d" stroke-width="2"/>
+    <text x="111" y="132" fill="#26352d" font-size="16" font-weight="700">Input or</text><text x="111" y="156" fill="#26352d" font-size="16" font-weight="700">state change</text>
+    <rect x="226" y="92" width="138" height="94" rx="14" fill="#eef8f1" stroke="#168a47" stroke-width="2"/>
+    <text x="295" y="145" fill="#0f6e37" font-size="17" font-weight="700">Measure</text>
+    <rect x="410" y="92" width="138" height="94" rx="14" fill="#eef8f1" stroke="#168a47" stroke-width="2"/>
+    <text x="479" y="145" fill="#0f6e37" font-size="17" font-weight="700">Layout</text>
+    <rect x="594" y="92" width="138" height="94" rx="14" fill="#eef8f1" stroke="#168a47" stroke-width="2"/>
+    <text x="663" y="145" fill="#0f6e37" font-size="17" font-weight="700">Draw</text>
+    <rect x="778" y="92" width="180" height="94" rx="14" fill="#ffffff" stroke="#87958d" stroke-width="2"/>
+    <text x="868" y="132" fill="#26352d" font-size="16" font-weight="700">GPU composition</text><text x="868" y="156" fill="#26352d" font-size="16" font-weight="700">and display</text>
+  </g>
+  <g stroke="#6c7a72" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M181 139h36"/><path d="M208 131l9 8-9 8"/>
+    <path d="M365 139h36"/><path d="M392 131l9 8-9 8"/>
+    <path d="M549 139h36"/><path d="M576 131l9 8-9 8"/>
+    <path d="M733 139h36"/><path d="M760 131l9 8-9 8"/>
+  </g>
+  <path d="M42 236h916" stroke="#d2d8d4" stroke-width="10" stroke-linecap="round"/>
+  <path d="M42 236h705" stroke="#168a47" stroke-width="10" stroke-linecap="round"/>
+  <line x1="828" y1="214" x2="828" y2="258" stroke="#c13b36" stroke-width="3"/>
+  <text x="828" y="286" text-anchor="middle" fill="#9b2e2a" font-family="system-ui, sans-serif" font-size="15" font-weight="700">frame deadline</text>
+  <text x="46" y="315" fill="#5d6962" font-family="system-ui, sans-serif" font-size="14">Blocking work, repeated layout, allocation, or GPU cost can push presentation past the deadline.</text>
+</svg>

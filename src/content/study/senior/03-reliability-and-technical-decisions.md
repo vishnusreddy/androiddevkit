@@ -41,6 +41,8 @@ analytics.track(
 
 Do **not** collect raw message bodies, tokens, email contents, or personal notes “just in case.” Privacy constraints and trust are part of reliability.
 
+![Reliable mobile analytics delivery pipeline](/diagrams/analytics-pipeline.svg)
+
 ### Define owners and thresholds
 
 A metric without an owner and a threshold is decoration.
@@ -220,18 +222,4 @@ Speak in **failures and users**, not only library names.
 - Failure-mode-first design.
 - Migration strategies that respect production users.
 
-## Closing the study plan
-
-You have walked:
-
-1. **Junior** - Kotlin, Activities, Fragments, lifecycle, UI state  
-2. **Mid** - Coroutines/Flow, Compose state/effects, architecture/data, testing/performance  
-3. **Senior** - modularization, offline/system design, reliability and decisions  
-
-From here:
-
-- Drill weak spots with the [question bank](/questions/) and [topic guides](/topics/).
-- Run a timed [mock test](/tests/) at your target level.
-- Write a small feature end-to-end that exercises outbox + ViewModel + tests - reading alone will not lock this in.
-
-When you can teach a lesson from each band without notes, you are ready to interview at that band.
+Next: **platform internals and performance engineering**, where production signals are connected to process startup, rendering, Binder, ART, memory, and ANR evidence.

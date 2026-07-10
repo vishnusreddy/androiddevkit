@@ -104,6 +104,8 @@ Turbine is a popular library for richer Flow assertions if the project uses it.
 
 ## What to test at each layer
 
+![Android testing pyramid](/diagrams/testing-pyramid.svg)
+
 | Layer | Test | Tools |
 |-------|------|-------|
 | Mappers / pure logic | Unit | JUnit |
@@ -227,4 +229,4 @@ You are not expected to recite every API, but you should say: *I measure, then f
 - Performance diagnosis loop: measure → classify → fix → remeasure.
 - Why flaky tests are a product risk.
 
-Mid-level path complete. Senior lessons shift from feature craft to **systems**: modularization, offline sync design, reliability, and technical decisions under uncertainty.
+Next: **production data flows, caching, and Paging**, where tests protect a real local source of truth and its network synchronization.
