@@ -40,6 +40,8 @@ export type NavLink = {
   href: string;
   /** Short description shown in the header dropdown menus. */
   desc?: string;
+  /** Optional pill shown next to the label (e.g. "New"). */
+  badge?: string;
 };
 
 export type NavGroup =
@@ -49,27 +51,36 @@ export type NavGroup =
 /**
  * Grouped navigation is the source of truth for the header. Related
  * destinations live under a single dropdown so the top bar stays lean as the
- * site grows. To add a new section (e.g. "Practice"), drop it into the right
- * group's `items` array - the header, mobile menu, and footer all derive from
- * this list automatically.
+ * site grows. Three top-level groups (Practice, Learn, Community) keep the
+ * bar scannable; add new destinations under the matching group.
  */
 export const NAV_GROUPS: NavGroup[] = [
-  { label: 'Mock Tests', href: '/tests/' },
-  { label: 'Practice', href: '/practice/' },
+  {
+    label: 'Practice',
+    items: [
+      { label: 'Mock Tests', href: '/tests/', desc: 'Timed topic tests and full mocks' },
+      { label: 'Focus Mode', href: '/practice/', desc: 'Build a timed practice session' },
+      { label: 'Progress', href: '/progress/', desc: 'Scores, streaks, and review queue' },
+    ],
+  },
   {
     label: 'Learn',
     items: [
-      { label: 'Study Plan', href: '/study/', desc: 'A topic-by-topic Android curriculum' },
+      {
+        label: 'Study Plan',
+        href: '/study/',
+        desc: 'Guided curriculum from junior to senior',
+        badge: 'New',
+      },
       { label: 'Topics', href: '/topics/', desc: 'Concept guides, topic by topic' },
       { label: 'Questions', href: '/questions/', desc: 'Curated interview questions' },
     ],
   },
-  { label: 'Progress', href: '/progress/' },
   {
     label: 'Community',
     items: [
       { label: 'Experiences', href: '/experiences/', desc: 'Real interview stories' },
-      { label: 'Blog', href: '/blog/', desc: 'Articles & deep dives' },
+      { label: 'Blog', href: '/blog/', desc: 'Articles and deep dives' },
       { label: 'Contribute', href: '/contribute/', desc: 'Add a question or share yours' },
     ],
   },
