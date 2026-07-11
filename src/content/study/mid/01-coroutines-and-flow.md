@@ -1,6 +1,6 @@
 ---
-title: Coroutines and Flow for screen data
-description: Run async work with structured concurrency and expose changing values as Flow without leaking jobs.
+title: Coroutines, Flow, cancellation, and state streams
+description: Use structured concurrency and observable streams to perform asynchronous work without losing cancellation, ownership, or failure semantics.
 level: mid
 order: 1
 duration: 55 min
@@ -8,15 +8,17 @@ quizHref: /practice/?test=coroutines-test
 quizLabel: Take the Coroutines quiz
 ---
 
-Coroutines are how modern Android code waits for network, disk, and timers **without blocking the main thread**. Flow is how you model **values that change over time**. Mid-level engineers are expected to choose scopes, handle cancellation, switch dispatchers, and collect safely in the UI - not merely call `launch` until something works.
+Coroutines express asynchronous work without blocking a thread, and Flow expresses a sequence of values that changes over time. Neither API grants safety by itself. Correct code must assign each job to an owner, preserve cancellation, classify exceptions, and stop collection when the UI that consumes a value is no longer active.
+
+This chapter treats concurrency as a lifetime problem. A scope defines who may cancel work, a dispatcher defines where a block runs, and a stream defines what the consumer receives when it starts or stops observing. Those choices determine whether a screen shows current state, repeats a request, or leaks work beyond its purpose.
 
 ## Learning goals
 
-- Own work with the right **scope** (`viewModelScope`, `lifecycleScope`, `supervisorScope`).
-- Explain **structured concurrency**, cancellation, and why `GlobalScope` is a red flag.
-- Choose `withContext`, `async`/`await`, and dispatchers deliberately.
+- Select a scope such as `viewModelScope`, `lifecycleScope`, or `supervisorScope` from the lifetime of the result.
+- Explain structured concurrency, cooperative cancellation, and the ownership problem created by `GlobalScope`.
+- Choose `withContext`, `async` and `await`, and dispatchers deliberately.
 - Build cold Flows, expose hot state with `StateFlow`, and collect with lifecycle awareness.
-- Handle exceptions without silently swallowing failures.
+- Handle exceptions without converting a real failure into silence.
 
 ## Structured concurrency in one picture
 
@@ -186,7 +188,7 @@ val results: StateFlow<List<ItemUi>> = query
 | Type | Behavior | Typical use |
 |------|----------|-------------|
 | `StateFlow` | Hot, conflated, always has value | Screen UI state |
-| `SharedFlow` | Hot, configurable replay/buffer | One-off events (careful design) |
+| `SharedFlow` | Hot, configurable replay/buffer | Multicast signals where every active collector should observe the value |
 | Cold `Flow` | Starts on collect | Repository streams, Room |
 | `LiveData` | Lifecycle-aware holder | Legacy / simple UI |
 
@@ -223,14 +225,24 @@ lifecycleScope.launch {
 }
 ```
 
-## Channels for events (optional pattern)
+## UI consequences belong in state
+
+Do not treat a `Channel` or `SharedFlow` emitted by a ViewModel as a default delivery mechanism for navigation or snackbars. A collector can be absent while the UI is stopped, and buffering policy then becomes accidental product behavior. An event that changes what the user should be able to see or do should be processed in the ViewModel and represented by the resulting state.
 
 ```kotlin
-private val _events = Channel<UiEvent>(Channel.BUFFERED)
-val events = _events.receiveAsFlow()
+data class CheckoutUiState(
+    val submission: Submission = Submission.Editing,
+)
+
+sealed interface Submission {
+    data object Editing : Submission
+    data object Submitting : Submission
+    data class Confirmed(val orderId: String) : Submission
+    data class Failed(val message: String) : Submission
+}
 ```
 
-Use for navigation / Snackbar. Do not overload `StateFlow` with sticky “show message” booleans.
+The UI renders `Confirmed` as a confirmation destination and `Failed` as a retryable message. If the effect is truly transient, define its acknowledgement and replay behavior explicitly. Never rely on an incidental buffer to decide whether a user sees an important outcome.
 
 ## Work that must survive the screen
 
@@ -251,7 +263,7 @@ Mid-level judgment: *does cancellation on leave match product expectations?*
 5. **Collecting StateFlow without lifecycle** - wasted work, subtle bugs.
 6. **`stateIn` with `Eagerly` everywhere** - work runs with no subscribers; know `WhileSubscribed`.
 
-## How interviewers probe this
+## Examination prompts
 
 - “Why not GlobalScope?”
 - “Difference between `launch` and `async`?”

@@ -1,6 +1,6 @@
 ---
-title: Senior interview execution and leadership signals
-description: Communicate scope, tradeoffs, incidents, migrations, disagreement, mentoring, and impact with the specificity expected in senior and staff interviews.
+title: Senior interview execution and engineering leadership
+description: Communicate scope, technical judgment, incidents, migrations, disagreement, mentoring, and impact with evidence and precision.
 level: senior
 order: 7
 duration: 80 min
@@ -8,14 +8,16 @@ quizHref: /tests/
 quizLabel: Take a full mock test
 ---
 
-Senior interviews evaluate how you reduce ambiguity and move a system and team toward a better outcome. Technical knowledge is necessary, but the signal comes from decisions: what you noticed, which constraints mattered, what you changed, how you handled disagreement, and what measurable result followed.
+Senior interviews evaluate how you reduce ambiguity and move a system and team toward a better outcome. Technical knowledge is necessary, but the evidence comes from decisions: what you observed, which constraints mattered, the options considered, the action taken, how disagreement was handled, and the measurable result.
+
+This chapter turns experience into evidence rather than chronology. A strong answer names the initial condition, personal ownership, decision mechanism, safeguards, outcome, and retrospective learning. It neither claims individual credit for team work nor hides responsibility behind vague collective language.
 
 ## Learning goals
 
-- Structure project, incident, migration, and conflict stories around decisions.
-- Separate personal contribution from team outcome.
-- Demonstrate technical depth without drowning the answer in chronology.
-- Discuss failures with ownership and evidence.
+- Structure project, incident, migration, and conflict stories around a decision.
+- Separate personal contribution from the team's outcome.
+- Demonstrate technical depth without replacing reasoning with chronology.
+- Discuss failures with ownership, evidence, and corrective action.
 - Ask senior-level questions that reveal engineering context.
 
 ## Build a story bank before the interview

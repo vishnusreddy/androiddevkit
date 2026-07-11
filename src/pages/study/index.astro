@@ -11,28 +11,41 @@ const lessons = (await getCollection('study')).sort(
 
 const levelMeta: Record<
   string,
-  { title: string; summary: string; audience: string; outcome: string }
+  {
+    title: string;
+    summary: string;
+    audience: string;
+    outcome: string;
+    evidence: string;
+    entry: string;
+  }
 > = {
   junior: {
-    title: 'Junior path',
+    title: 'Foundation curriculum',
     summary:
-      'Build Android fundamentals in the order they connect in a real app: language, components, lifecycle, UI, storage, and network boundaries.',
-    audience: 'New to Android or preparing for your first mobile role',
-    outcome: 'Explain the platform and ship a complete, lifecycle-safe feature',
+      'Build a precise model of the Android runtime before adding architecture patterns. The sequence moves from Kotlin types to components, ownership, rendering, data, and platform permissions.',
+    audience: 'For developers new to Android and candidates preparing for an entry-level role.',
+    outcome: 'Implement a small feature that survives recreation, renders explicit state, and handles data and permission boundaries correctly.',
+    evidence: 'Completion evidence: a lifecycle-safe detail screen with loading, error, empty, and content states.',
+    entry: 'Begin here unless you can explain configuration change, process death, and Context without notes.',
   },
   mid: {
-    title: 'Mid-level path',
+    title: 'Production engineering curriculum',
     summary:
-      'Turn fundamentals into production systems: async state, Compose, architecture, tests, data flows, background work, navigation, DI, and release builds.',
-    audience: '1–4 years of Android experience',
-    outcome: 'Own a production feature from UI state through release behavior',
+      'Turn platform knowledge into a reliable production feature. These lessons connect asynchronous state, Compose, data ownership, tests, background execution, navigation, dependency graphs, and release artifacts.',
+    audience: 'For Android engineers who can already build screens and want to own features end to end.',
+    outcome: 'Design, implement, test, and release a feature with a clear source of truth and known failure behavior.',
+    evidence: 'Completion evidence: an offline-capable paged screen with tests, deep links, and a release-ready build.',
+    entry: 'Start here only after the foundation curriculum feels routine in both Views and Compose.',
   },
   senior: {
-    title: 'Senior path',
+    title: 'Technical leadership curriculum',
     summary:
-      'Own larger systems: boundaries, offline sync, reliability, platform performance, security, system design, and engineering leadership.',
-    audience: 'Leading features, tech design, or senior+ interviews',
-    outcome: 'Defend tradeoffs, failure behavior, rollout, and measurable impact',
+      'Make decisions for systems rather than isolated screens. The focus is on architecture boundaries, synchronization, operational safety, platform behavior, security, and the communication expected from a technical lead.',
+    audience: 'For engineers designing cross-team work, leading delivery, or preparing for senior and staff interviews.',
+    outcome: 'Defend a design in terms of constraints, recovery paths, observability, rollout safety, and user impact.',
+    evidence: 'Completion evidence: a written design for a synchronizing mobile feature and an incident-aware release plan.',
+    entry: 'Begin after you can explain the mid-level choices as tradeoffs rather than library preferences.',
   },
 };
 
@@ -49,29 +62,28 @@ const totalMinutes = lessons.reduce((sum, lesson) => {
 const totalHours = Math.floor(totalMinutes / 60);
 ---
 <BaseLayout
-  title="Android Developer Study Plan"
-  description="A guided Android developer study plan from Kotlin foundations through Activities, Fragments, lifecycle, UI state, architecture, and senior-level system design."
+  title="Android Engineering Curriculum"
+  description="A rigorous Android engineering curriculum for learning platform fundamentals, production app design, and senior-level technical judgment."
 >
   <div class="container study-index">
     <header class="study-hero">
       <span class="eyebrow">Study plan</span>
-      <h1>Master Android from first principles to senior system design.</h1>
+      <h1>Learn Android as an engineering discipline.</h1>
       <p class="lede">
-        This is a complete interview curriculum, not a list of definitions.
-        Follow the paths in order to learn the runtime, UI, data, architecture,
-        performance, security, and design decisions behind production Android
-        apps. Every lesson includes exact APIs, code, failure modes, interview
-        probes, and exercises.
+        This curriculum teaches the contracts that govern a production Android
+        application: lifecycle ownership, state, concurrency, storage, process
+        lifetime, rendering, security, and delivery. It is designed for
+        deliberate study and interview preparation, not passive browsing.
       </p>
       <div class="study-stats" aria-label="Curriculum summary">
-        <div><strong>{lessons.length}</strong><span>deep lessons</span></div>
-        <div><strong>{totalHours}+</strong><span>study hours</span></div>
-        <div><strong>3</strong><span>career paths</span></div>
+        <div><strong>{lessons.length}</strong><span>sequenced lessons</span></div>
+        <div><strong>{totalHours}+</strong><span>guided study hours</span></div>
+        <div><strong>3</strong><span>competency stages</span></div>
       </div>
       <nav class="path-jumps" aria-label="Choose a starting level">
-        <a href="#level-junior">Start with fundamentals</a>
-        <a href="#level-mid">Jump to mid-level</a>
-        <a href="#level-senior">Prepare for senior</a>
+        <a href="#level-junior">Foundation</a>
+        <a href="#level-mid">Production engineering</a>
+        <a href="#level-senior">Technical leadership</a>
       </nav>
     </header>
 
@@ -82,8 +94,10 @@ const totalHours = Math.floor(totalMinutes / 60);
             <span class:list={['badge', `badge-${group.level}`]}>{DIFFICULTY_LABEL[group.level]}</span>
             <h2 id={`level-${group.level}-title`}>{group.title}</h2>
             <p class="level-summary">{group.summary}</p>
-            <p class="level-audience">{group.audience}</p>
+            <p class="level-audience"><strong>Who this is for:</strong> {group.audience}</p>
+            <p class="level-entry"><strong>Entry check:</strong> {group.entry}</p>
             <p class="level-outcome"><strong>Outcome:</strong> {group.outcome}</p>
+            <p class="level-evidence">{group.evidence}</p>
           </div>
           <span class="level-count">{group.items.length} topic{group.items.length === 1 ? '' : 's'}</span>
         </div>
@@ -109,12 +123,13 @@ const totalHours = Math.floor(totalMinutes / 60);
     ))}
 
     <aside class="study-note card">
-      <h2>How to use this plan</h2>
+      <h2>Study for recall and judgment</h2>
       <ul>
-        <li>Read one lesson, then explain its mechanism and failure boundary without looking.</li>
-        <li>Type the examples and complete the practice checklist. Recognition is not recall.</li>
-        <li>Take the topic quiz, then write down why each missed option is wrong.</li>
-        <li>After each path, build one feature that combines its concepts and take a timed mock test.</li>
+        <li>Read the lesson once for the model, then close it and explain the contract, owner, and failure boundary aloud.</li>
+        <li>Type the examples. Change one assumption at a time and predict the result before you run the code.</li>
+        <li>Complete the practice checklist with a small feature. A definition is not mastery until it changes an implementation decision.</li>
+        <li>Use the quiz to identify gaps. For every incorrect answer, state why each alternative is incorrect or incomplete.</li>
+        <li>At the end of each stage, build the stated completion artifact and explain its tradeoffs under time pressure.</li>
       </ul>
     </aside>
   </div>
@@ -208,6 +223,17 @@ const totalHours = Math.floor(totalMinutes / 60);
     margin: 0.35rem 0 0;
     color: var(--ink-faint);
     font-size: 0.82rem;
+  }
+  .level-entry,
+  .level-evidence {
+    margin: 0.35rem 0 0;
+    max-width: 690px;
+    color: var(--ink-soft);
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+  .level-evidence {
+    color: var(--ink-faint);
   }
   .level-outcome {
     margin: 0.5rem 0 0;

@@ -1,6 +1,6 @@
 ---
-title: UI rendering, lists, input, and accessibility
-description: Learn how Views and Compose measure and draw UI, how lists preserve identity, and how to build controls every user can operate.
+title: UI rendering, lists, and accessible interaction
+description: Build responsive Android interfaces that preserve item identity, expose semantic meaning, and remain usable across input methods.
 level: junior
 order: 7
 duration: 65 min
@@ -8,15 +8,17 @@ quizHref: /practice/?test=jetpack-compose-test
 quizLabel: Take the UI and Compose quiz
 ---
 
-Android has two major UI toolkits: the View system and Jetpack Compose. Interviews may focus on one, but strong developers understand the shared constraints underneath both: a finite window, measurement, placement, drawing, input, semantics, and state.
+Android provides the View system and Jetpack Compose, but both operate under the same constraints: a finite window, a rendering deadline, input dispatch, layout, drawing, semantic meaning, and changing state. Toolkit syntax differs; user-visible correctness does not. An interface that is smooth but unreadable by a screen reader, or accessible but unstable during list changes, is incomplete.
+
+This chapter connects the rendering pipeline to practical UI decisions. It examines how layout work reaches a frame, why lazy collections require identity, how text and focus interact with the keyboard, and how semantics allow assistive technology to operate the same feature.
 
 ## Learning goals
 
-- Describe measurement, layout, and drawing in both UI toolkits.
+- Describe measurement, layout, and drawing in both Android UI toolkits.
 - Build efficient lists with stable item identity.
-- Explain why modifier and listener order changes behavior.
+- Explain why modifier and listener ordering changes behavior.
 - Handle text input, focus, and the on-screen keyboard.
-- Test accessibility semantics, touch targets, and large-text layouts.
+- Test semantic labels, touch targets, and large-text layouts.
 
 ## The frame pipeline
 
@@ -253,7 +255,7 @@ When hosting Compose in a Fragment View, disposal must align with the Fragment's
 6. Hard-coding heights around one font size.
 7. Applying status-bar or IME insets twice.
 
-## How interviewers probe this
+## Examination prompts
 
 - "Explain measure, layout, and draw."
 - "`requestLayout()` vs `invalidate()`?"

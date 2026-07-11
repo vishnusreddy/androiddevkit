@@ -1,6 +1,6 @@
 ---
-title: Lifecycle, configuration change, and process death
-description: Know what Android preserves, what it recreates, and where important state belongs.
+title: Lifecycle, recreation, and durable state
+description: Classify configuration change and process death correctly, then place UI state and durable data in the owner that can recover it.
 level: junior
 order: 4
 duration: 50 min
@@ -8,16 +8,16 @@ quizHref: /practice/?test=android-fundamentals-test
 quizLabel: Take the fundamentals quiz
 ---
 
-**Lifecycle** is the contract between your UI and Android. The system can pause your app when another window appears, stop it when it is no longer visible, destroy an Activity for a configuration change, or kill the whole process to reclaim memory. Correct Android code treats these as **normal events**, not exceptional failures.
+Lifecycle is Android's contract for changing ownership. The system can obscure a window, stop a component, recreate an Activity for a configuration change, or reclaim the entire process. These are ordinary operating conditions. An application that treats them as rare errors eventually loses state, leaks resources, or repeats work.
 
-Juniors who only memorize callback names struggle. Juniors who ask “what ownership changes here?” and “what state still exists?” do well in interviews and in production.
+Do not memorize callback names in isolation. At each lifecycle boundary, determine what remains visible, which object is being replaced, which work must stop, and which data must survive without relying on a final callback. That model provides a reliable answer for both View and Compose applications.
 
 ## Learning goals
 
-- Trace Activity lifecycle callbacks and what each implies for resources and UI.
-- Distinguish **configuration change** from **process death**.
-- Place state in the right store: UI widget, ViewModel, SavedStateHandle, or durable storage.
-- Collect flows and start work in a lifecycle-aware way (`repeatOnLifecycle`, `WhenStarted`, etc.).
+- Trace Activity lifecycle callbacks and the resource or UI obligation each one implies.
+- Distinguish configuration recreation from process death.
+- Place state in a widget, ViewModel, `SavedStateHandle`, or durable storage according to its required lifetime.
+- Collect streams and start UI work with lifecycle-aware APIs such as `repeatOnLifecycle`.
 
 ## The core Activity callbacks
 
@@ -222,7 +222,7 @@ Never rely on `onDestroy` as the only place to persist user data.
 4. **Updating UI after `onDestroyView` / destroyed lifecycle.**
 5. **Assuming `init` in ViewModel runs once per app** - it runs once per ViewModel instance; process death creates a new one.
 
-## How interviewers probe this
+## Examination prompts
 
 - Walk through rotation with a form draft in different storage locations.
 - “Does ViewModel survive process death?” - **No** (in-memory); SavedStateHandle can restore small keys.

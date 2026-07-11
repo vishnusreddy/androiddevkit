@@ -1,6 +1,6 @@
 ---
-title: Compose state, recomposition, and side effects
-description: Write Compose UI that reacts predictably when values change, items move, or effects restart.
+title: Compose state, recomposition, identity, and effects
+description: Make declarative UI predictable by choosing state ownership, stable identity, and effect scope from the composition lifecycle.
 level: mid
 order: 2
 duration: 55 min
@@ -8,17 +8,17 @@ quizHref: /practice/?test=jetpack-compose-test
 quizLabel: Take the Compose quiz
 ---
 
-Jetpack Compose describes UI from **state**. When observable state that a composable **read** changes, Compose schedules **recomposition** of the parts of the tree that depend on it. Recomposition is normal and may run often. A composable body must remain a **description of UI**, not a place for network calls, analytics floods, or navigation storms.
+Jetpack Compose renders a description of the current UI state. When an observable value read by a composable changes, Compose may recompose the relevant part of the tree. Recomposition is routine, may occur more than once, and may be discarded. A composable body must therefore describe UI without performing network work, duplicating analytics, or issuing navigation commands.
 
-Mid-level Compose skill is less about knowing every widget and more about **state lifetime**, **stability**, **effect keys**, and **list identity**.
+Reliable Compose code follows four questions: who owns this state, how long must it survive, what identifies this item, and what lifecycle should own this side effect? Answering those questions gives recomposition a predictable role instead of treating it as a mysterious callback.
 
 ## Learning goals
 
-- Choose `remember`, `rememberSaveable`, ViewModel state, and disk for the right lifetime.
-- Explain recomposition and why side effects need effect APIs.
-- Key `LaunchedEffect` / `DisposableEffect` correctly.
-- Provide stable keys in Lazy lists.
-- Hoist state so UIs stay testable and reusable.
+- Choose `remember`, `rememberSaveable`, ViewModel state, and disk from the required lifetime.
+- Explain recomposition and why side effects require effect APIs.
+- Key `LaunchedEffect` and `DisposableEffect` from the resources and inputs that define their lifetime.
+- Provide stable keys in lazy collections.
+- Hoist state so reusable interfaces remain testable and controllable.
 
 ## Mental model: composition phases
 
@@ -206,19 +206,21 @@ You do not need to memorize compiler stability inference tables on day one; you 
 
 ## Navigation and effects
 
-Navigation is a one-off effect. Trigger it from events, not sticky state:
+Navigation must not be invoked directly from the composable body, because composition can run repeatedly. The ViewModel should process the user action and expose a state change that represents the resulting destination or route. The UI then performs the navigation in a controlled effect whose key is the route identity.
 
 ```kotlin
-LaunchedEffect(Unit) {
-    viewModel.events.collect { event ->
-        when (event) {
-            is Event.OpenDetail -> navController.navigate("detail/${event.id}")
-        }
-    }
+data class ArticlesUiState(
+    val destination: Destination? = null,
+)
+
+LaunchedEffect(state.destination) {
+    val destination = state.destination ?: return@LaunchedEffect
+    navController.navigate(destination.route)
+    viewModel.onDestinationHandled(destination)
 }
 ```
 
-Avoid navigating during composition based on a flag that remains true across recompositions without consumption.
+The acknowledgement makes the delivery policy visible. For flows such as authentication, a state-driven navigation host can instead render the destination directly from `isAuthenticated`. In both cases, avoid a hidden event buffer and avoid navigating from a flag that remains true across recompositions.
 
 ## Interop notes
 
@@ -235,7 +237,7 @@ Avoid navigating during composition based on a flag that remains true across rec
 5. Reading a high-frequency state at the root of a giant screen.
 6. Using `rememberCoroutineScope` for load-on-enter instead of `LaunchedEffect`.
 
-## How interviewers probe this
+## Examination prompts
 
 - “What is recomposition?”
 - “`remember` vs `rememberSaveable` vs ViewModel?”

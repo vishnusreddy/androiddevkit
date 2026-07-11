@@ -1,6 +1,6 @@
 ---
-title: Fragments and view lifecycle
-description: Learn why a Fragment can outlive its view and how that changes safe UI code.
+title: Fragments and the view-lifecycle boundary
+description: Learn the separate lifetimes of a Fragment and its view, then apply that distinction to bindings, observers, and navigation.
 level: junior
 order: 3
 duration: 45 min
@@ -8,18 +8,16 @@ quizHref: /practice/?test=android-fundamentals-test
 quizLabel: Take the fundamentals quiz
 ---
 
-A **Fragment** represents a reusable portion of UI or navigation within an Activity. It has its own lifecycle, but the critical detail juniors miss is that its **view has a different lifecycle**. A Fragment can remain on the back stack while Android destroys its view to free memory. Later, the same Fragment instance can create a **new** view.
+A **Fragment** is a controller that can contribute UI and navigation to an Activity. Its instance lifecycle and its view lifecycle are deliberately different. A Fragment may remain in the FragmentManager while its view hierarchy is destroyed, then create a replacement hierarchy later. Every safe Fragment implementation begins by treating those two lifetimes as separate ownership domains.
 
-If you hold a `View` / View Binding / RecyclerView reference past `onDestroyView`, you leak memory and can crash when you touch a dead view hierarchy.
-
-Even if your app is Compose-first and “never uses Fragments,” interviewers still ask about them. Navigation, ViewPager, and many production codebases still depend on Fragment semantics - especially the view-lifecycle gap.
+A `View`, View Binding, adapter connected to views, or observer that updates views belongs to the view lifecycle. Retaining one after `onDestroyView` keeps the obsolete hierarchy reachable and can produce a memory leak or a stale UI update. This distinction remains important in Compose-first applications because established applications, ViewPager integrations, and navigation hosts commonly retain Fragment boundaries.
 
 ## Learning goals
 
-- Separate **Fragment lifecycle** from **view lifecycle**.
-- Create and clear view bindings correctly.
-- Observe LiveData / collect flows with `viewLifecycleOwner`, not `this` (the Fragment).
-- Explain when Fragments still matter in a Compose world.
+- Separate the Fragment instance lifecycle from the lifecycle of its current view hierarchy.
+- Create and clear a View Binding at the correct boundary.
+- Observe LiveData and collect UI streams with `viewLifecycleOwner`, not the Fragment instance.
+- Explain when Fragment semantics remain relevant in a Compose-based application.
 
 ## Fragment vs view lifecycle
 
@@ -217,7 +215,7 @@ Do not store UI state only in view fields (`binding.title.text`) if it must retu
 5. **Retaining large objects (bitmaps, adapters) on the Fragment instance** across `onDestroyView`.
 6. **Nested Fragments with the wrong FragmentManager** (`parent` vs `child`).
 
-## How interviewers probe this
+## Examination prompts
 
 - “Difference between Fragment lifecycle and view lifecycle?”
 - “Why `viewLifecycleOwner`?”

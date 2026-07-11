@@ -1,6 +1,6 @@
 ---
-title: Kotlin foundations for Android
-description: Learn the Kotlin language features you will use before Android framework code can make sense.
+title: "Kotlin: types, state, and program structure"
+description: Establish the Kotlin type-system, state-modeling, and collection skills required to reason accurately about Android code.
 level: junior
 order: 1
 duration: 50 min
@@ -8,19 +8,19 @@ quizHref: /practice/?test=kotlin-test
 quizLabel: Take the Kotlin quiz
 ---
 
-Kotlin is not a warm-up before “real Android.” It is how you express state, handle missing data, and prevent entire categories of mistakes in Android code. Before learning Activities or Compose, become comfortable reading and writing small Kotlin models and functions until they feel automatic.
+Kotlin is the language in which an Android program states its invariants. Its type system distinguishes an absent value from a present one, its immutable bindings clarify ownership, and its algebraic types make a finite set of outcomes visible in code. These are correctness tools, not stylistic preferences.
 
-This lesson focuses on the language surface you will touch daily: null safety, `val`/`var`, data and sealed types, functions, collections, and scope functions. Internals like variance and reified generics matter later; they are not the first gate.
+This chapter establishes the language surface used throughout the curriculum: nullability, immutable state, data and sealed types, functions, collection transformations, and scope functions. Read each construct as a statement of intent. The important question is not whether code compiles, but whether another engineer can infer the permitted states and failure conditions from the type.
 
 ## Learning goals
 
 By the end of this lesson you should be able to:
 
-- Choose between `val` and `var`, and explain why immutability-by-default helps Android UI code.
-- Handle nullable types with `?.`, `?:`, and smart casts - and know when `!!` is a smell.
-- Model a screen’s data with `data class` and mutually exclusive outcomes with `sealed interface` / `sealed class`.
-- Transform collections with `map`, `filter`, `firstOrNull`, and `associateBy` without hiding business rules.
-- Pick a scope function (`let`, `also`, `apply`, `run`, `with`) for a clear purpose, or refuse one when it hurts readability.
+- Choose between `val` and `var` by considering reference reassignment and mutation separately.
+- Handle nullable values with `?.`, `?:`, and smart casts, and identify the exact failure condition introduced by `!!`.
+- Model screen data with `data class` and mutually exclusive outcomes with `sealed interface` or `sealed class`.
+- Transform collections with `map`, `filter`, `firstOrNull`, and `associateBy` without concealing a business rule in a chain.
+- Select a scope function only when its receiver, return value, and purpose remain clear to the reader.
 
 ## Values, variables, and nullability
 
@@ -239,7 +239,7 @@ val label = when (val code = response.code) {
 4. **Boolean soup** for UI (`isLoading && !hasError && data != null`) instead of a sealed state.
 5. **Scope-function noise** that makes a simple block unreadable under interview pressure.
 
-## How interviewers probe this
+## Examination prompts
 
 Expect:
 

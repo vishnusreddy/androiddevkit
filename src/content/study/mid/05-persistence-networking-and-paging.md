@@ -1,6 +1,6 @@
 ---
-title: Production data flows, caching, and Paging
-description: Turn Room and HTTP calls into an observable source of truth with transactions, freshness rules, pagination, and recoverable failures.
+title: Persistence, HTTP, caching, and Paging
+description: Build a data flow that remains correct through refresh, pagination, cache invalidation, duplicate work, and credential changes.
 level: mid
 order: 5
 duration: 75 min
@@ -8,12 +8,14 @@ quizHref: /practice/?test=system-design-test
 quizLabel: Take the system design quiz
 ---
 
-At mid level, "call the API and show the response" is no longer an architecture. You are expected to define the source of truth, concurrency rules, cache freshness, pagination keys, transactional boundaries, and the user-visible behavior of each failure.
+At production scale, “call the API and show the response” is not an architecture. A data feature needs an explicit source of truth, freshness policy, concurrency rule, pagination key strategy, transaction boundary, and user-visible response to failure. Without those decisions, refreshes race, list items duplicate, and the interface tells conflicting stories about the same data.
+
+This chapter follows data across the local database and a remote HTTP service. The central design question is not which library performs a request. It is which representation the UI observes, how it is updated atomically, and how it remains coherent when the request is late, repeated, rejected, or only partially complete.
 
 ## Learning goals
 
-- Design a repository around an explicit source of truth.
-- Coordinate remote refresh and local observation without duplicate state.
+- Design a repository around one explicit source of truth.
+- Coordinate remote refresh and local observation without duplicating screen state.
 - Use Room transactions for atomic cache updates.
 - Explain Paging 3, load states, keys, and `RemoteMediator`.
 - Make retries safe through idempotence and request identity.
@@ -270,7 +272,7 @@ The ViewModel maps these to actions and copy. The repository should not decide w
 7. Sharing remote keys across different filters or accounts.
 8. Refreshing tokens independently for every concurrent 401.
 
-## How interviewers probe this
+## Examination prompts
 
 - "What is the source of truth?"
 - "How do you show cached data while refreshing?"

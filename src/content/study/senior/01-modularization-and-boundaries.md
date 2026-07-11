@@ -1,6 +1,6 @@
 ---
-title: Modularization and feature boundaries
-description: Use module boundaries to reduce real coupling, protect ownership, and improve change speed.
+title: Modularization, ownership, and architectural boundaries
+description: Define Android modules from ownership and change patterns, then enforce dependency direction without creating ceremonial abstraction.
 level: senior
 order: 1
 duration: 55 min
@@ -8,17 +8,17 @@ quizHref: /practice/?test=architecture-test
 quizLabel: Take the architecture quiz
 ---
 
-Modularization is not a goal by itself. A Gradle module adds build configuration, dependency management, navigation complexity, and cognitive overhead. It earns that cost when it reduces a **concrete pain**: teams collide in one feature, changes recompile too much of the app, internal implementations leak into many callers, or you need a clear ownership boundary for scale.
+Modularization is a means of controlling coupling, not an architectural achievement by itself. A Gradle module adds configuration, dependency management, navigation decisions, and cognitive overhead. It earns that cost when it removes a specific problem: teams collide in the same feature, changes invalidate too much of the build, an implementation leaks through many callers, or ownership is unclear.
 
-Senior engineers justify modules with **problems and metrics**, not fashion.
+A senior design begins with change and ownership rather than package names. The proposed boundary should state what may depend on it, what it deliberately hides, which team owns it, and which measurable problem it improves. A module count is not evidence of a healthy architecture.
 
 ## Learning goals
 
-- Find module boundaries from **change frequency and ownership**, not package names alone.
-- Keep dependency arrows healthy (features depend on APIs, not on each other’s internals).
-- Choose between monolith, package-by-feature, and multi-module with eyes open.
+- Find module boundaries from change frequency and ownership rather than package names alone.
+- Keep dependency direction healthy: features depend on stable APIs, not on each other's internals.
+- Choose among a monolith, package-by-feature, and multiple modules from the current problem.
 - Migrate incrementally with measurable checkpoints.
-- Discuss modularization in system-design / architecture interviews without dogma.
+- Discuss modularization as a tradeoff rather than a universal rule.
 
 ## Find a boundary from change and ownership
 

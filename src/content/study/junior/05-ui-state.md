@@ -1,6 +1,6 @@
 ---
-title: UI state and UI models
-description: Model what a screen can show before wiring network calls or rendering components.
+title: UI state, events, and rendering models
+description: Model the valid states of a screen, distinguish state from one-time work, and map application data into renderable UI models.
 level: junior
 order: 5
 duration: 50 min
@@ -8,18 +8,16 @@ quizHref: /practice/?test=architecture-test
 quizLabel: Take the architecture quiz
 ---
 
-A screen is easiest to build when you can describe its **state** before writing widgets or firing network calls. Avoid several unrelated flags such as `isLoading`, `hasError`, and `showContent`. Those flags can contradict one another: is the screen loading *and* showing content? Is the error blocking, or a small refresh warning over cached data?
+A screen should be specified as a set of states before it is rendered as widgets. Independent flags such as `isLoading`, `hasError`, and `showContent` permit contradictory combinations and leave the renderer to invent product policy. A state model should instead make every meaningful condition explicit, including cached content that is refreshing and an error that does not block existing data.
 
-**UI models** are the data the UI needs to render - not the Retrofit DTO, not the Room entity, not the domain object with twenty unused fields. Mapping into UI models forces you to decide what the user actually sees.
-
-This is the last junior lesson before mid-level async and architecture work. Master it here; everything later assumes it.
+**UI models** describe the information and actions required to render a particular surface. They are neither transport DTOs nor database entities. Mapping to a UI model is a design step: it decides what the user can see, what is unavailable, and what action is possible. This model is the foundation for the asynchronous and architectural work that follows.
 
 ## Learning goals
 
-- Replace boolean soup with explicit, valid states.
-- Separate **state** (what is true now) from **events** (one-off things that must happen once).
-- Design `*UiModel` / `*UiState` types the UI can render without guessing.
-- Place state in the right owner (composable memory, ViewModel, disk).
+- Replace unrelated flags with a state model that represents only valid combinations.
+- Separate present state from an action that must occur once.
+- Design `*UiModel` and `*UiState` types that the renderer can consume without inference.
+- Place state in composable memory, a ViewModel, or durable storage according to its required lifetime.
 
 ## Make valid states explicit
 
@@ -306,7 +304,7 @@ list.add(newItem)
 _state.update { it.copy(items = it.items + newItem) }
 ```
 
-## How interviewers probe this
+## Examination prompts
 
 - “How do you model loading / content / error?”
 - “Difference between UI state and one-off events?”

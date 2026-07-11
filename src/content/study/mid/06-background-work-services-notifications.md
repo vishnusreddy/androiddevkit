@@ -1,6 +1,6 @@
 ---
-title: Background work, services, and notifications
-description: Choose coroutines, WorkManager, foreground services, and alarms by guarantee instead of reaching for whichever API is familiar.
+title: Background execution, services, and notifications
+description: Choose an Android execution model from requirements for durability, urgency, user visibility, constraints, and cancellation.
 level: mid
 order: 6
 duration: 75 min
@@ -8,15 +8,17 @@ quizHref: /practice/?test=android-fundamentals-test
 quizLabel: Take the Android fundamentals quiz
 ---
 
-Android limits background execution to protect battery, memory, privacy, and performance. "Run this in the background" is therefore incomplete. You must define when work should start, how long it runs, whether it must survive process death, whether timing is exact, and how visible it is to the user.
+Android constrains background execution to protect battery, memory, privacy, and foreground responsiveness. “Run this in the background” is therefore an incomplete requirement. Before selecting an API, define the work's urgency, durability, constraints, execution duration, cancellation behavior, timing precision, and user visibility.
+
+WorkManager, a foreground service, a coroutine, an alarm, and a push message make different promises. This chapter turns those promises into a decision procedure and shows why idempotence, checkpointing, and notification design are part of the same operational contract.
 
 ## Learning goals
 
-- Select a scheduling API from product requirements.
-- Explain the guarantees and limits of WorkManager.
+- Select a scheduling API from the product's required guarantee.
+- Explain both the guarantees and limits of WorkManager.
 - Make workers idempotent, cancellable, and observable.
 - Distinguish started, bound, and foreground services.
-- Build notification channels and `PendingIntent` objects safely.
+- Build notification channels and `PendingIntent` objects with explicit identity and mutability.
 
 ## Make the decision from requirements
 
@@ -243,7 +245,7 @@ The server remains the source of truth. A dropped push should not permanently pr
 7. Treating `START_STICKY` as durable recovery.
 8. Creating notification `PendingIntent` objects whose identities collide.
 
-## How interviewers probe this
+## Examination prompts
 
 - "Coroutine vs WorkManager?"
 - "What does WorkManager guarantee?"

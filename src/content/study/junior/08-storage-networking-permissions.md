@@ -1,6 +1,6 @@
 ---
-title: Storage, networking, and runtime permissions
-description: Build a reliable data path with Room, DataStore, HTTP clients, scoped storage, and permission flows that handle denial correctly.
+title: Storage, networking, files, and runtime permissions
+description: Select a durable data boundary, interpret network outcomes, handle user-owned files, and request sensitive access only when it is needed.
 level: junior
 order: 8
 duration: 70 min
@@ -8,14 +8,16 @@ quizHref: /practice/?test=android-fundamentals-test
 quizLabel: Take the Android fundamentals quiz
 ---
 
-Most Android screens are projections of data from memory, disk, a remote service, or a device capability. The important junior-level skill is not memorizing library annotations. It is tracing where data comes from, where it becomes durable, which thread does the work, and what the UI shows when access fails.
+Most Android screens are projections of data held in memory, stored on disk, received from a remote service, or supplied by a protected device capability. The essential skill is to trace the complete path: where data originates, which owner makes it durable, which work may block, and how the interface represents denial or failure.
+
+The APIs in this chapter are boundaries, not conveniences. Room protects a schema and transactions, DataStore protects small persistent state, HTTP represents a fallible request-response exchange, and a runtime permission is a user-controlled grant that may be denied at any time.
 
 ## Learning goals
 
-- Choose Room, DataStore, files, or cache based on the shape and lifetime of data.
-- Explain an HTTP request from UI action to parsed response.
+- Choose Room, DataStore, files, or cache from the shape and lifetime of the data.
+- Explain an HTTP request from a UI action to a parsed response or classified failure.
 - Keep disk and network work off the main thread.
-- Request runtime permissions as part of a user action and handle every result.
+- Request runtime permissions in response to a user action and handle every result.
 - Distinguish private app storage, shared media, and document-provider access.
 
 ## Choose storage by data shape
@@ -235,7 +237,7 @@ Encrypted local storage reduces exposure in some device-compromise and backup sc
 7. Treating `shouldShowRequestPermissionRationale()` as a permanent-denial detector.
 8. Embedding a secret in `BuildConfig` and assuming obfuscation protects it.
 
-## How interviewers probe this
+## Examination prompts
 
 - "Room vs DataStore?"
 - "Why use a transaction?"
