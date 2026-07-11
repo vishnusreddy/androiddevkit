@@ -1,6 +1,6 @@
 ---
-title: Context, resources, and the Android process
-description: Understand what Context gives you, how Android selects resources, and which objects must never be kept alive accidentally.
+title: Context, resources, process lifetime, and memory ownership
+description: Choose the correct Android Context, predict resource resolution, and prevent leaks by matching every reference to its proper lifetime.
 level: junior
 order: 6
 duration: 55 min
@@ -8,17 +8,17 @@ quizHref: /practice/?test=android-fundamentals-test
 quizLabel: Take the Android fundamentals quiz
 ---
 
-`Context` is one of the most frequently passed objects in Android and one of the least precisely explained. It is not simply "the app." A `Context` is an interface to environment-specific services and resources. The environment may be an `Activity`, the application, a service, or a wrapped context with a different theme or configuration.
+`Context` is an interface to services, resources, package operations, and configuration that belong to a particular Android environment. It is not a synonym for the application. An Activity, an application, a service, and a themed wrapper provide different capabilities, themes, configurations, and lifetimes.
 
-This distinction matters because the object you choose controls what is available, which theme is used, and how long a reference can safely live.
+Selecting the wrong Context can be a functional defect as well as a memory defect. A dialog needs an Activity-backed themed context; a long-lived cache should not retain that Activity. Resource selection and process lifetime rely on the same discipline: identify the environment and lifetime before retaining or resolving anything.
 
 ## Learning goals
 
-- Explain what `Context` provides without calling it a global variable.
-- Choose an `Activity` context or application context based on lifetime and capability.
-- Read resource qualifiers and predict which resource Android selects.
-- Distinguish an app process from an Activity, task, and application object.
-- Find common memory leaks caused by long-lived references.
+- Explain the capabilities supplied by a Context without treating it as a global variable.
+- Choose an Activity or application Context from the operation's capability and lifetime requirements.
+- Read resource qualifiers and predict the selected resource.
+- Distinguish a process from an Activity, task, and Application object.
+- Identify memory leaks caused by retaining a reference beyond the owner's lifetime.
 
 ## What `Context` actually provides
 
@@ -228,7 +228,7 @@ The useful interview rule is: **compare the lifetime of the owner with the lifet
 6. Assuming a hardware feature exists because an API exists.
 7. Doing heavy initialization in `Application.onCreate()`.
 
-## How interviewers probe this
+## Examination prompts
 
 - "What is Context?"
 - "Application context vs Activity context?"

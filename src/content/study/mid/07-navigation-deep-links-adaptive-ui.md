@@ -1,6 +1,6 @@
 ---
-title: Navigation, deep links, and adaptive UI
-description: Model destinations and back stacks, validate external entry points, preserve state, and adapt one feature across changing window sizes.
+title: Navigation, deep links, adaptive layouts, and window state
+description: Preserve user intent across navigation and deep links while adapting information architecture to available window space.
 level: mid
 order: 7
 duration: 70 min
@@ -8,14 +8,16 @@ quizHref: /practice/?test=jetpack-compose-test
 quizLabel: Take the UI and Compose quiz
 ---
 
-Navigation is more than changing screens. It defines how destinations are identified, which arguments cross boundaries, how back behaves, how external links enter the app, and how state survives when one window becomes two panes.
+Navigation is a model of destinations, history, and user intent. It defines the identifier that crosses a screen boundary, the behavior of Back and Up, the treatment of an external link, and the way one feature reorganizes itself when a window gains enough space for two panes. A call that merely changes the visible screen is only the final step of this model.
+
+This chapter treats deep links as untrusted public input and adaptive layout as an information-architecture decision. The implementation should preserve the user's intent through authentication, recreation, resizing, and navigation history without passing unstable object graphs between destinations.
 
 ## Learning goals
 
 - Model navigation as destination state plus user actions.
-- Explain back stack operations and state restoration.
+- Explain back-stack operations and state restoration.
 - Treat deep links as untrusted external input.
-- Keep navigation types out of lower layers.
+- Keep navigation types at the UI boundary rather than in lower layers.
 - Design list-detail and primary-secondary layouts for adaptive windows.
 
 ## Destinations carry identifiers, not object graphs
@@ -211,7 +213,7 @@ Avoid using `LocalConfiguration.current.screenWidthDp` as a complete window stra
 7. Branching only on tablet vs phone.
 8. Losing selection when a list-detail layout changes width.
 
-## How interviewers probe this
+## Examination prompts
 
 - "What should a route argument contain?"
 - "How do you keep NavController out of the ViewModel?"

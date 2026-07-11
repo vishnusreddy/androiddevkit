@@ -1,6 +1,6 @@
 ---
-title: Offline sync and mobile system design
-description: Design a mobile feature around unreliable networks, retries, conflicts, and user-visible truth.
+title: Offline synchronization and mobile source-of-truth design
+description: Design mobile features around unreliable transport, durable intent, retries, conflicts, and user-visible truth.
 level: senior
 order: 2
 duration: 60 min
@@ -8,17 +8,17 @@ quizHref: /practice/?test=system-design-test
 quizLabel: Take the system design quiz
 ---
 
-Mobile system design starts with constraints the server cannot fully see: network availability changes, process lifetime is uncertain, storage is finite, radios are expensive, and the user can leave halfway through any request. A senior answer makes those constraints **explicit** before proposing endpoints or libraries.
+Mobile system design begins with constraints that a server cannot control: networks change quality or disappear, process lifetime is uncertain, storage is finite, radio use has a cost, and a user may leave during any operation. An offline-capable design must therefore distinguish what a user has asked the device to do from what the server has durably acknowledged.
 
-This lesson focuses on offline-capable product features and the design vocabulary used in mobile system design interviews.
+This chapter establishes a vocabulary for that distinction. It treats local intent, queued work, attempted transport, server acknowledgement, conflict resolution, and visible state as separate concepts. A design is credible only when it names the behavior at each of those boundaries.
 
 ## Learning goals
 
-- Separate **local intent** from **remote acknowledgement**.
-- Design idempotent writes, outboxes, and conflict policy.
-- Choose sync styles (fetch, push, periodic, push-notification triggered) deliberately.
-- Define **product truth** the UI can render consistently.
-- Structure a 30–40 minute system design answer for Android.
+- Separate local intent from remote acknowledgement.
+- Design idempotent writes, outboxes, and an explicit conflict policy.
+- Choose among fetch, push, periodic, and push-triggered synchronization deliberately.
+- Define product truth that the interface can render consistently.
+- Structure a time-bounded Android system-design answer around the riskiest data path.
 
 ## Separate local intent from remote acknowledgement
 
@@ -166,7 +166,7 @@ Each layer needs size limits and invalidation rules. “Cache everything forever
 4. Ignoring auth expiry mid-sync.
 5. Designing server-only truth while product promised airplane-mode editing.
 
-## How interviewers probe this
+## Examination prompts
 
 - “Design offline notes / queue / chat / photo backup.”
 - “What if the response is lost after success?”

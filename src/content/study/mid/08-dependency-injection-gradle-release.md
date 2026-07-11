@@ -1,6 +1,6 @@
 ---
-title: Dependency injection, Gradle, and release variants
-description: Build replaceable object graphs, control scope, understand Android build variants, and explain what changes between source code and a shipped app bundle.
+title: Dependency injection, Gradle, artifacts, and release safety
+description: Understand object graphs, build variants, packaging, shrinking, and release verification as one delivery system.
 level: mid
 order: 8
 duration: 75 min
@@ -8,15 +8,17 @@ quizHref: /practice/?test=architecture-test
 quizLabel: Take the architecture quiz
 ---
 
-Mid-level Android engineers should be able to trace two graphs: the runtime object graph and the Gradle dependency graph. Dependency injection controls how objects are created and shared. Gradle controls how source, resources, manifests, generated code, and dependencies become an APK or app bundle.
+Mid-level Android engineers should be able to trace two graphs. The runtime object graph describes how dependencies are created, configured, shared, and replaced. The Gradle dependency graph describes how source, resources, manifests, generated code, and external libraries become an APK or Android App Bundle. Delivery failures often occur when either graph is misunderstood.
+
+This chapter treats dependency injection and builds as engineering systems rather than framework vocabulary. A scope is an ownership decision, a variant is a product configuration, and a shrinker rule is a compatibility contract with code that is discovered dynamically at runtime.
 
 ## Learning goals
 
-- Apply constructor injection and scope only when shared lifetime is required.
-- Explain Hilt component lifetimes and common scope mistakes.
+- Apply constructor injection and scope an object only when a shared lifetime is required.
+- Explain Hilt component lifetimes and common scope errors.
 - Distinguish Gradle projects, modules, plugins, configurations, and variants.
-- Predict build type and product flavor source-set merging.
-- Explain D8, R8, resources shrinking, signing, APKs, and app bundles.
+- Predict build-type and product-flavor source-set merging.
+- Explain D8, R8, resource shrinking, signing, APKs, and Android App Bundles.
 
 ## Dependency injection is explicit construction
 
@@ -249,7 +251,7 @@ More modules can improve parallelism and isolation, but too many tiny modules ad
 7. Solving one missing R8 rule with a global keep rule.
 8. Adding product-flavor dimensions without a product need.
 
-## How interviewers probe this
+## Examination prompts
 
 - "Constructor injection vs service locator?"
 - "What does a Hilt scope guarantee?"

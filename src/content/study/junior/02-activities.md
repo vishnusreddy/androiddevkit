@@ -1,6 +1,6 @@
 ---
-title: "Activities: an Android screen's entry point"
-description: Understand what an Activity owns, how Android creates it, and why it should stay thin.
+title: Activities, intents, tasks, and window ownership
+description: Understand how the system creates an Activity, delivers input, manages tasks, and defines the boundary of a screen host.
 level: junior
 order: 2
 duration: 45 min
@@ -8,16 +8,16 @@ quizHref: /practice/?test=android-fundamentals-test
 quizLabel: Take the fundamentals quiz
 ---
 
-An **Activity** is an Android component that provides a window where your app can show a screen. Android creates it in response to an explicit intent, a launcher tap, a deep link, or task restoration. Your code does not call an Activity constructor as the normal entry path. The operating system controls its lifecycle and may create a new instance when you did not expect it - after rotation, locale change, or process death recovery.
+An **Activity** is an Android application component that owns a window and participates in the system task model. The operating system, not ordinary application code, creates it in response to a launcher action, an explicit intent, a verified link, or restoration of a task. That ownership explains why an Activity instance is replaceable and why it is an unsuitable home for durable business state.
 
-Modern apps often use a **single-Activity** architecture: one Activity hosts many Compose destinations or Fragments. Even then, you must understand what that Activity owns, how intents deliver data, and how tasks and the back stack work.
+Many modern applications use one Activity to host a navigation system. The architecture does not remove the Activity contract. A screen host must still accept and validate external input, configure the window, coordinate system callbacks, and leave data loading and business decisions to longer-lived collaborators.
 
 ## Learning goals
 
-- Explain what an Activity is responsible for - and what it should not own.
-- Trace how an intent starts an Activity and how extras are read safely.
-- Describe tasks, the back stack, and common launch-mode pitfalls at a junior level.
-- Keep Activities thin: theme, content, navigation host, system callbacks - not network or business rules.
+- Define the window-scoped responsibilities of an Activity and identify work that belongs elsewhere.
+- Trace an intent from component resolution to validated arguments.
+- Describe a task, its back stack, and the consequences of common launch modes.
+- Keep the Activity limited to theme, content, navigation host, and system callbacks rather than network or business rules.
 
 ## What an Activity is
 
@@ -222,7 +222,7 @@ You may still use multiple Activities for separate tasks (e.g. a picture-in-pict
 4. **Assuming `onCreate` runs for every intent** - false for `onNewIntent` cases.
 5. **Putting business logic in the Activity** so unit tests require Robolectric or instrumentation for no good reason.
 
-## How interviewers probe this
+## Examination prompts
 
 - “What is an Activity?” - component + window + system-managed lifecycle.
 - “Difference between explicit and implicit intents?”

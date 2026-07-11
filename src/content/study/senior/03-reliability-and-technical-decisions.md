@@ -1,6 +1,6 @@
 ---
-title: Reliability, observability, and technical decisions
-description: Connect architecture choices to rollout safety, production signals, and an explicit decision record.
+title: Reliability, observability, rollouts, and technical decisions
+description: Connect an engineering decision to measurable signals, controlled rollout, incident response, and explicit consequences.
 level: senior
 order: 3
 duration: 55 min
@@ -8,15 +8,17 @@ quizHref: /practice/?test=senior-full-mock
 quizLabel: Take the senior full mock
 ---
 
-Senior engineering is not only selecting a pattern. It is making a choice the team can **ship safely**, **observe in production**, and **revisit when evidence changes**. Interviews for senior Android roles increasingly probe judgment: rollouts, migrations, incidents, and trade-offs under incomplete information.
+Senior engineering is not limited to selecting a pattern. It is making a decision that can be delivered safely, measured in production, and revised when evidence changes. This requires an operational view of architecture: a migration has a rollback, a release has a kill switch, a metric has an owner, and an incident has a recovery path.
+
+The chapter connects technical judgment to operational evidence. It covers the signals that matter, the conditions that trigger action, the staged delivery practices that limit blast radius, and the decision record that allows a team to revisit an assumption without reconstructing history.
 
 ## Learning goals
 
-- Instrument outcomes that answer product and reliability questions.
-- Plan rollouts with flags, staged delivery, and kill switches.
-- Write decision records that capture context, options, and consequences.
-- Reason about failure modes end-to-end (client, network, backend, store).
-- Communicate trade-offs without false certainty.
+- Instrument outcomes that answer a product or reliability question without collecting unnecessary personal data.
+- Plan rollout with flags, staged delivery, thresholds, and a kill path.
+- Write decision records that preserve context, options, and consequences.
+- Reason about failures across client, transport, backend, storage, and store distribution.
+- Communicate a tradeoff with evidence and residual risk rather than false certainty.
 
 ## Instrument outcomes, not private data
 
@@ -198,7 +200,7 @@ Speak in **failures and users**, not only library names.
 4. Migrations without upgrade testing.
 5. Overconfidence: “that can’t happen” without proof.
 
-## How interviewers probe this
+## Examination prompts
 
 - “Tell me about a technical decision you made and how you validated it.”
 - “How do you roll out a risky change?”

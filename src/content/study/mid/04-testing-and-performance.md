@@ -1,6 +1,6 @@
 ---
-title: Test behavior and diagnose performance
-description: Use tests and traces to protect user behavior rather than implementation details or coverage numbers.
+title: Testing strategy, performance measurement, and diagnosis
+description: Test observable behavior at the appropriate layer and use evidence to diagnose rendering, startup, memory, and responsiveness problems.
 level: mid
 order: 4
 duration: 50 min
@@ -8,17 +8,17 @@ quizHref: /practice/?test=testing-quality-test
 quizLabel: Take the testing quiz
 ---
 
-Good Android tests describe an **observable behavior**: given a repository result, the screen exposes content; given an I/O failure, the screen exposes a retryable error. A test should not fail only because you renamed a private function or reordered internal calls.
+Good Android tests describe an observable contract. Given a repository result, a screen exposes content; given an I/O failure, it exposes a retryable error. A test that fails because a private method was renamed or an internal call moved has tested an implementation accident rather than behavior.
 
-Performance work follows the same honesty: **measure**, classify the bottleneck, then fix. Guessing “maybe Compose is slow” wastes days.
+Performance work follows the same standard of evidence. Measure a user journey in a representative build, classify the limiting resource, and change one cause at a time. A claim that a toolkit is slow without a trace, benchmark, or reproducible symptom is not a diagnosis.
 
 ## Learning goals
 
-- Pyramid your tests: many fast unit tests, fewer instrumented tests.
-- Prefer **fakes** over heavy mocks for repositories.
-- Test coroutines and Flows with controlled time.
-- Classify jank (main-thread work, overdraw, allocation, startup) before optimizing.
-- Know the basic tooling: unit test runner, Espresso/Compose tests, Systrace/Macrobenchmark awareness.
+- Use a test portfolio with many fast unit tests and a smaller number of instrumented checks.
+- Prefer fakes when they make a collaborator's behavior clearer than interaction-based mocks.
+- Test coroutines and Flow with controlled time and deterministic dispatchers.
+- Classify jank, startup delay, allocation pressure, and overdraw before optimizing.
+- Select an appropriate tool, including unit tests, Compose or Espresso tests, traces, and benchmarks.
 
 ## Start with fast, controlled tests
 
@@ -206,7 +206,7 @@ You are not expected to recite every API, but you should say: *I measure, then f
 4. Optimizing without a trace (“added caches everywhere”).
 5. Ignoring flaky CI.
 
-## How interviewers probe this
+## Examination prompts
 
 - “How would you test this ViewModel?”
 - “Fake vs mock?”

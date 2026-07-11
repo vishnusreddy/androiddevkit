@@ -1,6 +1,6 @@
 ---
-title: Security, privacy, and client trust boundaries
-description: Threat-model Android entry points, credentials, storage, networking, WebView, logs, and dependencies without pretending the client can keep server secrets.
+title: Android security, privacy, and client trust boundaries
+description: Threat-model entry points, credentials, storage, network behavior, WebView, telemetry, and dependencies without trusting the client as authority.
 level: senior
 order: 5
 duration: 85 min
@@ -8,15 +8,17 @@ quizHref: /practice/?test=system-design-test
 quizLabel: Take the system design quiz
 ---
 
-Security answers become credible when they name an asset, attacker, entry point, control, and residual risk. "We encrypt it" is not enough. You need to say what is encrypted, where the key lives, which attack becomes harder, and which attacks remain possible.
+Security analysis becomes credible when it names an asset, an attacker, an entry point, a control, and residual risk. “We encrypt it” is not a complete control description. A useful answer identifies what is encrypted, where the key resides, which attack is made harder, and which authority the client can never possess.
+
+The installed application is an execution environment controlled by the user, not a trusted extension of the server. The server must therefore remain authoritative for protected operations. Android-side controls reduce exposure, validate input, protect local material, and provide defense in depth; they do not convert a client-supplied fact into proof.
 
 ## Learning goals
 
-- Threat-model exported components, intents, URIs, and pending intents.
+- Threat-model exported components, intents, URIs, and `PendingIntent` objects.
 - Design authentication and authorization with the server as authority.
 - Protect local keys and sensitive data with realistic boundaries.
 - Configure network and WebView behavior deliberately.
-- Reduce privacy risk in telemetry, backups, screenshots, and logs.
+- Reduce privacy exposure in telemetry, backups, screenshots, and logs.
 
 ## Start with assets and trust boundaries
 
@@ -245,7 +247,7 @@ For each feature:
 8. Logging credentials while debugging an auth problem.
 9. Treating root detection as authorization.
 
-## How interviewers probe this
+## Examination prompts
 
 - "Can you hide a secret in an APK?"
 - "How would you secure an exported Activity?"

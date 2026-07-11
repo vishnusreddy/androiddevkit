@@ -1,6 +1,6 @@
 ---
-title: Architecture and the data layer
-description: Give UI, business decisions, local storage, and remote data clear responsibilities.
+title: Android architecture, repositories, and unidirectional data flow
+description: Structure a feature around explicit data ownership, repositories, UI state, and boundaries that improve correctness and testability.
 level: mid
 order: 3
 duration: 55 min
@@ -8,15 +8,17 @@ quizHref: /practice/?test=architecture-test
 quizLabel: Take the architecture quiz
 ---
 
-Architecture is useful when it makes change **safer**, not when it maximizes folder count. Start with a feature boundary, not a diagram. The UI renders state and sends user intent. A ViewModel turns that intent into screen state. A repository coordinates the data sources a feature needs. Each layer should have a reason to change that differs from the others.
+Architecture is useful when it makes a change safer to reason about, test, and ship. It is not a contest for the most folders. Begin with a feature boundary and assign each collaborator a distinct reason to change: the UI renders state and receives intent, a state holder coordinates screen behavior, and a repository exposes application data while coordinating its sources.
+
+The resulting flow is deliberately one-directional. Input enters at the UI boundary, work reaches the data layer through explicit dependencies, and observable state returns for rendering. This prevents the screen from becoming an untraceable mixture of database calls, HTTP callbacks, and transient view state.
 
 ## Learning goals
 
-- Apply recommended Android layering without cargo-cult Clean Architecture theater.
-- Keep DTOs and entities out of the UI.
-- Use the local database as a **source of truth** for offline-friendly screens.
-- Inject dependencies with clear scopes.
-- Explain MVVM / UDF trade-offs in interview language.
+- Apply Android layering as a response to responsibilities rather than a prescribed folder hierarchy.
+- Keep transport and persistence representations out of the UI.
+- Use a local database as a source of truth when a feature needs durable observable data.
+- Inject dependencies with explicit lifetimes and replacement points.
+- Explain MVVM and unidirectional data flow in terms of data ownership and testability.
 
 ## A practical default shape
 
@@ -185,7 +187,8 @@ Skip use cases when they are 1:1 wrappers around a single repository method - th
 
 - Navigation arguments should be **IDs**, not giant objects.
 - Shared ViewModels can be scoped to a navigation graph for multi-step flows (checkout).
-- Keep NavController out of ViewModels when possible; emit events the UI navigates on.
+- Keep `NavController` at the UI boundary. A ViewModel processes the user action and exposes the resulting destination or screen state; the UI performs navigation through a controlled, acknowledged effect.
+- Treat deep-link arguments as external input and reload the required data through the feature boundary.
 
 ## Common pitfalls
 
@@ -195,7 +198,7 @@ Skip use cases when they are 1:1 wrappers around a single repository method - th
 4. **Over-modularizing** early (senior topic) without ownership pain.
 5. **Two sources of truth** - memory list and database list that diverge.
 
-## How interviewers probe this
+## Examination prompts
 
 - “Draw the layers for a notes app with offline support.”
 - “Why repository?”

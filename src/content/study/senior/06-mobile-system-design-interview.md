@@ -1,6 +1,6 @@
 ---
-title: The mobile system design interview
-description: Turn an ambiguous feature into requirements, state ownership, APIs, storage, synchronization, failure handling, security, and measurable tradeoffs.
+title: "Mobile system design: requirements, state, recovery, and scale"
+description: Turn an ambiguous mobile feature into requirements, ownership, APIs, persistence, synchronization, security, recovery, and measurable tradeoffs.
 level: senior
 order: 6
 duration: 95 min
@@ -8,13 +8,15 @@ quizHref: /practice/?test=system-design-test
 quizLabel: Take the system design quiz
 ---
 
-A strong mobile system design answer is not a diagram with repository boxes. It is a sequence of decisions tied to user behavior and failure conditions. The interviewer should hear what the product guarantees, where truth lives, how the client recovers, and what you would measure after release.
+A strong mobile system-design answer is a sequence of decisions tied to user behavior, constraints, and failure conditions. A diagram containing repositories is insufficient. The interviewer should hear the product guarantee, the location of truth, the recovery behavior when transport fails, and the signals that would validate the design after release.
+
+The structure in this chapter is deliberately portable. It can be applied to chat, feeds, media, commerce, mapping, or collaboration because it begins with a contract and follows data through state ownership, APIs, persistence, synchronization, security, and operations.
 
 ## Learning goals
 
-- Drive a system design interview from requirements to tradeoffs.
-- Estimate the constraints that materially affect a mobile design.
-- Define client state, server APIs, local schema, sync, and conflict policy.
+- Drive a system-design interview from requirements to explicit tradeoffs.
+- Identify the constraints that materially affect a mobile design.
+- Define client state, server APIs, local schema, synchronization, and conflict policy.
 - Cover security, performance, testing, rollout, and observability.
 - Adapt the framework to chat, feed, media, checkout, maps, and collaboration.
 
@@ -304,7 +306,7 @@ Deep dive on operation log, versions, conflict algorithm, presence, reconnect ga
 8. Ignoring rollout compatibility between old clients and new APIs.
 9. Ending without tradeoffs or metrics.
 
-## How interviewers probe this
+## Examination prompts
 
 - "Design WhatsApp messages on Android."
 - "Design an offline-first notes app."

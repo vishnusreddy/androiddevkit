@@ -1,6 +1,6 @@
 ---
-title: Platform internals and performance engineering
-description: Trace process startup, the main thread, Binder, ART, rendering, memory, and ANRs so performance answers begin with evidence.
+title: Android runtime internals and performance engineering
+description: Trace startup, the main thread, Binder, rendering, memory, ANRs, and compilation so performance work begins with evidence.
 level: senior
 order: 4
 duration: 85 min
@@ -8,11 +8,13 @@ quizHref: /practice/?test=platform-internals-test
 quizLabel: Take the platform internals quiz
 ---
 
-Senior performance work is not a bag of micro-optimizations. It starts with a causal model of the platform, a user-visible metric, and a trace that connects the two. If a screen is slow, you should be able to ask whether the time is spent starting a process, loading code, blocking the main thread, waiting for Binder, decoding images, allocating memory, or missing rendering deadlines.
+Senior performance work begins with a causal model, a user-visible metric, and evidence that connects them. A slow screen may be waiting for process startup, code loading, main-thread work, a Binder reply, image decoding, allocation or garbage collection, or a missed frame deadline. A micro-optimization that cannot name its measured cause is a guess.
+
+This chapter follows the runtime from process creation to a presented frame. It then uses that model to diagnose ANRs, jank, memory pressure, startup latency, and compilation behavior. The objective is not to memorize internals; it is to choose the next diagnostic tool from a plausible failure mechanism.
 
 ## Learning goals
 
-- Trace a cold launch from process creation to first useful content.
+- Trace a cold launch from process creation to useful content.
 - Explain the main thread, `Looper`, `MessageQueue`, Choreographer, and Binder boundaries.
 - Distinguish cold, warm, and hot startup.
 - Diagnose jank, ANRs, memory pressure, and leaks with appropriate tools.
@@ -229,7 +231,7 @@ Compare percentiles, not only averages. A good median can hide a painful p95 or 
 7. Generating a Baseline Profile without measuring representative journeys.
 8. Reporting initial display before the screen is useful.
 
-## How interviewers probe this
+## Examination prompts
 
 - "Walk through a cold app start."
 - "How do Handler, Looper, and MessageQueue relate?"
